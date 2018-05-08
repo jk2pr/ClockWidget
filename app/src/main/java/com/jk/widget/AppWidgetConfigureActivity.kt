@@ -1,13 +1,22 @@
 package com.jk.widget
 
+
 import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 
 import kotlinx.android.synthetic.main.app_widget_configure.*
+import java.util.*
+import kotlin.collections.ArrayList
+
 
 /**
  * The configuration screen for the [AppWidget] AppWidget.
@@ -19,8 +28,8 @@ class AppWidgetConfigureActivity : Activity() {
         val context = this@AppWidgetConfigureActivity
 
         // When the button is clicked, store the string locally
-        val widgetText = appwidget_text.text.toString()
-        saveTitlePref(context, mAppWidgetId, widgetText)
+        //  val widgetText = appwidget_text.text.toString()
+        //   saveTitlePref(context, mAppWidgetId, widgetText)
 
         // It is the responsibility of the configuration activity to update the app widget
         val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -33,6 +42,7 @@ class AppWidgetConfigureActivity : Activity() {
         finish()
     }
 
+
     public override fun onCreate(icicle: Bundle?) {
         super.onCreate(icicle)
 
@@ -41,8 +51,6 @@ class AppWidgetConfigureActivity : Activity() {
         setResult(Activity.RESULT_CANCELED)
 
         setContentView(R.layout.app_widget_configure)
-        findViewById<View>(R.id.add_button).setOnClickListener(mOnClickListener)
-
         // Find the widget id from the intent.
         val intent = intent
         val extras = intent.extras
@@ -56,9 +64,51 @@ class AppWidgetConfigureActivity : Activity() {
             finish()
             return
         }
+        recycler_view.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(this@AppWidgetConfigureActivity)
+            adapter = RecyclerViewAda()
+        }
 
-        appwidget_text.setText(loadTitlePref(this@AppWidgetConfigureActivity, mAppWidgetId))
+        //appwidget_text.setText(loadTitlePref(this@AppWidgetConfigureActivity, mAppWidgetId))
     }
+
+
+    class RecyclerViewAda : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>() {
+
+        val data = constructTimezoneAdapter()
+
+        private fun constructTimezoneAdapter(): ArrayList<String> {
+            val TZ = TimeZone.getAvailableIDs()
+            val TZ1 = ArrayList<String>()
+            for (i in TZ.indices) {
+                if (!TZ1.contains(TimeZone.getTimeZone(TZ[i]).displayName)) {
+                    TZ1.add(TimeZone.getTimeZone(TZ[i]).displayName)
+                }
+            }
+            return TZ1
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewAda.MyViewHolder {
+            val layout = LayoutInflater.from(parent.context).inflate(R.layout.item_time_zone, parent, false)
+            return MyViewHolder(layout)
+        }
+
+        override fun getItemCount(): Int {
+            return data.size
+        }
+
+        override fun onBindViewHolder(holder: RecyclerViewAda.MyViewHolder, position: Int) {
+            holder.bind(data[position])
+        }
+
+        class MyViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+            fun bind(data: String) {
+                itemView.findViewById<TextView>(R.id.txt_timezone).text = data
+            }
+        }
+    }
+
 
     companion object {
 
