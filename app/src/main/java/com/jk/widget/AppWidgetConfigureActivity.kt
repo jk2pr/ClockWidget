@@ -67,23 +67,23 @@ class AppWidgetConfigureActivity : Activity() {
         recycler_view.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(this@AppWidgetConfigureActivity)
-            adapter = RecyclerViewAda()
+            adapter = RecyclerViewAda(this@AppWidgetConfigureActivity)
         }
 
         //appwidget_text.setText(loadTitlePref(this@AppWidgetConfigureActivity, mAppWidgetId))
     }
 
 
-    class RecyclerViewAda : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>() {
+    class RecyclerViewAda( appWidgetConfigureActivity: AppWidgetConfigureActivity) : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>() {
 
         val data = constructTimezoneAdapter()
-
+        val appWidgetConfigureActivity =appWidgetConfigureActivity
         private fun constructTimezoneAdapter(): ArrayList<String> {
             val TZ = TimeZone.getAvailableIDs()
             val TZ1 = ArrayList<String>()
             for (i in TZ.indices) {
                 if (!TZ1.contains(TimeZone.getTimeZone(TZ[i]).displayName)) {
-                    
+
                     TZ1.add(TimeZone.getTimeZone(TZ[i]).displayName)
                 }
             }
@@ -105,7 +105,9 @@ class AppWidgetConfigureActivity : Activity() {
 
         class MyViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
             fun bind(data: String) {
+
                 itemView.findViewById<TextView>(R.id.txt_timezone).text = data
+                //itemView.setOnClickListener(RecyclerViewAda.appWidgetConfigureActivity.mOnClickListener)
             }
         }
     }
