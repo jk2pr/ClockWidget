@@ -83,6 +83,7 @@ class AppWidgetConfigureActivity : Activity() {
             val TZ1 = ArrayList<String>()
             for (i in TZ.indices) {
                 if (!TZ1.contains(TimeZone.getTimeZone(TZ[i]).displayName)) {
+                    
                     TZ1.add(TimeZone.getTimeZone(TZ[i]).displayName)
                 }
             }
