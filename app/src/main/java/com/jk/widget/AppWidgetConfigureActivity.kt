@@ -12,15 +12,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
 import kotlinx.android.synthetic.main.app_widget_configure.*
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import java.text.SimpleDateFormat
+
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-import javax.xml.datatype.DatatypeConstants.HOURS
-
-
 
 
 /**
@@ -79,11 +77,11 @@ class AppWidgetConfigureActivity : Activity() {
     }
 
 
-    class RecyclerViewAda( appWidgetConfigureActivity: AppWidgetConfigureActivity) : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>() {
+    class RecyclerViewAda(appWidgetConfigureActivity: AppWidgetConfigureActivity) : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>() {
 
         val data = constructTimezoneAdapter()
-        val appWidgetConfigureActivity =appWidgetConfigureActivity
-        private fun constructTimezoneAdapter(): ArrayList<String> {
+        val appWidgetConfigureActivity = appWidgetConfigureActivity
+        private fun constructTimezoneAdapter(): Array<out String> {
             val TZ = TimeZone.getAvailableIDs()
             val TZ1 = ArrayList<String>()
             for (i in TZ.indices) {
@@ -92,7 +90,7 @@ class AppWidgetConfigureActivity : Activity() {
                     TZ1.add(TimeZone.getTimeZone(TZ[i]).displayName)
                 }
             }
-            return TZ1
+            return TZ
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewAda.MyViewHolder {
@@ -110,15 +108,29 @@ class AppWidgetConfigureActivity : Activity() {
 
         class MyViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
             fun bind(data: String) {
+                val timezone = TimeZone.getTimeZone(data)
 
 
-                val mCalendar = GregorianCalendar()
-                val currentLocalTime= mCalendar.getTime();
-                val date = SimpleDateFormat("z", Locale.getDefault())
-                val localTime = date.format(currentLocalTime)
+                val cal = Calendar.getInstance(Locale.ENGLISH)
+                cal.timeZone = timezone
+                /*val form = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
+                val dateforrow = form.format(cal.time)*/
 
+                var hour = String.format("%02d", cal.get(Calendar.HOUR))
+                if (hour == "00") hour = "12"
+                val minute = String.format("%02d", cal.get(Calendar.MINUTE))
+                val am_pm = cal.get(Calendar.AM_PM)
+                val ap: String
+                if (am_pm == 0) {
+                    ap = "AM"
+                } else ap = "PM"
+                val dateforrow = hour + ":" + minute + ":" + ap
+                /*val zone = DateTimeZone.forID(data)
+                val dateTime = DateTime(zone)
+                val output = dateTime.toLocalTime().toDateTimeToday()
+*/
                 itemView.findViewById<TextView>(R.id.txt_timezoneId).text = data
-                itemView.findViewById<TextView>(R.id.txt_timezoneDelay).text = localTime
+                itemView.findViewById<TextView>(R.id.txt_timezoneDelay).text = dateforrow
                 //itemView.setOnClickListener(RecyclerViewAda.appWidgetConfigureActivity.mOnClickListener)
             }
         }
