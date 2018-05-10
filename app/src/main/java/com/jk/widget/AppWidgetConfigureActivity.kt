@@ -30,9 +30,10 @@ class AppWidgetConfigureActivity : Activity() {
     internal var mOnClickListener: View.OnClickListener = View.OnClickListener {
         val context = this@AppWidgetConfigureActivity
 
+        val timazonSelected=it.tag as TimeZone
         // When the button is clicked, store the string locally
         //  val widgetText = appwidget_text.text.toString()
-        //   saveTitlePref(context, mAppWidgetId, widgetText)
+           saveTitlePref(context, mAppWidgetId, timazonSelected.id)
 
         // It is the responsibility of the configuration activity to update the app widget
         val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -77,7 +78,7 @@ class AppWidgetConfigureActivity : Activity() {
     }
 
 
-    class RecyclerViewAda(appWidgetConfigureActivity: AppWidgetConfigureActivity) : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>() {
+   inner class RecyclerViewAda(appWidgetConfigureActivity: AppWidgetConfigureActivity) : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>() {
 
         val data = constructTimezoneAdapter()
         val appWidgetConfigureActivity = appWidgetConfigureActivity
@@ -106,7 +107,7 @@ class AppWidgetConfigureActivity : Activity() {
             holder.bind(data[position])
         }
 
-        class MyViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+        inner class MyViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
             fun bind(data: String) {
                 val timezone = TimeZone.getTimeZone(data)
 
@@ -131,7 +132,8 @@ class AppWidgetConfigureActivity : Activity() {
 */
                 itemView.findViewById<TextView>(R.id.txt_timezoneId).text = data
                 itemView.findViewById<TextView>(R.id.txt_timezoneDelay).text = dateforrow
-                //itemView.setOnClickListener(RecyclerViewAda.appWidgetConfigureActivity.mOnClickListener)
+                itemView.tag = timezone
+                itemView.setOnClickListener(mOnClickListener)
             }
         }
     }

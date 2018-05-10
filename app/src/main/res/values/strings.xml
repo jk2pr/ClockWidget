@@ -1,7 +1,9 @@
 <resources>
-    <string name="app_name">Widget</string>
+    <string name="app_name">Mr.Duo Clock</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>
     <string name="select_city">Select City</string>
+    <string name="time_format">hh:mm a\nE dd MMM</string>
+
 </resources>
