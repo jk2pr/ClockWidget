@@ -14,8 +14,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 
 import kotlinx.android.synthetic.main.app_widget_configure.*
+import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import javax.xml.datatype.DatatypeConstants.HOURS
+
+
 
 
 /**
@@ -106,7 +111,14 @@ class AppWidgetConfigureActivity : Activity() {
         class MyViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
             fun bind(data: String) {
 
-                itemView.findViewById<TextView>(R.id.txt_timezone).text = data
+
+                val mCalendar = GregorianCalendar()
+                val currentLocalTime= mCalendar.getTime();
+                val date = SimpleDateFormat("z", Locale.getDefault())
+                val localTime = date.format(currentLocalTime)
+
+                itemView.findViewById<TextView>(R.id.txt_timezoneId).text = data
+                itemView.findViewById<TextView>(R.id.txt_timezoneDelay).text = localTime
                 //itemView.setOnClickListener(RecyclerViewAda.appWidgetConfigureActivity.mOnClickListener)
             }
         }

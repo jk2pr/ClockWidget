@@ -7,12 +7,14 @@
 
     <TextView
         android:id="@+id/txt_title"
-        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/select_timezone"
-        android:textAllCaps="true"
+        android:text="@string/select_city"
+        android:textAllCaps="false"
         android:textColor="@color/colorAccent"
-        android:textSize="20sp"
+        android:textSize="24sp"
+        android:padding="10dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
