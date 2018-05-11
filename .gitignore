@@ -1,9 +1,6 @@
 *.iml
 .gradle
 /local.properties
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
 .DS_Store
 
 /captures
@@ -55,3 +52,5 @@ captures/
 google-services.json
 
 # Freeline
+/app/Keystore
+/keystore.properties

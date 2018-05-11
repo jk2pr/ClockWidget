@@ -13,8 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.app_widget_configure.*
-import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
 import java.text.SimpleDateFormat
 
 import java.util.*
