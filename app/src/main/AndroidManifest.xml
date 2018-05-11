@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.jk.widget">
+    package="com.jk.mr.duo.clock">
 
     <application
         android:icon="@mipmap/ic_launcher"
@@ -20,7 +20,8 @@
                 android:resource="@xml/app_widget_info" />
         </receiver>
 
-        <activity android:name=".AppWidgetConfigureActivity">
+        <activity android:name=".AppWidgetConfigureActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>

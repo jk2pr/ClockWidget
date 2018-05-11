@@ -1,15 +1,8 @@
-package com.jk.widget
-
+package com.jk.mr.duo.clock
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.text.Html
 import android.widget.RemoteViews
-import android.widget.TextClock
-import android.text.TextUtils
-import android.text.Spanned
-import android.text.style.RelativeSizeSpan
-import android.text.SpannableString
 import java.util.*
 
 

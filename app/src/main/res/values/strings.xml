@@ -5,5 +5,6 @@
     <string name="add_widget">Add widget</string>
     <string name="select_city">Select City</string>
     <string name="time_format">hh:mm a\nE dd MMM</string>
+    <string name="action_search">Search</string>
 
 </resources>

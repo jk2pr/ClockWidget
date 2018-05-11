@@ -54,3 +54,4 @@ google-services.json
 # Freeline
 /app/Keystore
 /keystore.properties
+/app/release/
