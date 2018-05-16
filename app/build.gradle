@@ -4,20 +4,20 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
-def keystorePropertiesFile = rootProject.file("keystore.properties")
+/*def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))*/
 
 
 android {
-    signingConfigs {
+   /* signingConfigs {
         config {
             storeFile file(keystoreProperties['storeFile'])
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
             storePassword keystoreProperties['storePassword']
         }
-    }
+    }*/
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.jk.mr.duo.clock"
@@ -44,7 +44,8 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+           //
+            // signingConfig signingConfigs.config
         }
     }
 }

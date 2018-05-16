@@ -98,7 +98,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         // Set the result to CANCELED.  This will cause the widget host to cancel
         // out of the widget placement if the user presses the back button.
-        setResult(Activity.RESULT_CANCELED)
+      //  setResult(Activity.RESULT_CANCELED)
 
         setContentView(R.layout.app_widget_configure)
 
