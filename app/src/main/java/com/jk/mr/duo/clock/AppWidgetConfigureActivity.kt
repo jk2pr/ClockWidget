@@ -34,10 +34,10 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     internal var mOnClickListener: View.OnClickListener = View.OnClickListener {
         val context = this@AppWidgetConfigureActivity
 
-        val timazonSelected = it.tag as TimeZone
+        val timezonSelected = it.tag as String
         // When the button is clicked, store the string locally
         //  val widgetText = appwidget_text.text.toString()
-        saveTitlePref(context, mAppWidgetId, timazonSelected.id)
+        saveTitlePref(context, mAppWidgetId, timezonSelected)
 
         // It is the responsibility of the configuration activity to update the app widget
         val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -57,10 +57,10 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         // Associate searchable configuration with the SearchView
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView = menu.findItem(R.id.action_search)
-                .getActionView() as SearchView
+                .actionView as SearchView
         searchView.setSearchableInfo(searchManager
                 .getSearchableInfo(componentName))
-        searchView.setMaxWidth(Integer.MAX_VALUE)
+        searchView.maxWidth = Integer.MAX_VALUE
 
         // listening to search query text change
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -83,7 +83,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.getItemId()
+        val id = item.itemId
 
 
         return if (id == R.id.action_search) {
@@ -162,10 +162,8 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                                 d = row.split("/")[1]
                             else
                                 d = row
-                            if (d.contains(charString, true)) {
-                               if(!filteredList.contains(row))
-                                  filteredList.add(row)
-                            }
+                            if (d.contains(charString, true)) if(!filteredList.contains(row))
+                               filteredList.add(row)
                         }
                        // filteredData.addAll(filteredList.sorted())
                     }
@@ -228,7 +226,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                     d = data.toLowerCase()*/
                 itemView.findViewById<TextView>(R.id.txt_timezoneId).text = data
                 itemView.findViewById<TextView>(R.id.txt_timezoneDelay).text = dateforrow
-                itemView.tag = timezone
+                itemView.tag = data
                 itemView.setOnClickListener(mOnClickListener)
             }
         }

@@ -46,19 +46,20 @@ class AppWidget : AppWidgetProvider() {
             // Construct the RemoteViews object
             val views = RemoteViews(context.packageName, R.layout.app_widget)
 
-            views.setString(R.id.clock1, "setTimeZone", timeZone)
-
-            views.setCharSequence(R.id.clock0, "setFormat12Hour", context.resources.getString(R.string.time_format))
-            views.setCharSequence(R.id.clock1, "setFormat12Hour", context.resources.getString(R.string.time_format))
-
-            views.setCharSequence(R.id.timzone0, "setText", TimeZone.getDefault().displayName)
-            views.setCharSequence(R.id.timzone1, "setText", TimeZone.getTimeZone(timeZone).displayName)
+            views.setString(R.id.clock0, "setTimeZone", TimeZone.getDefault().id)
+            views.setString(R.id.clock1, "setTimeZone", TimeZone.getTimeZone(timeZone).id)
 
 
+            var d = timeZone
+            if (timeZone.contains("/"))
+                d = timeZone.split("/")[1]
+
+            views.setCharSequence(R.id.txt_timezone0, "setText", TimeZone.getDefault().id.split("/")[1])
+            views.setCharSequence(R.id.txt_timezone1, "setText", d)
 
 
             val intent = Intent(context, AppWidgetConfigureActivity::class.java)
-           intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
             views.setOnClickPendingIntent(R.id.clock1, pendingIntent)
 
