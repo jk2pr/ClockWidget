@@ -50,12 +50,16 @@ class AppWidget : AppWidgetProvider() {
             views.setString(R.id.clock1, "setTimeZone", TimeZone.getTimeZone(timeZone).id)
 
 
-            var d = timeZone
-            if (timeZone.contains("/"))
-                d = timeZone.split("/")[1]
+            var txt0 = TimeZone.getDefault().id
+            if (txt0.contains("/"))
+                txt0 = timeZone.split("/")[1]
 
-            views.setCharSequence(R.id.txt_timezone0, "setText", TimeZone.getDefault().id.split("/")[1])
-            views.setCharSequence(R.id.txt_timezone1, "setText", d)
+            var txt1 = timeZone
+            if (timeZone.contains("/"))
+                txt1 = timeZone.split("/")[1]
+
+            views.setCharSequence(R.id.txt_timezone0, "setText", txt0)
+            views.setCharSequence(R.id.txt_timezone1, "setText", txt1)
 
 
             val intent = Intent(context, AppWidgetConfigureActivity::class.java)
