@@ -16,9 +16,11 @@ import kotlinx.android.synthetic.main.app_widget_configure.*
 import java.util.*
 import kotlin.collections.ArrayList
 import android.app.SearchManager
+import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.view.*
+import javax.inject.Inject
 
 
 /**
@@ -26,6 +28,7 @@ import android.view.*
  */
 class AppWidgetConfigureActivity : AppCompatActivity() {
     internal var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+
 
     val adapter by lazy { RecyclerViewAda(this@AppWidgetConfigureActivity) }
 
@@ -234,11 +237,11 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         private val PREFS_NAME = "com.jk.mr.dualclock.widget.AppWidget"
         private val PREF_PREFIX_KEY = "appwidget_"
 
+
         // Write the prefix to the SharedPreferences object for this widget
         internal fun saveTitlePref(context: Context, appWidgetId: Int, text: String) {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-            prefs.putString(PREF_PREFIX_KEY + appWidgetId, text)
-            prefs.apply()
+            prefs.putString(PREF_PREFIX_KEY + appWidgetId, text).apply()
         }
 
         // Read the prefix from the SharedPreferences object for this widget.
@@ -251,8 +254,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         internal fun deleteTitlePref(context: Context, appWidgetId: Int) {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-            prefs.remove(PREF_PREFIX_KEY + appWidgetId)
-            prefs.apply()
+            prefs.remove(PREF_PREFIX_KEY + appWidgetId).apply()
         }
     }
 }
