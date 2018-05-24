@@ -52,7 +52,7 @@ class AppWidget : AppWidgetProvider() {
 
             var txt0 = TimeZone.getDefault().id
             if (txt0.contains("/"))
-                txt0 = timeZone.split("/")[1]
+                txt0 = txt0.split("/")[1]
 
             var txt1 = timeZone
             if (timeZone.contains("/"))

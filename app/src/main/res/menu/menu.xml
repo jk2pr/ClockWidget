@@ -8,6 +8,7 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always" />
     <item
+        android:visible="false"
         android:id="@+id/action_setting"
         android:icon="@drawable/ic_settings_black_24dp"
         android:orderInCategory="101"
