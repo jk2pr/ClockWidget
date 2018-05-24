@@ -15,11 +15,12 @@ import kotlinx.android.synthetic.main.app_widget_configure.*
 
 import java.util.*
 import kotlin.collections.ArrayList
-import android.support.v4.view.MenuItemCompat.getActionView
 import android.app.SearchManager
+import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.view.*
+import javax.inject.Inject
 
 
 /**
@@ -28,16 +29,17 @@ import android.view.*
 class AppWidgetConfigureActivity : AppCompatActivity() {
     internal var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
+
     val adapter by lazy { RecyclerViewAda(this@AppWidgetConfigureActivity) }
 
     // val mAppWidgetText:EditText by lazy { findViewById(R.id.appwidget_text) }
     internal var mOnClickListener: View.OnClickListener = View.OnClickListener {
         val context = this@AppWidgetConfigureActivity
 
-        val timazonSelected = it.tag as TimeZone
+        val timezonSelected = it.tag as String
         // When the button is clicked, store the string locally
         //  val widgetText = appwidget_text.text.toString()
-        saveTitlePref(context, mAppWidgetId, timazonSelected.id)
+        saveTitlePref(context, mAppWidgetId, timezonSelected)
 
         // It is the responsibility of the configuration activity to update the app widget
         val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -57,10 +59,10 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         // Associate searchable configuration with the SearchView
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView = menu.findItem(R.id.action_search)
-                .getActionView() as SearchView
+                .actionView as SearchView
         searchView.setSearchableInfo(searchManager
                 .getSearchableInfo(componentName))
-        searchView.setMaxWidth(Integer.MAX_VALUE)
+        searchView.maxWidth = Integer.MAX_VALUE
 
         // listening to search query text change
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -80,15 +82,15 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.getItemId()
 
-
-        return if (id == R.id.action_search) {
-            true
-        } else super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.action_search -> true
+            R.id.action_setting -> {
+                startActivity(Intent(this, PreferenceActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
 
     }
 
@@ -98,7 +100,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         // Set the result to CANCELED.  This will cause the widget host to cancel
         // out of the widget placement if the user presses the back button.
-        setResult(Activity.RESULT_CANCELED)
+        //  setResult(Activity.RESULT_CANCELED)
 
         setContentView(R.layout.app_widget_configure)
 
@@ -136,8 +138,8 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
     inner class RecyclerViewAda(appWidgetConfigureActivity: AppWidgetConfigureActivity) : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>(), Filterable {
 
-        val oriGinaldata = constructTimezoneAdapter()
-        val filteredData = oriGinaldata.clone() as ArrayList<String>
+        val originalData = constructTimezoneAdapter()
+        val filteredData = originalData.clone() as ArrayList<String>
         // val appWidgetConfigureActivity = appWidgetConfigureActivity
         private fun constructTimezoneAdapter(): ArrayList<String> {
             val T = TimeZone.getAvailableIDs()
@@ -154,20 +156,18 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                     val charString = charSequence.toString()
                     val filteredList = ArrayList<String>()
                     if (charString.isEmpty()) {
-                        filteredList.addAll(oriGinaldata)
+                        filteredList.addAll(originalData)
                     } else {
-                        for (row in oriGinaldata) {
+                        for (row in originalData) {
                             val d: String
                             if (row.contains("/"))
                                 d = row.split("/")[1]
                             else
                                 d = row
-                            if (d.contains(charString, true)) {
-                               if(!filteredList.contains(row))
-                                  filteredList.add(row)
-                            }
+                            if (d.contains(charString, true)) if (!filteredList.contains(row))
+                                filteredList.add(row)
                         }
-                       // filteredData.addAll(filteredList.sorted())
+                        // filteredData.addAll(filteredList.sorted())
                     }
 
                     val filterResults = Filter.FilterResults()
@@ -204,17 +204,14 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
                 val cal = Calendar.getInstance(Locale.getDefault())
                 cal.timeZone = timezone
-                /*val form = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
-                val dateforrow = form.format(cal.time)*/
-
                 var hour = String.format("%02d", cal.get(Calendar.HOUR))
                 if (hour == "00") hour = "12"
                 val minute = String.format("%02d", cal.get(Calendar.MINUTE))
-                val am_pm = cal.get(Calendar.AM_PM)
+                val ampm = cal.get(Calendar.AM_PM)
                 val ap: String
-                if (am_pm == 0) {
-                    ap = "AM"
-                } else ap = "PM"
+                ap = if (ampm == 0) {
+                    "AM"
+                } else "PM"
                 val dateforrow = hour + ":" + minute + ":" + ap
                 /*val zone = DateTimeZone.forID(data)
                 val dateTime = DateTime(zone)
@@ -228,7 +225,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                     d = data.toLowerCase()*/
                 itemView.findViewById<TextView>(R.id.txt_timezoneId).text = data
                 itemView.findViewById<TextView>(R.id.txt_timezoneDelay).text = dateforrow
-                itemView.tag = timezone
+                itemView.tag = data
                 itemView.setOnClickListener(mOnClickListener)
             }
         }
@@ -240,11 +237,11 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         private val PREFS_NAME = "com.jk.mr.dualclock.widget.AppWidget"
         private val PREF_PREFIX_KEY = "appwidget_"
 
+
         // Write the prefix to the SharedPreferences object for this widget
         internal fun saveTitlePref(context: Context, appWidgetId: Int, text: String) {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-            prefs.putString(PREF_PREFIX_KEY + appWidgetId, text)
-            prefs.apply()
+            prefs.putString(PREF_PREFIX_KEY + appWidgetId, text).apply()
         }
 
         // Read the prefix from the SharedPreferences object for this widget.
@@ -257,8 +254,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         internal fun deleteTitlePref(context: Context, appWidgetId: Int) {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-            prefs.remove(PREF_PREFIX_KEY + appWidgetId)
-            prefs.apply()
+            prefs.remove(PREF_PREFIX_KEY + appWidgetId).apply()
         }
     }
 }

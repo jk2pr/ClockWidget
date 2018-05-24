@@ -20,12 +20,16 @@
                 android:resource="@xml/app_widget_info" />
         </receiver>
 
-        <activity android:name=".AppWidgetConfigureActivity"
+        <activity
+            android:name=".AppWidgetConfigureActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".PreferenceActivity"
+            android:label="@string/title_activity_preference"></activity>
     </application>
 
 </manifest>

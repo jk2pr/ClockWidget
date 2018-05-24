@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:baselineAligned="false">
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -16,13 +17,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="start"
+            android:format12Hour="hh:mm a\nE dd MMM"
             android:textColor="#ffffff"
             android:textSize="20sp"
             tools:text="12:05 AM" />
 
         <TextView
             android:textColor="@android:color/darker_gray"
-            android:id="@+id/timzone0"
+            android:id="@+id/txt_timezone0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -49,7 +51,7 @@
             tools:text="12:05 AM" />
 
         <TextView
-            android:id="@+id/timzone1"
+            android:id="@+id/txt_timezone1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/darker_gray"

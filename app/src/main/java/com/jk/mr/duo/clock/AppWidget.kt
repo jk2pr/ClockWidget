@@ -1,9 +1,12 @@
 package com.jk.mr.duo.clock
+
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.widget.RemoteViews
 import java.util.*
+import android.app.PendingIntent
+import android.content.Intent
 
 
 /**
@@ -43,16 +46,26 @@ class AppWidget : AppWidgetProvider() {
             // Construct the RemoteViews object
             val views = RemoteViews(context.packageName, R.layout.app_widget)
 
-
-            views.setCharSequence(R.id.timzone0,"setText", TimeZone.getDefault().displayName)
-            views.setCharSequence(R.id.timzone1,"setText", TimeZone.getTimeZone(timeZone).displayName)
-
-            views.setCharSequence(R.id.clock0,"setFormat12Hour",context.resources.getString( R.string.time_format))
-            views.setCharSequence(R.id.clock1,"setFormat12Hour",context.resources.getString( R.string.time_format))
+            views.setString(R.id.clock0, "setTimeZone", TimeZone.getDefault().id)
+            views.setString(R.id.clock1, "setTimeZone", TimeZone.getTimeZone(timeZone).id)
 
 
+            var txt0 = TimeZone.getDefault().id
+            if (txt0.contains("/"))
+                txt0 = timeZone.split("/")[1]
 
-            views.setString(R.id.clock1,"setTimeZone",timeZone)
+            var txt1 = timeZone
+            if (timeZone.contains("/"))
+                txt1 = timeZone.split("/")[1]
+
+            views.setCharSequence(R.id.txt_timezone0, "setText", txt0)
+            views.setCharSequence(R.id.txt_timezone1, "setText", txt1)
+
+
+            val intent = Intent(context, AppWidgetConfigureActivity::class.java)
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            views.setOnClickPendingIntent(R.id.clock1, pendingIntent)
 
             //views.setTextViewText(R.id.appwidget_text, widgetText)
 
