@@ -52,11 +52,11 @@ class AppWidget : AppWidgetProvider() {
 
             var txt0 = TimeZone.getDefault().id
             if (txt0.contains("/"))
-                txt0 = timeZone.split("/")[1]
+                txt0 = txt0.split("/")[1]
 
-            var txt1 = timeZone
-            if (timeZone.contains("/"))
-                txt1 = timeZone.split("/")[1]
+            var txt1 =TimeZone.getTimeZone(timeZone).id
+            if (txt1.contains("/"))
+                txt1 = txt1.split("/")[1]
 
             views.setCharSequence(R.id.txt_timezone0, "setText", txt0)
             views.setCharSequence(R.id.txt_timezone1, "setText", txt1)
