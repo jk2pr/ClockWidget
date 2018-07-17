@@ -29,7 +29,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
-    /* flavorDimensions "mode"
+     flavorDimensions "mode"
 
     productFlavors {
         free {
@@ -40,7 +40,7 @@ android {
             applicationIdSuffix ".paid"
             dimension "mode"
         }
-    }*/
+    }
 
     buildTypes {
         release {
