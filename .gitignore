@@ -55,3 +55,8 @@ google-services.json
 /app/Keystore
 /keystore.properties
 /app/release/
+/Keystore
+/keystore.Properties
+/.gitignore
+/app/.gitignore
+/gradle.properties
