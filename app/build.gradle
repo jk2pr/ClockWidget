@@ -55,11 +55,14 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     // Dagger 2
-    implementation 'com.google.dagger:dagger:2.11'
-    implementation 'com.google.firebase:firebase-core:16.0.4'
-    kapt 'com.google.dagger:dagger-compiler:2.11'
+    implementation 'com.google.dagger:dagger:2.19'
+    implementation 'com.google.firebase:firebase-core:16.0.7'
+    kapt 'com.google.dagger:dagger-compiler:2.19'
     implementation "com.android.support:support-v4:$support_version"
     compileOnly 'org.glassfish:javax.annotation:10.0-b28'
+
+
+    implementation 'com.github.rtugeek:colorseekbar:1.7.3'
 
     implementation "com.android.support:palette-v7:$support_version"
 

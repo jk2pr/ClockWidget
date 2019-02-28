@@ -1,3 +1,4 @@
+/*
 package com.jk.mr.duo.clock
 
 import android.annotation.TargetApi
@@ -26,9 +27,11 @@ class PreferenceActivity : AppCompatPreferenceActivity() {
         return true
     }
 
-    /**
+    */
+/**
      * Set up the [android.app.ActionBar], if the API is available.
-     */
+     *//*
+
     private fun setupActionBar() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -63,3 +66,4 @@ class PreferenceActivity : AppCompatPreferenceActivity() {
 
 
 }
+*/

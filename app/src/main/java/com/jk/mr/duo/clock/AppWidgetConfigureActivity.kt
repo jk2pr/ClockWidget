@@ -8,19 +8,25 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.TextView
 import kotlinx.android.synthetic.main.app_widget_configure.*
 
 import java.util.*
 import kotlin.collections.ArrayList
 import android.app.SearchManager
 import android.content.SharedPreferences
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.view.*
 import javax.inject.Inject
+import android.R.drawable.btn_dialog
+import android.app.Dialog
+import android.content.ComponentName
+import android.support.v4.content.ContextCompat
+import android.view.Window.FEATURE_NO_TITLE
+import android.widget.*
+import com.rtugeek.android.colorseekbar.ColorSeekBar
+import kotlinx.android.synthetic.main.layout_seekbar.*
 
 
 /**
@@ -86,7 +92,9 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_search -> true
             R.id.action_setting -> {
-                startActivity(Intent(this, PreferenceActivity::class.java))
+
+                showColorPickerSeekbar()
+                //startActivity(Intent(this, PreferenceActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -94,6 +102,46 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
     }
 
+
+    private fun showColorPickerSeekbar() {
+
+
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.layout_seekbar)
+
+
+        val seekBar = dialog.findViewById(R.id.colorSlider) as ColorSeekBar
+        /* seekBar.setOnColorChangeListener(ColorSeekBar.OnColorChangeListener { colorBarPosition, alphaBarPosition, color ->
+          Toast.makeText(this,color.toString(),Toast.LENGTH_SHORT).show()
+          //   textView.setTextColor(color)
+             //colorSeekBar.getAlphaValue();
+         })*/
+
+
+        val btOk = dialog.findViewById(R.id.bt_ok) as Button
+
+        btOk.setOnClickListener {
+
+
+            val manager = AppWidgetManager.getInstance(this)
+            val name = ComponentName(this, AppWidget::class.java)
+            val appIds = manager.getAppWidgetIds(name)
+            saveBgColorPref(it.context ,seekBar.color)
+
+            for (id in appIds) {
+
+                val v = RemoteViews(packageName, R.layout.app_widget)
+                AppWidget.updateAppWidget(this, manager, id)
+                //manager.updateAppWidget(id, v)
+            }
+            dialog.dismiss()
+        }
+
+        dialog.show()
+
+    }
 
     public override fun onCreate(icicle: Bundle?) {
         super.onCreate(icicle)
@@ -236,12 +284,25 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         private val PREFS_NAME = "com.jk.mr.dualclock.widget.AppWidget"
         private val PREF_PREFIX_KEY = "appwidget_"
+        private val PREF_INFIX_KEY = "background_"
 
 
         // Write the prefix to the SharedPreferences object for this widget
         internal fun saveTitlePref(context: Context, appWidgetId: Int, text: String) {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
             prefs.putString(PREF_PREFIX_KEY + appWidgetId, text).apply()
+        }
+
+        internal fun saveBgColorPref(context: Context, color: Int) {
+            val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
+            prefs.putInt(PREF_PREFIX_KEY.plus(PREF_INFIX_KEY), color).apply()
+        }
+
+        internal fun loadBgColorPref(context: Context): Int {
+            val prefs = context.getSharedPreferences(PREFS_NAME, 0)
+            val bgColor = prefs.getInt(PREF_PREFIX_KEY.plus(PREF_INFIX_KEY), 0)
+            return bgColor
+            /*      ?: "#".plus(Integer.toHexString(ContextCompat.getColor(context, R.color.bgcolor))""*/
         }
 
         // Read the prefix from the SharedPreferences object for this widget.

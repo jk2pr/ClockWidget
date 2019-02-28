@@ -18,4 +18,19 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:actionMenuTextColor">#FFFFFF</item>
     </style>
+
+
+
+
+     <style name="hoursTextWidget">
+            <item name="android:textSize">8sp</item>
+            <item name="android:textColor">@color/colorAccent</item>
+            <item name="android:textStyle">bold</item>
+        </style>
+
+        <style name="minutesTextWidget" parent="hoursTextWidget">
+            <item name="android:textColor">@color/colorPrimary</item>
+            <item name="android:textStyle">normal</item>
+        </style>
+
 </resources>
