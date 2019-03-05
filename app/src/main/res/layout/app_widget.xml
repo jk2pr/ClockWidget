@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@drawable/widget_bg"
+    android:background="@drawable/dark_widget_bg"
     android:gravity="center"
     android:padding="@dimen/widget_margin"
     android:baselineAligned="false">
