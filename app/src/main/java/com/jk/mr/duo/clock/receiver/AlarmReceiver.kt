@@ -1,3 +1,4 @@
+/*
 package com.jk.mr.duo.clock.receiver
 
 import android.app.AlarmManager
@@ -13,7 +14,9 @@ class AlarmReceiver : BroadcastReceiver() {
     // private static Context context;
 
     override fun onReceive(context: Context, intent: Intent) {
-        /* enqueue the job */
+        */
+/* enqueue the job *//*
+
         // this.context = context;
         TextClockService.enqueueWork(context, intent)
         alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -26,7 +29,9 @@ class AlarmReceiver : BroadcastReceiver() {
         internal var alarm: AlarmManager? = null
 
         fun cancelAlarm(context: Context) {
-            /* cancel any pending alarm */
+            */
+/* cancel any pending alarm *//*
+
             if (alarm != null)
                 alarm!!.cancel(getPendingIntent(context))
         }
@@ -45,11 +50,14 @@ class AlarmReceiver : BroadcastReceiver() {
             date.set(Calendar.SECOND, 0)
             date.set(Calendar.MILLISECOND, 0)
             date.add(Calendar.MINUTE, 0)
-            /* fire the broadcast */
+            */
+/* fire the broadcast *//*
+
             if (alarm == null)
                 alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarm!!.setRepeating(AlarmManager.RTC, date.timeInMillis, 60*1000, getPendingIntent(context))
-            // alarm.set(AlarmManager.RTC_WAKEUP, when, getPendingIntent(context));
+           // alarm!!.set(AlarmManager.RTC, `when`, getPendingIntent(context))
+           //  alarm!!.set(AlarmManager.RTC_WAKEUP, when, getPendingIntent(context))
         }
 
         private fun getPendingIntent(context: Context): PendingIntent {
@@ -58,4 +66,4 @@ class AlarmReceiver : BroadcastReceiver() {
             return PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT)
         }
     }
-}
+}*/

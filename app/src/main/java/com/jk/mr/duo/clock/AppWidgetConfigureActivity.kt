@@ -25,6 +25,7 @@ import android.content.ComponentName
 import android.support.v4.content.ContextCompat
 import android.view.Window.FEATURE_NO_TITLE
 import android.widget.*
+import com.jk.mr.duo.clock.utils.ViewUtils
 import com.rtugeek.android.colorseekbar.ColorSeekBar
 import kotlinx.android.synthetic.main.layout_seekbar.*
 
@@ -45,7 +46,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         val timezonSelected = it.tag as String
         // When the button is clicked, store the string locally
         //  val widgetText = appwidget_text.text.toString()
-        saveTitlePref(context, mAppWidgetId, timezonSelected)
+        saveTitlePref(context, timezonSelected)
 
         // It is the responsibility of the configuration activity to update the app widget
         val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -184,15 +185,28 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
 
-    inner class RecyclerViewAda(appWidgetConfigureActivity: AppWidgetConfigureActivity) : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>(), Filterable {
+    inner class RecyclerViewAda( val appWidgetConfigureActivity: AppWidgetConfigureActivity) : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>(), Filterable {
 
         val originalData = constructTimezoneAdapter()
         val filteredData = originalData.clone() as ArrayList<String>
         // val appWidgetConfigureActivity = appWidgetConfigureActivity
         private fun constructTimezoneAdapter(): ArrayList<String> {
+
+            val inputStream = ViewUtils.getFileByResourceId(appWidgetConfigureActivity, R.raw.timezone)
+            val lineList = mutableListOf<String>()
+            inputStream.bufferedReader().useLines { lines ->
+                lines.forEach {
+                    lineList.add(it)
+                }
+            }
+
+
+
             val T = TimeZone.getAvailableIDs()
             val TZ = ArrayList<String>()
-            TZ.addAll(T.asList())
+            val nod=T.distinct()
+            TZ.addAll(nod)
+          //  TZ.addAll(lineList.distinct())
             TZ.sorted()
             return TZ
         }
@@ -256,8 +270,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                 if (hour == "00") hour = "12"
                 val minute = String.format("%02d", cal.get(Calendar.MINUTE))
                 val ampm = cal.get(Calendar.AM_PM)
-                val ap: String
-                ap = if (ampm == 0) {
+                val ap = if (ampm == 0) {
                     "AM"
                 } else "PM"
                 val dateforrow = hour + ":" + minute + ":" + ap
@@ -288,9 +301,9 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
 
         // Write the prefix to the SharedPreferences object for this widget
-        internal fun saveTitlePref(context: Context, appWidgetId: Int, text: String) {
+        internal fun saveTitlePref(context: Context, text: String) {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-            prefs.putString(PREF_PREFIX_KEY + appWidgetId, text).apply()
+            prefs.putString(PREF_PREFIX_KEY, text).apply()
         }
 
         internal fun saveBgColorPref(context: Context, color: Int) {
@@ -307,9 +320,9 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         // Read the prefix from the SharedPreferences object for this widget.
         // If there is no preference saved, get the default from a resource
-        internal fun loadTitlePref(context: Context, appWidgetId: Int): String {
+        internal fun loadTitlePref(context: Context): String {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0)
-            val titleValue = prefs.getString(PREF_PREFIX_KEY + appWidgetId, null)
+            val titleValue = prefs.getString(PREF_PREFIX_KEY , null)
             return titleValue ?: context.getString(R.string.appwidget_text)
         }
 

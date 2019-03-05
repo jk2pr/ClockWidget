@@ -1,34 +1,51 @@
 package com.jk.mr.duo.clock.services
 
-import android.app.IntentService
-import android.app.PendingIntent
-import android.content.Intent
-
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
-import android.widget.RemoteViews
-import android.content.ComponentName
+import android.app.Service
 import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.support.v4.app.JobIntentService
 import android.util.Log
+import android.widget.RemoteViews
 import com.jk.mr.duo.clock.AppWidget
-import com.jk.mr.duo.clock.AppWidgetConfigureActivity
 import com.jk.mr.duo.clock.R
-import com.jk.mr.duo.clock.receiver.AlarmReceiver
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class TextClockService : JobIntentService() {
 
     override fun onHandleWork(intent: Intent) {
-        if (intent.action == AlarmReceiver.CUSTOM_INTENT) {
-            val now = Calendar.getInstance()
-            updateTime(now)
+        if (intent.action == AppWidget.CUSTOM_INTENT) {
+
+            val t = Timer()
+//Set the schedule function and rate
+            t.scheduleAtFixedRate(object : TimerTask() {
+
+                override fun run() {
+                    updateTime()
+                    //Called each time when 1000 milliseconds (1 second) (the period parameter)
+                }
+
+            },
+                    //Set how long before to start calling the TimerTask (in milliseconds)
+                    0,
+                    //Set the amount of time between each execution (in milliseconds)
+                    1000)
+
+         //   MyCountDownTimer(Long.MAX_VALUE,1).start()
+
+            //updateTime(now)
         }
     }
+   /* override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.e("JobIntentService.TAG", "onStartCommand")
+        return Service.START_STICKY
+    }*/
 
-    private fun updateTime(date: Calendar) {
+    private fun updateTime() {
+        val date = Calendar.getInstance()
         Log.d(TAG, "Update: " + dateFormat.format(date.time))
         val manager = AppWidgetManager.getInstance(this)
         val name = ComponentName(this, AppWidget::class.java)
@@ -43,38 +60,7 @@ class TextClockService : JobIntentService() {
 
     }
 
-   /* private fun updateTimes(appWidgetId:Int,views: RemoteViews) {
 
-        val timeZone = AppWidgetConfigureActivity.loadTitlePref(this, appWidgetId)
-
-        views.setString(R.id.clock0, "setTimeZone", TimeZone.getDefault().id)
-        views.setString(R.id.clock1, "setTimeZone", TimeZone.getTimeZone(timeZone).id)
-
-
-        var txt0 = TimeZone.getDefault().id
-        if (txt0.contains("/"))
-            txt0 = txt0.split("/")[1]
-
-        var txt1 = TimeZone.getTimeZone(timeZone).id
-        if (txt1.contains("/"))
-            txt1 = txt1.split("/")[1]
-
-        views.setCharSequence(R.id.txt_timezone0, "setText", txt0)
-        views.setCharSequence(R.id.txt_timezone1, "setText", txt1)
-
-
-        val intent = Intent(this, AppWidgetConfigureActivity::class.java)
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-        views.setOnClickPendingIntent(R.id.clock1, pendingIntent)
-
-           // v.setTextViewText(R.id.hours, date.get(Calendar.HOUR_OF_DAY) + "")
-           // v.setTextViewText(R.id.minutes, date.get(Calendar.MINUTE) + "")
-           // v.setTextViewText(R.id.tens, date.get(Calendar.AM_PM) + "")
-            //  updateTime( date.getTime(), v );
-
-
-    }*/
 
 
     companion object {

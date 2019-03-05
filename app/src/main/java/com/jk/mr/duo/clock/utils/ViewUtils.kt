@@ -6,7 +6,8 @@ import android.support.v4.content.ContextCompat
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-
+import java.io.IOException
+import java.io.InputStream
 
 
 object ViewUtils {
@@ -60,5 +61,9 @@ object ViewUtils {
         layerList.setLayerInset(0, 0, 0, 0, 0)
         layerList.setLayerInset(1, strokeValue, strokeValue, strokeValue, strokeValue)
         return layerList
+    }
+    @Throws(IOException::class)
+    fun getFileByResourceId(ctx: Context, id: Int): InputStream {
+        return ctx.resources.openRawResource(id)
     }
 }

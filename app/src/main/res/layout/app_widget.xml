@@ -1,33 +1,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/widget_root"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@drawable/widget_bg"
-    android:elevation="5dp"
+    android:gravity="center"
+    android:padding="@dimen/widget_margin"
     android:baselineAligned="false">
 
     <RelativeLayout
-        android:layout_width="0dp"
-        android:padding="@dimen/widget_margin"
+        android:layout_width="wrap_content"
+        android:layout_marginEnd="@dimen/dp5"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_weight="1"
        >
 
         <TextView
+            android:layout_alignParentStart="true"
+            android:maxLines="1"
             android:id="@+id/hour0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:format12Hour="hh:mm a\nE dd MMM"
             android:textColor="@android:color/white"
             android:textSize="@dimen/dp30"
             tools:text="10:" />
 
         <TextView
+            android:maxLines="1"
             android:layout_toEndOf="@+id/hour0"
             android:id="@+id/minute0"
             android:layout_width="wrap_content"
@@ -38,14 +40,14 @@
             android:textSize="@dimen/dp30"
             tools:text="21" />
         <TextView
+            android:maxLines="1"
             android:layout_marginTop="@dimen/widget_margin"
             android:layout_marginStart="@dimen/cardview_default_radius"
+            android:layout_marginEnd="@dimen/cardview_default_radius"
             android:layout_toEndOf="@+id/minute0"
             android:id="@+id/am_pm0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:format12Hour="hh:mm a\nE dd MMM"
-            android:gravity="start"
             android:textColor="@android:color/white"
             android:layout_alignBaseline="@+id/minute0"
             android:textSize="@dimen/dp12"
@@ -59,12 +61,14 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/hour0"
+            android:maxLines="1"
             tools:text="Day" />
 
         <TextView
             android:layout_marginTop="@dimen/widget_margin"
             android:textColor="#D5D2D2"
             android:id="@+id/txt_timezone0"
+            android:maxLines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -75,8 +79,8 @@
 
     <RelativeLayout
         android:id="@+id/rel_custom_time"
-        android:padding="@dimen/widget_margin"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="@dimen/dp5"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="end"
@@ -89,6 +93,7 @@
             android:gravity="start"
             android:textColor="@android:color/white"
             android:textSize="@dimen/dp30"
+            android:maxLines="1"
             tools:text="10" />
 
         <TextView
@@ -98,6 +103,7 @@
             android:layout_height="wrap_content"
             android:gravity="start"
             android:textColor="@android:color/white"
+            android:maxLines="1"
             android:textSize="@dimen/dp30"
             tools:text=":21" />
         <TextView
@@ -109,6 +115,7 @@
             android:format12Hour="hh:mm a\nE dd MMM"
             android:gravity="start"
             android:textColor="@android:color/white"
+            android:maxLines="1"
             android:textSize="@dimen/dp12"
             android:layout_alignBaseline="@+id/minute1"
             tools:text="AM" />
@@ -120,6 +127,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:maxLines="1"
             android:layout_below="@+id/hour1"
             tools:text="Day" />
 
@@ -127,6 +135,7 @@
             android:layout_marginTop="@dimen/widget_margin"
             android:textColor="#D5D2D2"
             android:id="@+id/txt_timezone1"
+            android:maxLines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
