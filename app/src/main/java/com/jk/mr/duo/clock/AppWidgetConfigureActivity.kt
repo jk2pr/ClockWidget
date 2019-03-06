@@ -13,21 +13,16 @@ import kotlinx.android.synthetic.main.app_widget_configure.*
 import java.util.*
 import kotlin.collections.ArrayList
 import android.app.SearchManager
-import android.content.SharedPreferences
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.view.*
-import javax.inject.Inject
-import android.R.drawable.btn_dialog
-import android.app.Dialog
-import android.content.ComponentName
-import android.support.v4.content.ContextCompat
-import android.view.Window.FEATURE_NO_TITLE
 import android.widget.*
 import com.jk.mr.duo.clock.utils.ViewUtils
-import com.rtugeek.android.colorseekbar.ColorSeekBar
-import kotlinx.android.synthetic.main.layout_seekbar.*
+import android.widget.ArrayAdapter
+import android.content.DialogInterface
+import android.widget.CheckedTextView
+import android.view.ViewGroup
 
 
 /**
@@ -94,7 +89,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             R.id.action_search -> true
             R.id.action_setting -> {
 
-                showColorPickerSeekbar()
+                showThemePickerDialog()
                 //startActivity(Intent(this, PreferenceActivity::class.java))
                 true
             }
@@ -104,23 +99,44 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
 
-    private fun showColorPickerSeekbar() {
+    private fun showThemePickerDialog() {
 
 
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialog = AlertDialog.Builder(this)
         dialog.setCancelable(true)
-        dialog.setContentView(R.layout.layout_seekbar)
+        val ar = arrayOf(THEME_DARK, THEME_LIGHT, THEME_RED)
+        val arrayAdapter = MArrayAdapter(this, ar)
+
+        dialog.setNegativeButton("cancel") { d, _ -> d.dismiss() }
+
+        dialog.setAdapter(arrayAdapter) { d, which ->
+            val strName = arrayAdapter.getItem(which)
+            saveThemePref(this, strName/* (
+
+                    if (strName == THEME_DARK)
+                        0
+                    else
+                        1
+                    )*/)
+            recreate()
+            /* val builderInner = AlertDialog.Builder(this)
+             builderInner.setMessage(strName)
+             builderInner.setTitle("Your Selected Item is")
+             builderInner.setPositiveButton("Ok") { it, which0 -> dialog.dismiss() }
+             builderInner.show()*/
+        }
+
+        dialog.show()
 
 
-        val seekBar = dialog.findViewById(R.id.colorSlider) as ColorSeekBar
+        //  val seekBar = dialog.findViewById(R.id.colorSlider) as ColorSeekBar
         /* seekBar.setOnColorChangeListener(ColorSeekBar.OnColorChangeListener { colorBarPosition, alphaBarPosition, color ->
           Toast.makeText(this,color.toString(),Toast.LENGTH_SHORT).show()
           //   textView.setTextColor(color)
              //colorSeekBar.getAlphaValue();
          })*/
 
-
+/*
         val btOk = dialog.findViewById(R.id.bt_ok) as Button
 
         btOk.setOnClickListener {
@@ -129,7 +145,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             val manager = AppWidgetManager.getInstance(this)
             val name = ComponentName(this, AppWidget::class.java)
             val appIds = manager.getAppWidgetIds(name)
-            saveBgColorPref(it.context ,seekBar.color)
+            saveThemePref(it.context, seekBar.color)
 
             for (id in appIds) {
 
@@ -140,11 +156,32 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             dialog.dismiss()
         }
 
-        dialog.show()
+        dialog.show()*/
+
+    }
+
+
+    private class MArrayAdapter(context: Context, val objects: Array<String>) : ArrayAdapter<String>(context, android.R.layout.simple_list_item_single_choice, objects) {
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = super.getView(position, convertView, parent)
+            (view as CheckedTextView).isChecked = loadBgColorPref(context) == objects[position]
+            return view
+        }
 
     }
 
     public override fun onCreate(icicle: Bundle?) {
+        val sThem = loadBgColorPref(this)
+        val theme = if (sThem == THEME_LIGHT)
+            R.style.AppThemeLight
+        else if (sThem == THEME_DARK)
+            R.style.AppThemeDark
+        else
+            R.style.AppThemeRed
+
+
+        setTheme(theme)
         super.onCreate(icicle)
 
         // Set the result to CANCELED.  This will cause the widget host to cancel
@@ -185,7 +222,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
 
-    inner class RecyclerViewAda( val appWidgetConfigureActivity: AppWidgetConfigureActivity) : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>(), Filterable {
+    inner class RecyclerViewAda(val appWidgetConfigureActivity: AppWidgetConfigureActivity) : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>(), Filterable {
 
         val originalData = constructTimezoneAdapter()
         val filteredData = originalData.clone() as ArrayList<String>
@@ -201,12 +238,11 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             }
 
 
-
             val T = TimeZone.getAvailableIDs()
             val TZ = ArrayList<String>()
-            val nod=T.distinct()
+            val nod = T.distinct()
             TZ.addAll(nod)
-          //  TZ.addAll(lineList.distinct())
+            //  TZ.addAll(lineList.distinct())
             TZ.sorted()
             return TZ
         }
@@ -295,9 +331,14 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
     companion object {
 
-        private val PREFS_NAME = "com.jk.mr.dualclock.widget.AppWidget"
-        private val PREF_PREFIX_KEY = "appwidget_"
-        private val PREF_INFIX_KEY = "background_"
+        private const val PREFS_NAME = "com.jk.mr.dualclock.widget.AppWidget"
+        private const val PREF_PREFIX_KEY = "appwidget_"
+        private const val PREF_INFIX_KEY = "background_"
+        const val THEME_DARK = "THEME_DARK"
+        const val THEME_LIGHT = "THEME_LIGHT"
+        const val THEME_RED = "THEME_RED"
+        const val TEXT_AM = "am"
+        const val TEXT_PM = "pm"
 
 
         // Write the prefix to the SharedPreferences object for this widget
@@ -306,15 +347,14 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             prefs.putString(PREF_PREFIX_KEY, text).apply()
         }
 
-        internal fun saveBgColorPref(context: Context, color: Int) {
+        internal fun saveThemePref(context: Context, theme: String) {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-            prefs.putInt(PREF_PREFIX_KEY.plus(PREF_INFIX_KEY), color).apply()
+            prefs.putString(PREF_PREFIX_KEY.plus(PREF_INFIX_KEY), theme).apply()
         }
 
-        internal fun loadBgColorPref(context: Context): Int {
+        internal fun loadBgColorPref(context: Context): String {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0)
-            val bgColor = prefs.getInt(PREF_PREFIX_KEY.plus(PREF_INFIX_KEY), 0)
-            return bgColor
+            return prefs.getString(PREF_PREFIX_KEY.plus(PREF_INFIX_KEY), THEME_LIGHT)
             /*      ?: "#".plus(Integer.toHexString(ContextCompat.getColor(context, R.color.bgcolor))""*/
         }
 
@@ -322,7 +362,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         // If there is no preference saved, get the default from a resource
         internal fun loadTitlePref(context: Context): String {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0)
-            val titleValue = prefs.getString(PREF_PREFIX_KEY , null)
+            val titleValue = prefs.getString(PREF_PREFIX_KEY, null)
             return titleValue ?: context.getString(R.string.appwidget_text)
         }
 

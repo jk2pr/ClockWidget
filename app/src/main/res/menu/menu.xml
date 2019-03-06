@@ -8,10 +8,10 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="ifRoom" />
     <item
-        android:visible="true"
         android:id="@+id/action_setting"
-        android:icon="@drawable/ic_settings_black_24dp"
+        android:icon="@drawable/ic_color_lens_black_24dp"
         android:orderInCategory="101"
         android:title="@string/action_setting"
+        android:visible="true"
         app:showAsAction="ifRoom" />
 </menu>
