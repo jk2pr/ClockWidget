@@ -9,7 +9,7 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_setting"
-        android:icon="@drawable/ic_color_lens_black_24dp"
+        android:icon="@drawable/baseline_color_lens_24"
         android:orderInCategory="101"
         android:title="@string/action_setting"
         android:visible="true"

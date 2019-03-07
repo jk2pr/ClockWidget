@@ -62,18 +62,44 @@ class AppWidget : AppWidgetProvider() {
         internal fun setThem(context: Context, views: RemoteViews, theme: String) {
             // Already dark
             var co = ContextCompat.getColor(context, android.R.color.white)
-            if (theme== AppWidgetConfigureActivity.THEME_DARK) {
-                //Background
-                views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.dark_widget_bg)
+            when (theme) {
+                AppWidgetConfigureActivity.THEME_DARK -> //Background
+                    views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.dark_widget_bg)
                 //Textcolor
-              //  co = ContextCompat.getColor(context, android.R.color.darker_gray)
+                //  co = ContextCompat.getColor(context, android.R.color.darker_gray)
                 // LinearLayout(context).setBackgroundResource(R.drawable.widget_bg)
-            } else if (theme== AppWidgetConfigureActivity.THEME_LIGHT) {
-                views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.light_widget_bg)
-                co = ContextCompat.getColor(context, android.R.color.black)
-            } else if (theme== AppWidgetConfigureActivity.THEME_RED){
-                views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.red_widget_bg)
-                co = ContextCompat.getColor(context, android.R.color.white)
+                AppWidgetConfigureActivity.THEME_LIGHT -> {
+                    views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.light_widget_bg)
+                    co = ContextCompat.getColor(context, android.R.color.black)
+                }
+                AppWidgetConfigureActivity.THEME_RED -> {
+                    views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.red_widget_bg)
+                    co = ContextCompat.getColor(context, android.R.color.white)
+                }
+                AppWidgetConfigureActivity.THEME_ORANGE -> {
+                    views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.orange_widget_bg)
+                    co = ContextCompat.getColor(context, android.R.color.white)
+                }
+                AppWidgetConfigureActivity.THEME_YELLOW -> {
+                    views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.yellow_widget_bg)
+                    co = ContextCompat.getColor(context, android.R.color.black)
+                }
+                AppWidgetConfigureActivity.THEME_GREEN -> {
+                    views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.green_widget_bg)
+                    co = ContextCompat.getColor(context, android.R.color.white)
+                }
+                AppWidgetConfigureActivity.THEME_BLUE -> {
+                    views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.blue_widget_bg)
+                    co = ContextCompat.getColor(context, android.R.color.white)
+                }
+                AppWidgetConfigureActivity.THEME_INDIGO -> {
+                    views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.indigo_widget_bg)
+                    co = ContextCompat.getColor(context, android.R.color.white)
+                }
+
+                //Default
+
+                //Selected
             }
 
             //Default
@@ -92,7 +118,6 @@ class AppWidget : AppWidgetProvider() {
             views.setTextColor(R.id.txt_timezone1, co)
 
 
-
         }
 
         const val CUSTOM_INTENT = "com.jk.duo.clock.intent.action.ALARM"
@@ -101,7 +126,7 @@ class AppWidget : AppWidgetProvider() {
             val timeZone = AppWidgetConfigureActivity.loadTitlePref(context)
             val theme = AppWidgetConfigureActivity.loadBgColorPref(context)
             val views = RemoteViews(context.packageName, R.layout.app_widget)
-          //  if (bgColor == 0)
+            //  if (bgColor == 0)
             //    bgColor = ContextCompat.getColor(context, R.color.bgcolor)
             setThem(context, views, theme)
 
@@ -141,7 +166,7 @@ class AppWidget : AppWidgetProvider() {
 
             //Default Clock
             val date = Calendar.getInstance()
-            val h0=if (date.get(Calendar.HOUR)==0) 12 else date.get(Calendar.HOUR)
+            val h0 = if (date.get(Calendar.HOUR) == 0) 12 else date.get(Calendar.HOUR)
             views.setTextViewText(R.id.hour0, mFormat.format(h0))
             views.setTextViewText(R.id.minute0, ":".plus(mFormat.format(date.get(Calendar.MINUTE))))
             views.setTextViewText(R.id.am_pm0, getTimeInfix(date.get(Calendar.AM_PM)))
@@ -155,7 +180,7 @@ class AppWidget : AppWidgetProvider() {
             val newDate = Calendar.getInstance(TimeZone.getTimeZone(timeZone))
             Log.d("Appwidget", newDate.timeZone.toString())
 
-            val h1=if (newDate.get(Calendar.HOUR)==0) 12 else newDate.get(Calendar.HOUR)
+            val h1 = if (newDate.get(Calendar.HOUR) == 0) 12 else newDate.get(Calendar.HOUR)
             views.setTextViewText(R.id.hour1, mFormat.format(h1))
             views.setTextViewText(R.id.minute1, ":".plus(mFormat.format(newDate.get(Calendar.MINUTE))))
             views.setTextViewText(R.id.am_pm1, getTimeInfix(newDate.get(Calendar.AM_PM)))
@@ -190,7 +215,8 @@ class AppWidget : AppWidgetProvider() {
 
         private fun getTimeInfix(am_pm: Int): String {
 
-            return if (am_pm == 0) TEXT_AM else TEXT_PM}
+            return if (am_pm == 0) TEXT_AM else TEXT_PM
+        }
 
         private fun getFullDate(cal: Calendar): String {
 

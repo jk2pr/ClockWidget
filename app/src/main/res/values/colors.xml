@@ -5,4 +5,8 @@
     <color name="colorAccent">#FF4081</color>
     <color name="bgcolor">#0f6768</color>
     <color name="bgdarkcolor">#003c3e</color>
+    <color name="indigo_light">#4b0082</color>
+    <color name="indigo_dark">#190054</color>
+    <color name="yellow_dark">#c7cc00</color>
+    <color name="yellow_light">#ffff00</color>
 </resources>

@@ -20,7 +20,6 @@ import android.view.*
 import android.widget.*
 import com.jk.mr.duo.clock.utils.ViewUtils
 import android.widget.ArrayAdapter
-import android.content.DialogInterface
 import android.widget.CheckedTextView
 import android.view.ViewGroup
 
@@ -104,12 +103,21 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         val dialog = AlertDialog.Builder(this)
         dialog.setCancelable(true)
-        val ar = arrayOf(THEME_DARK, THEME_LIGHT, THEME_RED)
+        val ar = arrayOf(
+                THEME_DARK,
+                THEME_LIGHT,
+                THEME_RED,
+                THEME_ORANGE,
+                THEME_YELLOW,
+                THEME_GREEN,
+                THEME_BLUE,
+                THEME_INDIGO
+        )
         val arrayAdapter = MArrayAdapter(this, ar)
 
         dialog.setNegativeButton("cancel") { d, _ -> d.dismiss() }
 
-        dialog.setAdapter(arrayAdapter) { d, which ->
+        dialog.setAdapter(arrayAdapter) { _, which ->
             val strName = arrayAdapter.getItem(which)
             saveThemePref(this, strName/* (
 
@@ -172,15 +180,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
     public override fun onCreate(icicle: Bundle?) {
-        val sThem = loadBgColorPref(this)
-        val theme = if (sThem == THEME_LIGHT)
-            R.style.AppThemeLight
-        else if (sThem == THEME_DARK)
-            R.style.AppThemeDark
-        else
-            R.style.AppThemeRed
-
-
+        val theme = getThemePref()
         setTheme(theme)
         super.onCreate(icicle)
 
@@ -221,11 +221,26 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         //appwidget_text.setText(loadTitlePref(this@AppWidgetConfigureActivity, mAppWidgetId))
     }
 
+    private fun getThemePref(): Int {
+        val sThem = loadBgColorPref(this)
+        return when (sThem) {
+            THEME_LIGHT -> R.style.AppThemeLight
+            THEME_DARK -> R.style.AppThemeDark
+            THEME_RED -> R.style.AppThemeRed
+            THEME_YELLOW -> R.style.AppThemeYellow
+            THEME_GREEN -> R.style.AppThemeGreen
+            THEME_BLUE -> R.style.AppThemeBlue
+            THEME_INDIGO -> R.style.AppThemeIndigo
+            THEME_ORANGE -> R.style.AppThemeOrange
+            else -> R.style.AppThemeLight
+        }
+    }
 
-    inner class RecyclerViewAda(val appWidgetConfigureActivity: AppWidgetConfigureActivity) : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>(), Filterable {
+
+    inner class RecyclerViewAda(private val appWidgetConfigureActivity: AppWidgetConfigureActivity) : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>(), Filterable {
 
         val originalData = constructTimezoneAdapter()
-        val filteredData = originalData.clone() as ArrayList<String>
+        val filteredData = originalData.toMutableList()
         // val appWidgetConfigureActivity = appWidgetConfigureActivity
         private fun constructTimezoneAdapter(): ArrayList<String> {
 
@@ -272,6 +287,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                     filterResults.values = filteredList
                     return filterResults
                 }
+
 
                 override fun publishResults(charSequence: CharSequence, filterResults: Filter.FilterResults) {
                     filteredData.clear()
@@ -334,9 +350,16 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         private const val PREFS_NAME = "com.jk.mr.dualclock.widget.AppWidget"
         private const val PREF_PREFIX_KEY = "appwidget_"
         private const val PREF_INFIX_KEY = "background_"
+
         const val THEME_DARK = "THEME_DARK"
         const val THEME_LIGHT = "THEME_LIGHT"
         const val THEME_RED = "THEME_RED"
+        const val THEME_ORANGE = "THEME_ORANGE"
+        const val THEME_YELLOW = "THEME_YELLOW"
+        const val THEME_GREEN = "THEME_GREEN"
+        const val THEME_BLUE = "THEME_BLUE"
+        const val THEME_INDIGO = "THEME_INDIGO"
+
         const val TEXT_AM = "am"
         const val TEXT_PM = "pm"
 

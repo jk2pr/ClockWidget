@@ -8,6 +8,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -34,15 +35,53 @@
 
         <item name="windowNoTitle">true</item>
     </style>
-    <style name="AppThemeRed" parent="AppThemeLight">
+
+    <style name="AppThemeRed" parent="AppThemeDark">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@android:color/holo_red_light</item>
         <item name="colorPrimaryDark">@android:color/holo_red_dark</item>
         <item name="colorAccent">@android:color/holo_red_light</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+
     </style>
 
+    <style name="AppThemeOrange"  parent="AppThemeDark">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@android:color/holo_orange_light</item>
+        <item name="colorPrimaryDark">@android:color/holo_orange_dark</item>
+        <item name="colorAccent">@android:color/holo_orange_light</item>
+
+    </style>
+
+    <style name="AppThemeYellow"  parent="AppThemeLight">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/yellow_light</item>
+        <item name="colorPrimaryDark">@color/yellow_dark</item>
+        <item name="colorAccent">@color/yellow_light</item>
+
+    </style>
+
+    <style name="AppThemeIndigo" parent="AppThemeDark">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/indigo_light</item>
+        <item name="colorPrimaryDark">@color/indigo_dark</item>
+        <item name="colorAccent">@color/indigo_light</item>
+
+    </style>
+
+    <style name="AppThemeGreen" parent="AppThemeDark">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@android:color/holo_green_light</item>
+        <item name="colorPrimaryDark">@android:color/holo_green_dark</item>
+        <item name="colorAccent">@android:color/holo_green_light</item>
+
+    </style>
+
+    <style name="AppThemeBlue"  parent="AppThemeDark">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@android:color/holo_blue_light</item>
+        <item name="colorPrimaryDark">@android:color/holo_blue_dark</item>
+        <item name="colorAccent">@android:color/holo_blue_light</item>
+    </style>
 
 
 </resources>

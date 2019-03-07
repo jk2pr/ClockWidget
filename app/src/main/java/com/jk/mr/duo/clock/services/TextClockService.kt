@@ -52,7 +52,7 @@ class TextClockService : JobIntentService() {
         val appIds = manager.getAppWidgetIds(name)
         //  val words = TimeToWords.timeToWords(date)
         for (id in appIds) {
-            val v = RemoteViews(packageName, R.layout.app_widget)
+           // val v = RemoteViews(packageName, R.layout.app_widget)
             //updateTimes(id,v)
             AppWidget.updateAppWidget(this,manager,id)
             //manager.updateAppWidget(id, v)
