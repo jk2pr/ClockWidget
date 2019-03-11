@@ -6,16 +6,16 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.app_widget_configure.*
 
 import java.util.*
 import kotlin.collections.ArrayList
 import android.app.SearchManager
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.SearchView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import android.view.*
 import android.widget.*
 import com.jk.mr.duo.clock.utils.ViewUtils
@@ -52,6 +52,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         setResult(Activity.RESULT_OK, resultValue)
         finish()
     }
+
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -214,7 +215,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         recycler_view.apply {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(this@AppWidgetConfigureActivity)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@AppWidgetConfigureActivity)
             adapter = this@AppWidgetConfigureActivity.adapter
         }
 
@@ -237,7 +238,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
 
-    inner class RecyclerViewAda(private val appWidgetConfigureActivity: AppWidgetConfigureActivity) : RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>(), Filterable {
+    inner class RecyclerViewAda(private val appWidgetConfigureActivity: AppWidgetConfigureActivity) : androidx.recyclerview.widget.RecyclerView.Adapter<RecyclerViewAda.MyViewHolder>(), Filterable {
 
         val originalData = constructTimezoneAdapter()
         val filteredData = originalData.toMutableList()
@@ -311,7 +312,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             holder.bind(filteredData[position])
         }
 
-        inner class MyViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+        inner class MyViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
             fun bind(data: String) {
                 val timezone = TimeZone.getTimeZone(data)
 
@@ -325,7 +326,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                 val ap = if (ampm == 0) {
                     "AM"
                 } else "PM"
-                val dateforrow = hour + ":" + minute + ":" + ap
+                val dateforrow = "$hour:$minute:$ap"
                 /*val zone = DateTimeZone.forID(data)
                 val dateTime = DateTime(zone)
                 val output = dateTime.toLocalTime().toDateTimeToday()
@@ -351,6 +352,8 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         private const val PREF_PREFIX_KEY = "appwidget_"
         private const val PREF_INFIX_KEY = "background_"
 
+        val INTENT_ACTION:String = "intent.action"
+
         const val THEME_DARK = "THEME_DARK"
         const val THEME_LIGHT = "THEME_LIGHT"
         const val THEME_RED = "THEME_RED"
@@ -362,6 +365,8 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         const val TEXT_AM = "am"
         const val TEXT_PM = "pm"
+         const val DELAY = 1000
+
 
 
         // Write the prefix to the SharedPreferences object for this widget

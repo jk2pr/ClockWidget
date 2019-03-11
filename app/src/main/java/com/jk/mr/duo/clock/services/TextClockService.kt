@@ -1,27 +1,35 @@
 package com.jk.mr.duo.clock.services
 
-import android.app.Service
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.JobIntentService
+import android.os.Handler
 import android.util.Log
-import android.widget.RemoteViews
+import androidx.core.app.JobIntentService
 import com.jk.mr.duo.clock.AppWidget
-import com.jk.mr.duo.clock.R
+import com.jk.mr.duo.clock.AppWidgetConfigureActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class TextClockService : JobIntentService() {
 
+    val mHandler = Handler()
     override fun onHandleWork(intent: Intent) {
         if (intent.action == AppWidget.CUSTOM_INTENT) {
 
-            val t = Timer()
+            mHandler.postDelayed(object : Runnable {
+                override fun run() {
+                   updateTime()
+                    mHandler.postDelayed(this, AppWidgetConfigureActivity.DELAY.toLong())
+
+                }
+            }, AppWidgetConfigureActivity.DELAY.toLong())
+
+          /* val t = Timer()
 //Set the schedule function and rate
-            t.scheduleAtFixedRate(object : TimerTask() {
+         /   t.scheduleAtFixedRate(object : TimerTask() {
 
                 override fun run() {
                     updateTime()
@@ -33,7 +41,7 @@ class TextClockService : JobIntentService() {
                     0,
                     //Set the amount of time between each execution (in milliseconds)
                     1000)
-
+*/
          //   MyCountDownTimer(Long.MAX_VALUE,1).start()
 
             //updateTime(now)

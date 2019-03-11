@@ -2,7 +2,7 @@ package com.jk.mr.duo.clock.utils
 
 import android.content.Context
 import android.graphics.Color
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable

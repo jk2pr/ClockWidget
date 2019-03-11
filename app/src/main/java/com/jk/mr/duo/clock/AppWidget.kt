@@ -5,10 +5,9 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
-import android.support.v4.content.ContextCompat
 import android.util.Log
-import android.widget.LinearLayout
 import android.widget.RemoteViews
+import androidx.core.content.ContextCompat
 import com.jk.mr.duo.clock.AppWidgetConfigureActivity.Companion.TEXT_AM
 import com.jk.mr.duo.clock.AppWidgetConfigureActivity.Companion.TEXT_PM
 import com.jk.mr.duo.clock.services.TextClockService

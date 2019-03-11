@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TextClock">
+        <attr name="format12Hour" format="string" />
+        <attr name="format24Hour" format="string" />
+        <attr name="timeZone" format="string" />
+        <attr name="color" format="color" />
+        <attr name="showSecond" format="string" />
+    </declare-styleable>
+
+</resources>
