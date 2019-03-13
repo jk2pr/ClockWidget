@@ -1,22 +1,53 @@
+/*
 package com.jk.mr.duo.clock.services
 
+import android.app.Notification
+import android.app.Service
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.os.IBinder
 import android.util.Log
-import androidx.core.app.JobIntentService
 import com.jk.mr.duo.clock.AppWidget
 import com.jk.mr.duo.clock.AppWidgetConfigureActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class TextClockService : JobIntentService() {
+class TextClockService : Service() {
+
 
     val mHandler = Handler()
-    override fun onHandleWork(intent: Intent) {
+    override fun onCreate() {
+        super.onCreate()
+        val notification = Notification.Builder(this).build()
+        startForeground(0,notification)
+
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+
+
+        mHandler.post(object : Runnable {
+            override fun run() {
+                updateTime()
+                mHandler.postDelayed(this, AppWidgetConfigureActivity.DELAY.toLong())
+
+            }
+        })
+         return Service.START_STICKY
+
+    }
+    override fun onBind(intent: Intent?): IBinder? {
+        return null
+    }
+
+
+
+
+     fun onHandleWork(intent: Intent) {
         if (intent.action == AppWidget.CUSTOM_INTENT) {
 
             mHandler.postDelayed(object : Runnable {
@@ -27,7 +58,8 @@ class TextClockService : JobIntentService() {
                 }
             }, AppWidgetConfigureActivity.DELAY.toLong())
 
-          /* val t = Timer()
+          */
+/* val t = Timer()
 //Set the schedule function and rate
          /   t.scheduleAtFixedRate(object : TimerTask() {
 
@@ -41,16 +73,19 @@ class TextClockService : JobIntentService() {
                     0,
                     //Set the amount of time between each execution (in milliseconds)
                     1000)
-*/
+*//*
+
          //   MyCountDownTimer(Long.MAX_VALUE,1).start()
 
             //updateTime(now)
         }
     }
-   /* override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+   */
+/* override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e("JobIntentService.TAG", "onStartCommand")
         return Service.START_STICKY
-    }*/
+    }*//*
+
 
     private fun updateTime() {
         val date = Calendar.getInstance()
@@ -75,8 +110,10 @@ class TextClockService : JobIntentService() {
         private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
         private val TAG = "TextClockService"
 
-        fun enqueueWork(ctx: Context, intent: Intent) {
+       */
+/* fun enqueueWork(ctx: Context, intent: Intent) {
             enqueueWork(ctx, TextClockService::class.java, 100, intent)
-        }
+        }*//*
+
     }
-}
+}*/

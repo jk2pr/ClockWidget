@@ -31,13 +31,6 @@
             android:name=".PreferenceActivity"
             android:label="@string/title_activity_preference" />-->
 
-        <service
-            android:name=".services.TextClockService"
-            android:permission="android.permission.BIND_JOB_SERVICE">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </service>
 
     </application>
 

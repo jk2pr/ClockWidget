@@ -2,33 +2,28 @@ package com.jk.mr.duo.clock
 
 
 import android.app.Activity
+import android.app.SearchManager
 import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.app_widget_configure.*
-
-import java.util.*
-import kotlin.collections.ArrayList
-import android.app.SearchManager
+import android.view.*
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import android.view.*
-import android.widget.*
 import com.jk.mr.duo.clock.utils.ViewUtils
-import android.widget.ArrayAdapter
-import android.widget.CheckedTextView
-import android.view.ViewGroup
+import kotlinx.android.synthetic.main.app_widget_configure.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
  * The configuration screen for the [AppWidget] AppWidget.
  */
 class AppWidgetConfigureActivity : AppCompatActivity() {
-    internal var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+     var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
 
     val adapter by lazy { RecyclerViewAda(this@AppWidgetConfigureActivity) }
@@ -40,7 +35,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         val timezonSelected = it.tag as String
         // When the button is clicked, store the string locally
         //  val widgetText = appwidget_text.text.toString()
-        saveTitlePref(context, timezonSelected)
+        saveTitlePref(context, mAppWidgetId, timezonSelected)
 
         // It is the responsibility of the configuration activity to update the app widget
         val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -52,7 +47,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         setResult(Activity.RESULT_OK, resultValue)
         finish()
     }
-
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -120,7 +114,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         dialog.setAdapter(arrayAdapter) { _, which ->
             val strName = arrayAdapter.getItem(which)
-            saveThemePref(this, strName/* (
+            saveThemePref(this, mAppWidgetId,strName/* (
 
                     if (strName == THEME_DARK)
                         0
@@ -128,6 +122,13 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                         1
                     )*/)
             recreate()
+            val manager = AppWidgetManager.getInstance(this)
+            val name = ComponentName(this, AppWidget::class.java)
+            val appIds = manager.getAppWidgetIds(name)
+            for (appWidgetId in appIds) {
+                AppWidget.updateAppWidget(this,manager,appWidgetId)
+            }
+
             /* val builderInner = AlertDialog.Builder(this)
              builderInner.setMessage(strName)
              builderInner.setTitle("Your Selected Item is")
@@ -170,17 +171,14 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
 
-    private class MArrayAdapter(context: Context, val objects: Array<String>) : ArrayAdapter<String>(context, android.R.layout.simple_list_item_single_choice, objects) {
 
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = super.getView(position, convertView, parent)
-            (view as CheckedTextView).isChecked = loadBgColorPref(context) == objects[position]
-            return view
-        }
-
-    }
 
     public override fun onCreate(icicle: Bundle?) {
+        val extras = intent.extras
+        if (extras != null) {
+            mAppWidgetId = extras.getInt(
+                    AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+        }
         val theme = getThemePref()
         setTheme(theme)
         super.onCreate(icicle)
@@ -199,12 +197,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         supportActionBar?.setTitle(R.string.select_city)
 
         // Find the widget id from the intent.
-        val intent = intent
-        val extras = intent.extras
-        if (extras != null) {
-            mAppWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-        }
+
 
         // If this activity was started with an intent without an app widget ID, finish with an error.
         if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
@@ -223,7 +216,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private fun getThemePref(): Int {
-        val sThem = loadBgColorPref(this)
+        val sThem = loadBgColorPref(this,mAppWidgetId)
         return when (sThem) {
             THEME_LIGHT -> R.style.AppThemeLight
             THEME_DARK -> R.style.AppThemeDark
@@ -289,7 +282,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                     return filterResults
                 }
 
-
                 override fun publishResults(charSequence: CharSequence, filterResults: Filter.FilterResults) {
                     filteredData.clear()
                     filteredData.addAll(filterResults.values as ArrayList<String>)
@@ -352,7 +344,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         private const val PREF_PREFIX_KEY = "appwidget_"
         private const val PREF_INFIX_KEY = "background_"
 
-        val INTENT_ACTION:String = "intent.action"
 
         const val THEME_DARK = "THEME_DARK"
         const val THEME_LIGHT = "THEME_LIGHT"
@@ -365,32 +356,33 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         const val TEXT_AM = "am"
         const val TEXT_PM = "pm"
-         const val DELAY = 1000
 
 
 
         // Write the prefix to the SharedPreferences object for this widget
-        internal fun saveTitlePref(context: Context, text: String) {
+        internal fun saveTitlePref(context: Context, appWidgetId: Int, text: String) {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-            prefs.putString(PREF_PREFIX_KEY, text).apply()
+            prefs.putString(PREF_PREFIX_KEY + appWidgetId, text).apply()
         }
 
-        internal fun saveThemePref(context: Context, theme: String) {
+
+
+        internal fun saveThemePref(context: Context,appWidgetId: Int, theme: String) {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-            prefs.putString(PREF_PREFIX_KEY.plus(PREF_INFIX_KEY), theme).apply()
+            prefs.putString(PREF_PREFIX_KEY.plus(PREF_INFIX_KEY).plus(appWidgetId), theme).apply()
         }
 
-        internal fun loadBgColorPref(context: Context): String {
+        internal fun loadBgColorPref(context: Context,appWidgetId: Int): String {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0)
-            return prefs.getString(PREF_PREFIX_KEY.plus(PREF_INFIX_KEY), THEME_LIGHT)
-            /*      ?: "#".plus(Integer.toHexString(ContextCompat.getColor(context, R.color.bgcolor))""*/
+            return prefs.getString(PREF_PREFIX_KEY.plus(PREF_INFIX_KEY).plus(appWidgetId), THEME_LIGHT)
+                    ?: THEME_LIGHT
         }
 
         // Read the prefix from the SharedPreferences object for this widget.
         // If there is no preference saved, get the default from a resource
-        internal fun loadTitlePref(context: Context): String {
+        internal fun loadTitlePref(context: Context, appWidgetId: Int): String {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0)
-            val titleValue = prefs.getString(PREF_PREFIX_KEY, null)
+            val titleValue = prefs.getString(PREF_PREFIX_KEY + appWidgetId, null)
             return titleValue ?: context.getString(R.string.appwidget_text)
         }
 
@@ -400,4 +392,12 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         }
     }
 }
+private class MArrayAdapter(val act: AppWidgetConfigureActivity, val objects: Array<String>) : ArrayAdapter<String>(act, android.R.layout.simple_list_item_single_choice, objects) {
 
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val view = super.getView(position, convertView, parent)
+        (view as CheckedTextView).isChecked = AppWidgetConfigureActivity.loadBgColorPref(context, act.mAppWidgetId) == objects[position]
+        return view
+    }
+
+}

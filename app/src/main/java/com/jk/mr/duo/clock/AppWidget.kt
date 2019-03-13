@@ -10,7 +10,7 @@ import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import com.jk.mr.duo.clock.AppWidgetConfigureActivity.Companion.TEXT_AM
 import com.jk.mr.duo.clock.AppWidgetConfigureActivity.Companion.TEXT_PM
-import com.jk.mr.duo.clock.services.TextClockService
+import com.jk.mr.duo.clock.utils.Utils
 import java.text.DateFormatSymbols
 import java.text.DecimalFormat
 import java.util.*
@@ -22,22 +22,11 @@ import java.util.*
  */
 class AppWidget : AppWidgetProvider() {
 
-
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         // There may be multiple widgets active, so update all of them
-        // context.applicationContext.registerReceiver(broadcastReceiver, IntentFilter(AlarmReceiver.CUSTOM_INTENT))
-
-        val update = Intent(context, TextClockService::class.java)
-        update.action = CUSTOM_INTENT
-        //  context.startService(update);
-        TextClockService.enqueueWork(context, update)
-
-        // AlarmReceiver.setAlarm(false, context)
-
-
-        /*  for (appWidgetId in appWidgetIds) {
-              updateAppWidget(context, appWidgetManager, appWidgetId)
-          }*/
+        for (appWidgetId in appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId)
+        }
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
@@ -55,10 +44,9 @@ class AppWidget : AppWidgetProvider() {
         // Enter relevant functionality for when the last widget is disabled
     }
 
-
     companion object {
 
-        internal fun setThem(context: Context, views: RemoteViews, theme: String) {
+        private fun setThem(context: Context, views: RemoteViews, theme: String) {
             // Already dark
             var co = ContextCompat.getColor(context, android.R.color.white)
             when (theme) {
@@ -102,28 +90,30 @@ class AppWidget : AppWidgetProvider() {
             }
 
             //Default
-            views.setTextColor(R.id.hour0, co)
+           /* views.setTextColor(R.id.hour0, co)
             views.setTextColor(R.id.minute0, co)
             views.setTextColor(R.id.am_pm0, co)
-            views.setTextColor(R.id.txt_day0, co)
+            views.setTextColor(R.id.txt_day0, co)*/
+       //     views.setInt(R.id.separator, "setBackgroundColor", co)
+            views.setTextColor(R.id.clock0, co)
             views.setTextColor(R.id.txt_timezone0, co)
 
             //Selected
 
-            views.setTextColor(R.id.hour1, co)
+          /*  views.setTextColor(R.id.hour1, co)
             views.setTextColor(R.id.minute1, co)
             views.setTextColor(R.id.am_pm1, co)
-            views.setTextColor(R.id.txt_day1, co)
+            views.setTextColor(R.id.txt_day1, co)*/
+            views.setTextColor(R.id.clock1, co)
             views.setTextColor(R.id.txt_timezone1, co)
 
 
         }
 
-        const val CUSTOM_INTENT = "com.jk.duo.clock.intent.action.ALARM"
         internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager,
                                      appWidgetId: Int) {
-            val timeZone = AppWidgetConfigureActivity.loadTitlePref(context)
-            val theme = AppWidgetConfigureActivity.loadBgColorPref(context)
+            val timeZone = AppWidgetConfigureActivity.loadTitlePref(context,appWidgetId)
+            val theme = AppWidgetConfigureActivity.loadBgColorPref(context,appWidgetId)
             val views = RemoteViews(context.packageName, R.layout.app_widget)
             //  if (bgColor == 0)
             //    bgColor = ContextCompat.getColor(context, R.color.bgcolor)
@@ -163,14 +153,20 @@ class AppWidget : AppWidgetProvider() {
             // views.setString(R.id.clock1, "setTimeZone", TimeZone.getTimeZone(timeZone).id)
             val mFormat = DecimalFormat("00")
 
-            //Default Clock
-            val date = Calendar.getInstance()
+
+
+            views.setCharSequence (R.id.clock0,"setFormat12Hour", Utils.getSpannable())
+            views.setCharSequence (R.id.clock1,"setFormat12Hour", Utils.getSpannable())
+
+            views.setString(R.id.clock0, "setTimeZone", TimeZone.getDefault().id)
+            views.setString(R.id.clock1, "setTimeZone", TimeZone.getTimeZone(timeZone).id)
+          /*  val date = Calendar.getInstance()
             val h0 = if (date.get(Calendar.HOUR) == 0) 12 else date.get(Calendar.HOUR)
             views.setTextViewText(R.id.hour0, mFormat.format(h0))
             views.setTextViewText(R.id.minute0, ":".plus(mFormat.format(date.get(Calendar.MINUTE))))
             views.setTextViewText(R.id.am_pm0, getTimeInfix(date.get(Calendar.AM_PM)))
 
-            views.setTextViewText(R.id.txt_day0, getFullDate(date))
+            views.setTextViewText(R.id.txt_day0, getFullDate(date))*/
 
 
 // Selected Timezone
@@ -179,11 +175,11 @@ class AppWidget : AppWidgetProvider() {
             val newDate = Calendar.getInstance(TimeZone.getTimeZone(timeZone))
             Log.d("Appwidget", newDate.timeZone.toString())
 
-            val h1 = if (newDate.get(Calendar.HOUR) == 0) 12 else newDate.get(Calendar.HOUR)
+         /*   val h1 = if (newDate.get(Calendar.HOUR) == 0) 12 else newDate.get(Calendar.HOUR)
             views.setTextViewText(R.id.hour1, mFormat.format(h1))
             views.setTextViewText(R.id.minute1, ":".plus(mFormat.format(newDate.get(Calendar.MINUTE))))
             views.setTextViewText(R.id.am_pm1, getTimeInfix(newDate.get(Calendar.AM_PM)))
-            views.setTextViewText(R.id.txt_day1, getFullDate(newDate))
+            views.setTextViewText(R.id.txt_day1, getFullDate(newDate))*/
 
             var txt0 = TimeZone.getDefault().id
             if (txt0.contains("/"))
