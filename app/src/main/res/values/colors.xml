@@ -9,4 +9,6 @@
     <color name="indigo_dark">#190054</color>
     <color name="yellow_dark">#c7cc00</color>
     <color name="yellow_light">#ffff00</color>
+    <color name="green_dark">#00574B</color>
+    <color name="green_light">#008577</color>
 </resources>
