@@ -5,7 +5,7 @@
     <string name="add_widget">Add widget</string>
     <string name="select_city">Select City</string>
     <string name="time_format">hh:mm a\nE dd MMM</string>
-    <string name="action_search">Search</string>
+    <string name="action_search">Click to Search</string>
     <string name="title_activity_preference">Settings</string>
 
     <!-- Strings related to Settings -->
@@ -81,7 +81,7 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="action_setting">Setting</string>
-
+    <string name="change_theme">Change theme</string>
 
 
 </resources>

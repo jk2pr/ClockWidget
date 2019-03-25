@@ -11,14 +11,14 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 
 android {
-   /* signingConfigs {
-        config {
-            storeFile file(keystoreProperties['storeFile'])
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storePassword keystoreProperties['storePassword']
-        }
-    }*/
+    /* signingConfigs {
+         config {
+             storeFile file(keystoreProperties['storeFile'])
+             keyAlias keystoreProperties['keyAlias']
+             keyPassword keystoreProperties['keyPassword']
+             storePassword keystoreProperties['storePassword']
+         }
+     }*/
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.jk.mr.duo.clock"
@@ -28,6 +28,9 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+        buildConfigField 'String', 'GoogleSecAPIKEY', mapkey
+
     }
     /* flavorDimensions "mode"
 
@@ -46,28 +49,33 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-          //  signingConfig signingConfigs.config
+         //   buildConfigField 'String', 'GoogleSecAPIKEY', mapkey
+
+            //  signingConfig signingConfigs.config
         }
     }
+    buildToolsVersion = '29.0.0 rc1'
 }
 
 dependencies {
+
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     // Dagger 2
     implementation 'com.google.dagger:dagger:2.21'
-    implementation 'com.google.firebase:firebase-core:16.0.7'
+    implementation 'com.google.firebase:firebase-core:16.0.8'
     kapt 'com.google.dagger:dagger-compiler:2.21'
- //   implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    //   implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     compileOnly 'org.glassfish:javax.annotation:10.0-b28'
 
-
+//Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
     //Retrofit adapter for rx
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     //Json Converter
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     //RxAndroid
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     // Dagger 2
@@ -76,21 +84,32 @@ dependencies {
     compileOnly 'org.glassfish:javax.annotation:10.0-b28'
 
 
+    //Place
 
+
+   /* implementation(group: 'com.google.android.libraries.places', name: 'places', version: '1.0.0')
+            {
+                exclude group: 'com.google.guava', module: 'guava'
+            }*/
+
+   // implementation 'com.google.android.libraries.places:places:1.0.0@aar'
+   // implementation 'com.google.android.libraries.places:places:1.0.0'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v7:0.7.0'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 
     implementation 'com.github.rtugeek:colorseekbar:1.7.3'
 
-   // implementation 'androidx.palette:palette:1.0.0'
+    // implementation 'androidx.palette:palette:1.0.0'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-   // implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
+    // implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
-  //  implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.vectordrawable:vectordrawable:1.1.0-alpha01'
+    //  implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    //implementation 'androidx.vectordrawable:vectordrawable:1.1.0-alpha01'
     testImplementation 'junit:junit:4.13-beta-2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1-alpha02'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha02'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha02'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha03'
 
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.1.0-alpha04'
@@ -98,6 +117,10 @@ dependencies {
     //implementation 'androidx.legacy:legacy-support-v13:1.0.0'
 
     //implementation "android.arch.work:work-runtime-ktx:1.0.0"
+
+   /* configurations{
+        all*.exclude group: 'com.google.guava', module: 'listenablefuture'
+    }*/
 }
 
 apply plugin: 'com.google.gms.google-services'
