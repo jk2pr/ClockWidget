@@ -29,6 +29,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
+        buildConfigField 'String', 'GoogleSecAPIKEY', mapkey
 
     }
     /* flavorDimensions "mode"
@@ -48,6 +49,8 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+         //   buildConfigField 'String', 'GoogleSecAPIKEY', mapkey
+
             //  signingConfig signingConfigs.config
         }
     }
@@ -68,11 +71,11 @@ dependencies {
 
 //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
     //Retrofit adapter for rx
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     //Json Converter
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     //RxAndroid
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     // Dagger 2
@@ -90,8 +93,9 @@ dependencies {
             }*/
 
    // implementation 'com.google.android.libraries.places:places:1.0.0@aar'
-    implementation 'com.google.android.libraries.places:places:1.0.0'
-
+   // implementation 'com.google.android.libraries.places:places:1.0.0'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v7:0.7.0'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 
     implementation 'com.github.rtugeek:colorseekbar:1.7.3'
 
@@ -114,9 +118,9 @@ dependencies {
 
     //implementation "android.arch.work:work-runtime-ktx:1.0.0"
 
-    configurations{
+   /* configurations{
         all*.exclude group: 'com.google.guava', module: 'listenablefuture'
-    }
+    }*/
 }
 
 apply plugin: 'com.google.gms.google-services'

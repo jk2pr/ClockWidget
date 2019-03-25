@@ -18,6 +18,9 @@ import okhttp3.Cache
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject
+import timber.log.Timber
+
+
 
 
 /**
@@ -62,7 +65,8 @@ class NetworkModule {
 
         return Retrofit.Builder()
                 //http://ip.jsontest.com/?mime=6
-                .baseUrl("https://maps.googleapis.com/")
+               // .baseUrl("https://maps.googleapis.com/") Google
+                .baseUrl("https://dev.virtualearth.net/") // Microsoft
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
@@ -70,6 +74,5 @@ class NetworkModule {
                 .create(IApi::class.java)
 
     }
-
 
 }

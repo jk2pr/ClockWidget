@@ -6,9 +6,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,25 +15,18 @@ import android.widget.ArrayAdapter
 import android.widget.CheckedTextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.common.api.Status
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.AutocompleteActivity
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode.FULLSCREEN
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode.OVERLAY
 import com.jk.mr.duo.clock.data.Results
 import com.jk.mr.duo.clock.di.components.AppComponent
 import com.jk.mr.duo.clock.di.components.DaggerAppComponent
 import com.jk.mr.duo.clock.di.modules.NetworkModule
 import com.jk.mr.duo.clock.services.IApi
+import com.mapbox.geojson.Point
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.app_widget_configure.*
-import java.util.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -70,41 +61,64 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         setContentView(R.layout.app_widget_configure)
         setSupportActionBar(toolbar)
-        Places.initialize(applicationContext, getString(R.string.apiKey))
 
-     //   calendar.add(Calendar.HOUR, -2)
+
+        /* val autocompleteFragment: PlaceAutocompleteFragment
+
+         if (icicle == null) {
+             autocompleteFragment = PlaceAutocompleteFragment.newInstance("pk.eyJ1IjoiamsycHJhaiIsImEiOiJjanRpZHk0eWYwNjY3NDRwdGJyeHp1Nm52In0.U9jjKs28GzbxWuF-J5zKTQ");
+
+             val  transaction = supportFragmentManager.beginTransaction();
+             transaction.add(R.id.fragment_container, autocompleteFragment, TAG)
+             transaction.commit()
+
+         } else {
+             autocompleteFragment = supportFragmentManager.findFragmentByTag(TAG) as PlaceAutocompleteFragment
+         }
+ */
+
+
+        /*  autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+              override fun onPlaceSelected(carmenFeature: CarmenFeature) {
+                  Toast.makeText(this@AppWidgetConfigureActivity,
+                          carmenFeature.text(), Toast.LENGTH_LONG).show()
+                  val place=carmenFeature.geometry() as Point
+                  requestData(place.latitude().toString(), place.longitude().toString())
+              }
+
+              override fun onCancel() {
+                  finish()
+              }
+          })*/
+
+        //   calendar.add(Calendar.HOUR, -2)
 
         // Initialize the AutocompleteSupportFragment.
-      /*  val autocompleteFragment = supportFragmentManager.findFragmentById(R.id.autocomplete_fragment) as (AutocompleteSupportFragment)
+        /*  val autocompleteFragment = supportFragmentManager.findFragmentById(R.id.autocomplete_fragment) as (AutocompleteSupportFragment)
 
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+          autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
 
-        autocompleteFragment.setOnPlaceSelectedListener(object: PlaceSelectionListener {
+          autocompleteFragment.setOnPlaceSelectedListener(object: PlaceSelectionListener {
 
-          override  fun onPlaceSelected( place:Place) {
-                // TODO: Get info about the selected place.
+            override  fun onPlaceSelected( place:Place) {
+                  // TODO: Get info about the selected place.
 
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.id)
-             // val p = Autocomplete.getPlaceFromIntent(place)
-              Log.i("TAG", "Place: " + place.name + ", " + place.id)
-              requestData(place.latLng!!.latitude.toString(), place.latLng!!.longitude.toString())
-            }
+                  Log.i(TAG, "Place: " + place.getName() + ", " + place.id)
+               // val p = Autocomplete.getPlaceFromIntent(place)
+                Log.i("TAG", "Place: " + place.name + ", " + place.id)
+                requestData(place.latLng!!.latitude.toString(), place.latLng!!.longitude.toString())
+              }
 
-       override     fun onError( status: Status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
-            }
-        })*/
-
-
-
-
+         override     fun onError( status: Status) {
+                  // TODO: Handle the error.
+                  Log.i(TAG, "An error occurred: " + status);
+              }
+          })*/
 
 
         // Set the result to CANCELED.  This will cause the widget host to cancel
         // out of the widget placement if the user presses the back button.
         //  setResult(Activity.RESULT_CANCELED)
-
 
 
         // toolbar fancy stuff
@@ -142,20 +156,26 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         finish()
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         //   super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == 0) {
             when (resultCode) {
                 RESULT_OK -> {
-                    val place = Autocomplete.getPlaceFromIntent(data!!)
-                    Log.i("TAG", "Place: " + place.name + ", " + place.id)
-                    requestData(place.latLng!!.latitude.toString(), place.latLng!!.longitude.toString())
-                }
-                AutocompleteActivity.RESULT_ERROR -> {
-                    // TODO: Handle the error.
-                    val status = Autocomplete.getStatusFromIntent(data!!)
-                    Log.i("TAG", status.statusMessage)
+
+                    val carmenFeature = PlaceAutocomplete.getPlace(data)
+                    val place = carmenFeature.geometry() as Point
+                    requestData(place.latitude().toString(), place.longitude().toString())
+                    /*   val place = Autocomplete.getPlaceFromIntent(data!!)
+                       Log.i("TAG", "Place: " + place.name + ", " + place.id)
+                       requestData(place.latLng!!.latitude.toString(), place.latLng!!.longitude.toString())
+                   }
+                   AutocompleteActivity.RESULT_ERROR -> {
+                       // TODO: Handle the error.
+                       val status = Autocomplete.getStatusFromIntent(data!!)
+                       Log.i("TAG", status.statusMessage)
+                   */
                 }
                 RESULT_CANCELED -> {
                     // The user canceled the operation.
@@ -201,21 +221,22 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     private fun requestData(lat: String, long: String) {
         subscriptions.clear()
         val tsLong = System.currentTimeMillis() / 1000
-        val ts = tsLong.toString()
+      //  val ts = tsLong.toString()
         val location = lat.plus(",").plus(long)
-        val subscribeOn = api.getTimeZoneFromLatLong(location, ts, getString(R.string.apiKey))
+        val subscribeOn = api.getTimeZoneFromLatLong(location, /*ts,*/ BuildConfig.GoogleSecAPIKEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ abc ->
-                    Log.d(AppWidgetConfigureActivity::class.java.simpleName, abc.timeZoneId)
+                    val timeZoneId= abc.resourceSets[0].resources[0].timeZone.ianaTimeZoneId
+                    Timber.d(AppWidgetConfigureActivity::class.java.simpleName, timeZoneId)
                     //   print(abc.timeZoneId)
-                    sendBackResult(abc)
+                    sendBackResult(timeZoneId)
                 }
 
                 )
                 { e ->
                     run {
-                        Log.d("ConfigureActivity", e.message)
+                        Timber.d(e)
                     }
                 }
 
@@ -224,8 +245,8 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
 
-    private fun sendBackResult(abc: Results) {
-        saveTitlePref(this, mAppWidgetId, abc.timeZoneId)
+    private fun sendBackResult(timeZoneId: String) {
+        saveTitlePref(this, mAppWidgetId, timeZoneId)
 
         // It is the responsibility of the configuration activity to update the app widget
         val appWidgetManager = AppWidgetManager.getInstance(this)
@@ -242,11 +263,16 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         return when (item.itemId) {
             R.id.action_search -> {
-                val fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
+                //    val fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
 
-                val intent = Autocomplete.IntentBuilder(
-                        FULLSCREEN, fields)
-                        .build(this)
+                //  val intent = Autocomplete.IntentBuilder(
+                //           FULLSCREEN, fields)
+                //           .build(this)
+
+
+                val intent = PlaceAutocomplete.IntentBuilder()
+                        .accessToken("pk.eyJ1IjoiamsycHJhaiIsImEiOiJjanRpZHk0eWYwNjY3NDRwdGJyeHp1Nm52In0.U9jjKs28GzbxWuF-J5zKTQ")
+                        .build(this);
                 startActivityForResult(intent, 0)
 
                 true
@@ -278,7 +304,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                 THEME_BLUE,
                 THEME_INDIGO
         )
-        val arrayAdapter = MArrayAdapter(this, ar)
+        val arrayAdapter = MyArrayAdapter(this, ar)
 
         dialog.setNegativeButton("cancel") { d, _ -> d.dismiss() }
 
@@ -396,7 +422,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 }
 
-private class MArrayAdapter(val act: AppWidgetConfigureActivity, val objects: Array<String>) : ArrayAdapter<String>(act, android.R.layout.simple_list_item_single_choice, objects) {
+private class MyArrayAdapter(val act: AppWidgetConfigureActivity, val objects: Array<String>) : ArrayAdapter<String>(act, android.R.layout.simple_list_item_single_choice, objects) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = super.getView(position, convertView, parent)

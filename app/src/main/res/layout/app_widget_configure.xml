@@ -27,12 +27,11 @@
         </com.google.android.material.appbar.AppBarLayout>
 
 
-        <TextClock
-            android:id="@+id/vectorAnalogClock"
+        <FrameLayout
+            android:id="@+id/fragment_container"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:gravity="center"
-            android:textColor="@color/colorAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

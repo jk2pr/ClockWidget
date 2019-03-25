@@ -8,9 +8,6 @@
     <string name="action_search">Click to Search</string>
     <string name="title_activity_preference">Settings</string>
 
-
-    <string name="apiKey">Your Api Key</string>
-
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
