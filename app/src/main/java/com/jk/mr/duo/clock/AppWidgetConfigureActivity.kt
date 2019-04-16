@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CheckedTextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.jk.mr.duo.clock.data.Results
@@ -221,16 +222,16 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     private fun requestData(lat: String, long: String) {
         subscriptions.clear()
         val tsLong = System.currentTimeMillis() / 1000
-      //  val ts = tsLong.toString()
+        //  val ts = tsLong.toString()
         val location = lat.plus(",").plus(long)
         val subscribeOn = api.getTimeZoneFromLatLong(location, /*ts,*/ BuildConfig.GoogleSecAPIKEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ abc ->
-                    val timeZoneId= abc.resourceSets[0].resources[0].timeZone.ianaTimeZoneId
+                    val timeZoneId = abc.resourceSets[0].resources[0].timeZone.ianaTimeZoneId
                     Timber.d(AppWidgetConfigureActivity::class.java.simpleName, timeZoneId)
                     //   print(abc.timeZoneId)
-                    sendBackResult(timeZoneId)
+                        sendBackResult(timeZoneId)
                 }
 
                 )
@@ -245,17 +246,22 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
 
-    private fun sendBackResult(timeZoneId: String) {
-        saveTitlePref(this, mAppWidgetId, timeZoneId)
+    private fun sendBackResult(timeZoneId: String?) {
+        if (timeZoneId!=null) {
+            saveTitlePref(this, mAppWidgetId, timeZoneId)
 
-        // It is the responsibility of the configuration activity to update the app widget
-        val appWidgetManager = AppWidgetManager.getInstance(this)
-        AppWidget.updateAppWidget(this, appWidgetManager, mAppWidgetId)
+            // It is the responsibility of the configuration activity to update the app widget
+            val appWidgetManager = AppWidgetManager.getInstance(this)
+            AppWidget.updateAppWidget(this, appWidgetManager, mAppWidgetId)
 
-        // Make sure we pass back the original appWidgetId
-        val resultValue = Intent()
-        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
-        setResult(Activity.RESULT_OK, resultValue)
+            // Make sure we pass back the original appWidgetId
+            val resultValue = Intent()
+            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
+            setResult(Activity.RESULT_OK, resultValue)
+        } else
+        {
+            Toast.makeText(applicationContext,"Unknown Location found.",Toast.LENGTH_SHORT).show()
+        }
         finish()
     }
 

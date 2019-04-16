@@ -35,7 +35,7 @@ data class TimeZone (
 
         @SerializedName("genericName") val genericName : String,
         @SerializedName("abbreviation") val abbreviation : String,
-        @SerializedName("ianaTimeZoneId") val ianaTimeZoneId : String,
+        @SerializedName("ianaTimeZoneId") val ianaTimeZoneId : String?,
         @SerializedName("windowsTimeZoneId") val windowsTimeZoneId : String,
         @SerializedName("utcOffset") val utcOffset : String,
         @SerializedName("convertedTime") val convertedTime : ConvertedTime

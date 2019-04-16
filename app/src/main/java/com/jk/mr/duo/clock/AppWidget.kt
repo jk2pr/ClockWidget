@@ -155,8 +155,12 @@ class AppWidget : AppWidgetProvider() {
 
 
 
-            views.setCharSequence (R.id.clock0,"setFormat12Hour", Utils.getSpannable())
-            views.setCharSequence (R.id.clock1,"setFormat12Hour", Utils.getSpannable())
+            views.setCharSequence (R.id.clock0,"setFormat12Hour", Utils.get12HoursFormat())
+            views.setCharSequence (R.id.clock1,"setFormat12Hour", Utils.get12HoursFormat())
+
+
+            views.setCharSequence (R.id.clock0,"setFormat24Hour", Utils.get24HoursFormat())
+            views.setCharSequence (R.id.clock1,"setFormat24Hour", Utils.get24HoursFormat())
 
             views.setString(R.id.clock0, "setTimeZone", TimeZone.getDefault().id)
             views.setString(R.id.clock1, "setTimeZone", TimeZone.getTimeZone(timeZone).id)
