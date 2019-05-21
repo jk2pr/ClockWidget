@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -16,18 +17,19 @@ import android.widget.CheckedTextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.jk.mr.duo.clock.data.Results
+import androidx.core.content.ContextCompat
 import com.jk.mr.duo.clock.di.components.AppComponent
 import com.jk.mr.duo.clock.di.components.DaggerAppComponent
 import com.jk.mr.duo.clock.di.modules.NetworkModule
 import com.jk.mr.duo.clock.services.IApi
+import com.jk.mr.duo.clock.utils.Utils
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.app_widget_configure.*
-import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 
@@ -64,66 +66,33 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
 
-        /* val autocompleteFragment: PlaceAutocompleteFragment
+        dashboard_clock.format12Hour = Utils.getDashBoard12HoursFormat()
+        dashboard_clock.format24Hour = Utils.getDashBoard24HoursFormat()
 
-         if (icicle == null) {
-             autocompleteFragment = PlaceAutocompleteFragment.newInstance("pk.eyJ1IjoiamsycHJhaiIsImEiOiJjanRpZHk0eWYwNjY3NDRwdGJyeHp1Nm52In0.U9jjKs28GzbxWuF-J5zKTQ");
+        val
+                tint = when (theme) {
+            R.style.AppThemeLight -> android.R.color.black
+            R.style.AppThemeDark -> android.R.color.white
+            R.style.AppThemeRed -> android.R.color.holo_red_light
+            R.style.AppThemeYellow -> R.color.yellow_dark
+            R.style.AppThemeGreen -> R.color.green_light
+            R.style.AppThemeBlue -> android.R.color.holo_blue_light
+            R.style.AppThemeIndigo -> R.color.indigo_light
+            R.style.AppThemeOrange -> android.R.color.holo_orange_light
 
-             val  transaction = supportFragmentManager.beginTransaction();
-             transaction.add(R.id.fragment_container, autocompleteFragment, TAG)
-             transaction.commit()
+            else -> android.R.color.background_light
+        }
 
-         } else {
-             autocompleteFragment = supportFragmentManager.findFragmentByTag(TAG) as PlaceAutocompleteFragment
-         }
- */
-
-
-        /*  autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-              override fun onPlaceSelected(carmenFeature: CarmenFeature) {
-                  Toast.makeText(this@AppWidgetConfigureActivity,
-                          carmenFeature.text(), Toast.LENGTH_LONG).show()
-                  val place=carmenFeature.geometry() as Point
-                  requestData(place.latitude().toString(), place.longitude().toString())
-              }
-
-              override fun onCancel() {
-                  finish()
-              }
-          })*/
-
-        //   calendar.add(Calendar.HOUR, -2)
-
-        // Initialize the AutocompleteSupportFragment.
-        /*  val autocompleteFragment = supportFragmentManager.findFragmentById(R.id.autocomplete_fragment) as (AutocompleteSupportFragment)
-
-          autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
-
-          autocompleteFragment.setOnPlaceSelectedListener(object: PlaceSelectionListener {
-
-            override  fun onPlaceSelected( place:Place) {
-                  // TODO: Get info about the selected place.
-
-                  Log.i(TAG, "Place: " + place.getName() + ", " + place.id)
-               // val p = Autocomplete.getPlaceFromIntent(place)
-                Log.i("TAG", "Place: " + place.name + ", " + place.id)
-                requestData(place.latLng!!.latitude.toString(), place.latLng!!.longitude.toString())
-              }
-
-         override     fun onError( status: Status) {
-                  // TODO: Handle the error.
-                  Log.i(TAG, "An error occurred: " + status);
-              }
-          })*/
+        dashboard_clock.setTextColor(ContextCompat.getColor(this, tint))
+        dashboard_timezone.setTextColor(ContextCompat.getColor(this, tint))
 
 
-        // Set the result to CANCELED.  This will cause the widget host to cancel
-        // out of the widget placement if the user presses the back button.
-        //  setResult(Activity.RESULT_CANCELED)
+        var currentTimeZone = TimeZone.getDefault().id
+        if (currentTimeZone.contains("/"))
+            currentTimeZone = currentTimeZone.split("/")[1].replace("_", " ")
+        dashboard_timezone.text = currentTimeZone
+        dashboard_timezone.paintFlags = Paint.UNDERLINE_TEXT_FLAG
 
-
-        // toolbar fancy stuff
-        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setTitle(R.string.action_search)
 
         // Find the widget id from the intent.
@@ -157,6 +126,18 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         finish()
     }
 
+    override fun onResume() {
+        super.onResume()
+        dashboard_clock.visibility = View.VISIBLE
+        dashboard_timezone.visibility = View.VISIBLE
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dashboard_clock.visibility = View.GONE
+        dashboard_timezone.visibility = View.GONE
+
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         //   super.onActivityResult(requestCode, resultCode, data)
@@ -187,57 +168,35 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
-
-        // Associate searchable configuration with the SearchView
-        /* val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-         val searchView = menu.findItem(R.id.action_search)
-                 .actionView as SearchView
-         searchView.setSearchableInfo(searchManager
-                 .getSearchableInfo(componentName))
-         searchView.maxWidth = Integer.MAX_VALUE*/
-
-
-        // listening to search query text change
-        /* searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-             override fun onQueryTextSubmit(query: String): Boolean {
-                 // filter recycler view when query submitted
-                 showLoader(true)
-                 val searchText = "%$query%"
-                 requestData(searchText)
-
-                 return false
-                 //  adapter.filter.filter(query)
-             }
-
-             override fun onQueryTextChange(query: String): Boolean {
-                 // filter recycler view when text is changed
-                 adapter.filter.filter(query)
-                 return false
-             }
-         })*/
         return true
     }
 
 
     private fun requestData(lat: String, long: String) {
         subscriptions.clear()
-        val tsLong = System.currentTimeMillis() / 1000
+        //val tsLong = System.currentTimeMillis() / 1000
         //  val ts = tsLong.toString()
         val location = lat.plus(",").plus(long)
-        val subscribeOn = api.getTimeZoneFromLatLong(location, /*ts,*/ BuildConfig.GoogleSecAPIKEY)
+        val subscribeOn = api.getTimeZoneFromLatLong(location, /*ts,*/ BuildConfig.MAP_TIMEZONE_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ abc ->
                     val timeZoneId = abc.resourceSets[0].resources[0].timeZone.ianaTimeZoneId
-                    Timber.d(AppWidgetConfigureActivity::class.java.simpleName, timeZoneId)
-                    //   print(abc.timeZoneId)
-                        sendBackResult(timeZoneId)
+
+                    val abbreviation =
+                         /*   if (abc.resourceSets[0].resources[0].timeZone.abbreviation != null) {
+                                abc.resourceSets[0].resources[0].timeZone.abbreviation // Timber.d(AppWidgetConfigureActivity::class.java.simpleName, timeZoneId)
+                            } else*/
+                                abc.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
+                    print("abbreviation $abbreviation")
+
+                    sendBackResult(timeZoneId.plus(":").plus(abbreviation))
                 }
 
                 )
                 { e ->
                     run {
-                        Timber.d(e)
+                        // Timber.d(e)
                     }
                 }
 
@@ -247,7 +206,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
 
     private fun sendBackResult(timeZoneId: String?) {
-        if (timeZoneId!=null) {
+        if (timeZoneId != null) {
             saveTitlePref(this, mAppWidgetId, timeZoneId)
 
             // It is the responsibility of the configuration activity to update the app widget
@@ -258,11 +217,12 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             val resultValue = Intent()
             resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
             setResult(Activity.RESULT_OK, resultValue)
-        } else
-        {
-            Toast.makeText(applicationContext,"Unknown Location found.",Toast.LENGTH_SHORT).show()
+            finish()
+        } else {
+
+            Toast.makeText(applicationContext, "Unknown Location found, Please enter exact location.", Toast.LENGTH_SHORT).show()
         }
-        finish()
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -275,10 +235,9 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                 //           FULLSCREEN, fields)
                 //           .build(this)
 
-
                 val intent = PlaceAutocomplete.IntentBuilder()
-                        .accessToken("pk.eyJ1IjoiamsycHJhaiIsImEiOiJjanRpZHk0eWYwNjY3NDRwdGJyeHp1Nm52In0.U9jjKs28GzbxWuF-J5zKTQ")
-                        .build(this);
+                        .accessToken(BuildConfig.PLACE_KEY)
+                        .build(this)
                 startActivityForResult(intent, 0)
 
                 true
@@ -355,8 +314,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
 
     private fun getThemePref(): Int {
-        val sThem = loadBgColorPref(this, mAppWidgetId)
-        return when (sThem) {
+        return when (loadBgColorPref(this, mAppWidgetId)) {
             THEME_LIGHT -> R.style.AppThemeLight
             THEME_DARK -> R.style.AppThemeDark
             THEME_RED -> R.style.AppThemeRed

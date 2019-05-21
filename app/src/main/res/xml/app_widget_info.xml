@@ -3,7 +3,7 @@
     android:configure="com.jk.mr.duo.clock.AppWidgetConfigureActivity"
     android:initialKeyguardLayout="@layout/app_widget"
     android:initialLayout="@layout/app_widget"
-    android:minWidth="180dp"
+    android:minWidth="140dp"
     android:minHeight="40dp"
     android:previewImage="@drawable/initial"
     android:resizeMode="horizontal|vertical"

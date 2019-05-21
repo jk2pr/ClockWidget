@@ -1,10 +1,7 @@
 package com.jk.mr.duo.clock.di.modules
 
-import android.app.Application
-import android.content.Context
-import android.content.SharedPreferences
 import com.jk.mr.duo.clock.AppWidgetConfigureActivity
-import com.jk.mr.duo.clock.BuildConfig
+import com.jk.mr.duo.clock.services.IApi
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -13,14 +10,6 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-import com.jk.mr.duo.clock.services.IApi
-import okhttp3.Cache
-import java.io.File
-import java.io.IOException
-import javax.inject.Inject
-import timber.log.Timber
-
-
 
 
 /**

@@ -23,3 +23,40 @@
 -keep interface android.support.v7.internal.** { *; }
 -keep class android.support.v7.** { *; }
 -keep interface android.support.v7.** { *; }
+
+
+#OkIO and Retrofit
+-dontwarn okio.**
+-dontwarn com.squareup.okhttp3.**
+-keep class com.squareup.okhttp3.** { *; }
+-keep interface com.squareup.okhttp3.** { *; }
+-dontwarn javax.annotation.**
+
+-dontnote retrofit2.Platform
+-dontwarn retrofit2.Platform$Java8
+-keep class retrofit.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
+-keepattributes RuntimeVisibleAnnotations
+-keepattributes RuntimeInvisibleAnnotations
+-keepattributes RuntimeVisibleParameterAnnotations
+-keepattributes RuntimeInvisibleParameterAnnotations
+
+-keepattributes EnclosingMethod
+-keepclasseswithmembers class * {
+    @retrofit2.http.* <methods>;
+}
+-keepclasseswithmembers interface * {
+    @retrofit2.* <methods>;
+}
+
+# Gson
+-keep class com.google.gson.** { *; }
+-keep public class com.google.gson.** {public private protected *;}
+-keep class com.google.inject.** { *; }
+-keepattributes *Annotation*
+-keep class org.apache.http.** { *; }
+-keep class org.apache.james.mime4j.** { *; }
+-keep class javax.inject.** { *; }
+-keep class javax.xml.stream.** { *; }
+-keepclassmembers enum * { *; }

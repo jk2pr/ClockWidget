@@ -5,14 +5,12 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import com.jk.mr.duo.clock.AppWidgetConfigureActivity.Companion.TEXT_AM
 import com.jk.mr.duo.clock.AppWidgetConfigureActivity.Companion.TEXT_PM
 import com.jk.mr.duo.clock.utils.Utils
 import java.text.DateFormatSymbols
-import java.text.DecimalFormat
 import java.util.*
 
 
@@ -90,20 +88,20 @@ class AppWidget : AppWidgetProvider() {
             }
 
             //Default
-           /* views.setTextColor(R.id.hour0, co)
-            views.setTextColor(R.id.minute0, co)
-            views.setTextColor(R.id.am_pm0, co)
-            views.setTextColor(R.id.txt_day0, co)*/
-       //     views.setInt(R.id.separator, "setBackgroundColor", co)
+            /* views.setTextColor(R.id.hour0, co)
+             views.setTextColor(R.id.minute0, co)
+             views.setTextColor(R.id.am_pm0, co)
+             views.setTextColor(R.id.txt_day0, co)*/
+            views.setInt(R.id.separator, "setBackgroundColor", co)
             views.setTextColor(R.id.clock0, co)
             views.setTextColor(R.id.txt_timezone0, co)
 
             //Selected
 
-          /*  views.setTextColor(R.id.hour1, co)
-            views.setTextColor(R.id.minute1, co)
-            views.setTextColor(R.id.am_pm1, co)
-            views.setTextColor(R.id.txt_day1, co)*/
+            /*  views.setTextColor(R.id.hour1, co)
+              views.setTextColor(R.id.minute1, co)
+              views.setTextColor(R.id.am_pm1, co)
+              views.setTextColor(R.id.txt_day1, co)*/
             views.setTextColor(R.id.clock1, co)
             views.setTextColor(R.id.txt_timezone1, co)
 
@@ -112,8 +110,10 @@ class AppWidget : AppWidgetProvider() {
 
         internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager,
                                      appWidgetId: Int) {
-            val timeZone = AppWidgetConfigureActivity.loadTitlePref(context,appWidgetId)
-            val theme = AppWidgetConfigureActivity.loadBgColorPref(context,appWidgetId)
+            val d = AppWidgetConfigureActivity.loadTitlePref(context, appWidgetId).split(":")
+            val timeZone = d[0]
+
+            val theme = AppWidgetConfigureActivity.loadBgColorPref(context, appWidgetId)
             val views = RemoteViews(context.packageName, R.layout.app_widget)
             //  if (bgColor == 0)
             //    bgColor = ContextCompat.getColor(context, R.color.bgcolor)
@@ -151,53 +151,56 @@ class AppWidget : AppWidgetProvider() {
             views.setTextColor(R.id.txt_timezone1, colTimeZone)*/
             //  views.setString(R.id.clock0, "setTimeZone", TimeZone.getDefault().id)
             // views.setString(R.id.clock1, "setTimeZone", TimeZone.getTimeZone(timeZone).id)
-            val mFormat = DecimalFormat("00")
+            //val mFormat = DecimalFormat("00")
 
 
+            views.setCharSequence(R.id.clock0, "setFormat12Hour", Utils.get12HoursFormat())
+            views.setCharSequence(R.id.clock1, "setFormat12Hour", Utils.get12HoursFormat())
 
-            views.setCharSequence (R.id.clock0,"setFormat12Hour", Utils.get12HoursFormat())
-            views.setCharSequence (R.id.clock1,"setFormat12Hour", Utils.get12HoursFormat())
 
-
-            views.setCharSequence (R.id.clock0,"setFormat24Hour", Utils.get24HoursFormat())
-            views.setCharSequence (R.id.clock1,"setFormat24Hour", Utils.get24HoursFormat())
+            views.setCharSequence(R.id.clock0, "setFormat24Hour", Utils.get24HoursFormat())
+            views.setCharSequence(R.id.clock1, "setFormat24Hour", Utils.get24HoursFormat())
 
             views.setString(R.id.clock0, "setTimeZone", TimeZone.getDefault().id)
             views.setString(R.id.clock1, "setTimeZone", TimeZone.getTimeZone(timeZone).id)
-          /*  val date = Calendar.getInstance()
-            val h0 = if (date.get(Calendar.HOUR) == 0) 12 else date.get(Calendar.HOUR)
-            views.setTextViewText(R.id.hour0, mFormat.format(h0))
-            views.setTextViewText(R.id.minute0, ":".plus(mFormat.format(date.get(Calendar.MINUTE))))
-            views.setTextViewText(R.id.am_pm0, getTimeInfix(date.get(Calendar.AM_PM)))
+            /*  val date = Calendar.getInstance()
+              val h0 = if (date.get(Calendar.HOUR) == 0) 12 else date.get(Calendar.HOUR)
+              views.setTextViewText(R.id.hour0, mFormat.format(h0))
+              views.setTextViewText(R.id.minute0, ":".plus(mFormat.format(date.get(Calendar.MINUTE))))
+              views.setTextViewText(R.id.am_pm0, getTimeInfix(date.get(Calendar.AM_PM)))
 
-            views.setTextViewText(R.id.txt_day0, getFullDate(date))*/
+              views.setTextViewText(R.id.txt_day0, getFullDate(date))*/
 
 
 // Selected Timezone
 
 
-            val newDate = Calendar.getInstance(TimeZone.getTimeZone(timeZone))
-            Log.d("Appwidget", newDate.timeZone.toString())
+            // val newDate = Calendar.getInstance(TimeZone.getTimeZone(timeZone))
+            // d(newDate.timeZone.toString())
 
-         /*   val h1 = if (newDate.get(Calendar.HOUR) == 0) 12 else newDate.get(Calendar.HOUR)
-            views.setTextViewText(R.id.hour1, mFormat.format(h1))
-            views.setTextViewText(R.id.minute1, ":".plus(mFormat.format(newDate.get(Calendar.MINUTE))))
-            views.setTextViewText(R.id.am_pm1, getTimeInfix(newDate.get(Calendar.AM_PM)))
-            views.setTextViewText(R.id.txt_day1, getFullDate(newDate))*/
+            /*   val h1 = if (newDate.get(Calendar.HOUR) == 0) 12 else newDate.get(Calendar.HOUR)
+               views.setTextViewText(R.id.hour1, mFormat.format(h1))
+               views.setTextViewText(R.id.minute1, ":".plus(mFormat.format(newDate.get(Calendar.MINUTE))))
+               views.setTextViewText(R.id.am_pm1, getTimeInfix(newDate.get(Calendar.AM_PM)))
+               views.setTextViewText(R.id.txt_day1, getFullDate(newDate))*/
 
-            var txt0 = TimeZone.getDefault().id
+            var txt0 = TimeZone.getDefault().displayName
             if (txt0.contains("/"))
                 txt0 = txt0.split("/")[1].replace("_", " ")
 
-            var txt1 = TimeZone.getTimeZone(timeZone).id
-            if (txt1.contains("/")) {
-                val ch = txt1.split("/")
-                txt1 = ch[ch.size - 1].replace("_", " ")
+            views.setCharSequence(R.id.txt_timezone0, "setText", txt0)
+            if (d.size>1) {
+                val txt1 = d[1]
+                views.setCharSequence(R.id.txt_timezone1, "setText", txt1)
+               /* //TimeZone.getTimeZone(timeZone).id
+                if (txt1.contains("/")) {
+                    val ch = txt1.split("/")
+                    txt1 = ch[ch.size - 1].replace("_", " ")
+                }*/
             }
 
 
-            views.setCharSequence(R.id.txt_timezone0, "setText", txt0)
-            views.setCharSequence(R.id.txt_timezone1, "setText", txt1)
+
 
 
             val intent = Intent(context, AppWidgetConfigureActivity::class.java)

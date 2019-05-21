@@ -25,6 +25,8 @@
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="tint">@android:color/black</item>
+
     </style>
     <!--Dark Theme-->
     <style name="AppThemeDark" parent="Theme.AppCompat">
@@ -32,23 +34,26 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowBackground">@android:color/black</item>
         <item name="android:actionBarStyle">@android:color/black</item>
-
+        <item name="tint">@android:color/white</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppThemeRed" parent="AppThemeDark">
+    <style name="AppThemeRed" parent="AppThemeLight">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@android:color/holo_red_light</item>
         <item name="colorPrimaryDark">@android:color/holo_red_dark</item>
         <item name="colorAccent">@android:color/holo_red_light</item>
+        <item name="android:tint">@android:color/holo_red_light</item>
+
 
     </style>
 
-    <style name="AppThemeOrange"  parent="AppThemeDark">
+    <style name="AppThemeOrange"  parent="AppThemeLight">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@android:color/holo_orange_light</item>
         <item name="colorPrimaryDark">@android:color/holo_orange_dark</item>
         <item name="colorAccent">@android:color/holo_orange_light</item>
+        <item name="tint">@android:color/holo_orange_light</item>
 
     </style>
 
@@ -57,30 +62,35 @@
         <item name="colorPrimary">@color/yellow_light</item>
         <item name="colorPrimaryDark">@color/yellow_dark</item>
         <item name="colorAccent">@color/yellow_light</item>
+        <item name="tint">@color/yellow_dark</item>
 
     </style>
 
-    <style name="AppThemeIndigo" parent="AppThemeDark">
+    <style name="AppThemeIndigo" parent="AppThemeLight">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/indigo_light</item>
         <item name="colorPrimaryDark">@color/indigo_dark</item>
         <item name="colorAccent">@color/indigo_light</item>
+        <item name="tint">@color/indigo_light</item>
 
     </style>
 
-    <style name="AppThemeGreen" parent="AppThemeDark">
+    <style name="AppThemeGreen" parent="AppThemeLight">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/green_light</item>
         <item name="colorPrimaryDark">@color/green_dark</item>
         <item name="colorAccent">@color/green_light</item>
+        <item name="tint">@color/green_light</item>
 
     </style>
 
-    <style name="AppThemeBlue"  parent="AppThemeDark">
+    <style name="AppThemeBlue"  parent="AppThemeLight">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@android:color/holo_blue_light</item>
         <item name="colorPrimaryDark">@android:color/holo_blue_dark</item>
         <item name="colorAccent">@android:color/holo_blue_light</item>
+        <item name="tint">@android:color/holo_blue_light</item>
+
     </style>
 
 

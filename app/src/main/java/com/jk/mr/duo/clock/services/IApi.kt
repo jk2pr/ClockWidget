@@ -2,7 +2,9 @@ package com.jk.mr.duo.clock.services
 
 import com.jk.mr.duo.clock.data.MResponse
 import io.reactivex.Observable
-import retrofit2.http.*
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface IApi {
