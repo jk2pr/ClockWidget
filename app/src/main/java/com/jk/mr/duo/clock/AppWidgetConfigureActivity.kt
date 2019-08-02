@@ -140,7 +140,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        //   super.onActivityResult(requestCode, resultCode, data)
+          super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == 0) {
             when (resultCode) {
@@ -183,14 +183,20 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                 .subscribe({ abc ->
                     val timeZoneId = abc.resourceSets[0].resources[0].timeZone.ianaTimeZoneId
 
-                    val abbreviation =
-                         /*   if (abc.resourceSets[0].resources[0].timeZone.abbreviation != null) {
+                        val abbreviation =
+                                /*   if (abc.resourceSets[0].resources[0].timeZone.abbreviation != null) {
                                 abc.resourceSets[0].resources[0].timeZone.abbreviation // Timber.d(AppWidgetConfigureActivity::class.java.simpleName, timeZoneId)
                             } else*/
                                 abc.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
-                    print("abbreviation $abbreviation")
+                        print("abbreviation $abbreviation")
 
-                    sendBackResult(timeZoneId.plus(":").plus(abbreviation))
+
+
+                    if(timeZoneId==null)
+                        sendBackResult(timeZoneId)
+                    else
+                        sendBackResult(timeZoneId.plus(":").plus(abbreviation))
+
                 }
 
                 )
