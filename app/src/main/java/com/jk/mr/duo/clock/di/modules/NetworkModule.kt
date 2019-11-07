@@ -2,6 +2,7 @@ package com.jk.mr.duo.clock.di.modules
 
 import com.jk.mr.duo.clock.AppWidgetConfigureActivity
 import com.jk.mr.duo.clock.services.IApi
+import com.jk.mr.duo.clock.utils.Constants.appComponent
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -22,7 +23,7 @@ class NetworkModule {
     @Provides
     @Singleton
     fun getRetrofit(): IApi {
-        AppWidgetConfigureActivity.appComponent.inject(this)
+        appComponent.inject(this)
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
 

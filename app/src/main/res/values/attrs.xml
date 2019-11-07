@@ -1,0 +1,7 @@
+<resources>
+    <attr name="selectedRowBackgroundColor" format="reference|color" />
+    <attr name="selectedRowTextColor" format="reference|color" />
+    <attr name="rowTextColor" format="reference|color" />
+    <attr name="rowBackGroundColor" format="reference|color" />
+    <attr name="colorPrimaryLight" format="reference|color" />
+</resources>

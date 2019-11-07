@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AppWidgetConfigureActivity"
+    tools:showIn="@layout/app_widget_configure">
+
+
+    <TextClock
+        android:id="@+id/dashboard_clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/bebasneue_thin"
+        android:gravity="center"
+        android:includeFontPadding="true"
+        android:textColor="?attr/colorPrimaryDark"
+        android:textSize="@dimen/sp50"
+        android:typeface="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline"
+        tools:text="dash" />
+
+    <TextView
+        android:id="@+id/txt_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:drawableTop="@drawable/ic_icons8_empty_box"
+        android:gravity="center"
+        android:text="@string/no_city_to_show_add_from"
+        android:textColor="?attr/colorPrimaryDark"
+        app:drawableTint="?attr/colorPrimaryDark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dashboard_timezone" />
+
+<!--
+
+    <ImageView
+        android:id="@+id/deco_imageView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:alpha="0.1"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:src="@drawable/ic_diwali"
+        app:drawableTint="?attr/colorAccent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+-->
+
+
+    <View
+        android:id="@+id/top_sprt"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:background="?attr/colorAccent"
+        app:layout_constraintTop_toBottomOf="@+id/dashboard_timezone" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+
+        android:id="@+id/dashboard_timezone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/bebasneue_regular"
+        android:textColor="?attr/colorPrimaryDark"
+        android:textSize="@dimen/sp18"
+        android:gravity="center"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="@+id/dashboard_clock"
+        app:layout_constraintStart_toStartOf="@+id/dashboard_clock"
+        app:layout_constraintTop_toBottomOf="@+id/dashboard_clock"
+        tools:text="Kuala ljmpjr" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_clock"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/top_sprt"
+        tools:listitem="@layout/item_cal_layout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

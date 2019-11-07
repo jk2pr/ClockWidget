@@ -4,38 +4,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/light_widget_bg"
+    android:baselineAligned="false"
     android:gravity="center"
-    android:orientation="horizontal"
-    android:baselineAligned="false">
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_margin="@dimen/dp5"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginEnd="@dimen/dp3"
+        android:layout_margin="@dimen/dp3"
         android:layout_weight="1"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextClock
             android:id="@+id/clock0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp5"
+            android:layout_marginBottom="@dimen/space_"
             android:format12Hour="hh:mm:ss a\nE dd MMM"
+            android:gravity="center"
+            android:textSize="@dimen/sp20"
+            android:fontFamily="@font/bebasneue_regular"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/sp18"
             tools:text="12:05 AM" />
 
         <TextView
             android:id="@+id/txt_timezone0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp5"
+            android:layout_marginTop="@dimen/space_"
+            android:duplicateParentState="true"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:fontFamily="@font/bebasneue_regular"
+            android:focusableInTouchMode="true"
             android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+
+            android:singleLine="true"
             android:textColor="@android:color/black"
             android:textSize="@dimen/sp10"
-            tools:text="Kuala lumpur" />
+            tools:text="Kuala lumpur">
+
+            <requestFocus
+                android:duplicateParentState="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+        </TextView>
     </LinearLayout>
 
     <LinearLayout
@@ -43,16 +59,15 @@
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:background="@android:color/black"
-        android:orientation="horizontal"
-         />
+        android:orientation="horizontal" />
 
     <LinearLayout
-        android:layout_margin="@dimen/dp5"
         android:id="@+id/rel_custom_time"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_margin="@dimen/dp3"
         android:layout_weight="1"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:orientation="vertical"
 
         >
@@ -61,22 +76,39 @@
             android:id="@+id/clock1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp5"
+            android:layout_marginBottom="@dimen/space_"
             android:format12Hour="hh:mm:ss a\nE dd MMM"
+            android:gravity="center"
+            android:fontFamily="@font/bebasneue_regular"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/sp18"
+            android:textSize="@dimen/sp20"
             tools:text="12:05 AM"
 
             />
 
         <TextView
-            android:gravity="center"
             android:id="@+id/txt_timezone1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp5"
+            android:layout_marginTop="@dimen/space_"
+
+            android:duplicateParentState="true"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:fontFamily="@font/bebasneue_regular"
             android:textColor="@android:color/black"
             android:textSize="@dimen/sp10"
-            tools:text="Malaysia" />
+            tools:text="Malaysia">
+
+            <requestFocus
+                android:duplicateParentState="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+        </TextView>
     </LinearLayout>
 </LinearLayout>

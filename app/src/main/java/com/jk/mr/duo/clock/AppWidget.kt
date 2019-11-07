@@ -1,5 +1,6 @@
 package com.jk.mr.duo.clock
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -7,8 +8,20 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
-import com.jk.mr.duo.clock.AppWidgetConfigureActivity.Companion.TEXT_AM
-import com.jk.mr.duo.clock.AppWidgetConfigureActivity.Companion.TEXT_PM
+import com.jk.mr.duo.clock.utils.Constants.SEPARATOR
+import com.jk.mr.duo.clock.utils.Constants.TEXT_AM
+import com.jk.mr.duo.clock.utils.Constants.TEXT_PM
+import com.jk.mr.duo.clock.utils.Constants.THEME_BLUE
+import com.jk.mr.duo.clock.utils.Constants.THEME_DARK
+import com.jk.mr.duo.clock.utils.Constants.THEME_GREEN
+import com.jk.mr.duo.clock.utils.Constants.THEME_INDIGO
+import com.jk.mr.duo.clock.utils.Constants.THEME_LIGHT
+import com.jk.mr.duo.clock.utils.Constants.THEME_ORANGE
+import com.jk.mr.duo.clock.utils.Constants.THEME_RED
+import com.jk.mr.duo.clock.utils.Constants.THEME_YELLOW
+import com.jk.mr.duo.clock.utils.Constants.deleteAllPref
+import com.jk.mr.duo.clock.utils.Constants.getThemePref
+import com.jk.mr.duo.clock.utils.Constants.loadTitlePref
 import com.jk.mr.duo.clock.utils.Utils
 import java.text.DateFormatSymbols
 import java.util.*
@@ -29,129 +42,92 @@ class AppWidget : AppWidgetProvider() {
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         // When the user deletes the widget, delete the preference associated with it.
-        for (appWidgetId in appWidgetIds) {
-            AppWidgetConfigureActivity.deleteTitlePref(context, appWidgetId)
-        }
-    }
+        super.onDeleted(context, appWidgetIds)
+        deleteAllPref(context)
 
-    override fun onEnabled(context: Context) {
-        // Enter relevant functionality for when the first widget is created
     }
-
-    override fun onDisabled(context: Context) {
-        // Enter relevant functionality for when the last widget is disabled
-    }
-
     companion object {
 
         private fun setThem(context: Context, views: RemoteViews, theme: String) {
             // Already dark
             var co = ContextCompat.getColor(context, android.R.color.white)
             when (theme) {
-                AppWidgetConfigureActivity.THEME_DARK -> //Background
+                THEME_DARK -> //Background
                     views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.dark_widget_bg)
                 //Textcolor
                 //  co = ContextCompat.getColor(context, android.R.color.darker_gray)
                 // LinearLayout(context).setBackgroundResource(R.drawable.widget_bg)
-                AppWidgetConfigureActivity.THEME_LIGHT -> {
+                THEME_LIGHT -> {
                     views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.light_widget_bg)
                     co = ContextCompat.getColor(context, android.R.color.black)
                 }
-                AppWidgetConfigureActivity.THEME_RED -> {
+                THEME_RED -> {
                     views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.red_widget_bg)
                     co = ContextCompat.getColor(context, android.R.color.white)
                 }
-                AppWidgetConfigureActivity.THEME_ORANGE -> {
+                THEME_ORANGE -> {
                     views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.orange_widget_bg)
                     co = ContextCompat.getColor(context, android.R.color.white)
                 }
-                AppWidgetConfigureActivity.THEME_YELLOW -> {
+                THEME_YELLOW -> {
                     views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.yellow_widget_bg)
                     co = ContextCompat.getColor(context, android.R.color.black)
                 }
-                AppWidgetConfigureActivity.THEME_GREEN -> {
+                THEME_GREEN -> {
                     views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.green_widget_bg)
                     co = ContextCompat.getColor(context, android.R.color.white)
                 }
-                AppWidgetConfigureActivity.THEME_BLUE -> {
+                THEME_BLUE -> {
                     views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.blue_widget_bg)
                     co = ContextCompat.getColor(context, android.R.color.white)
                 }
-                AppWidgetConfigureActivity.THEME_INDIGO -> {
+                THEME_INDIGO -> {
                     views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.indigo_widget_bg)
                     co = ContextCompat.getColor(context, android.R.color.white)
                 }
 
                 //Default
 
-                //Selected
+
             }
 
-            //Default
-            /* views.setTextColor(R.id.hour0, co)
-             views.setTextColor(R.id.minute0, co)
-             views.setTextColor(R.id.am_pm0, co)
-             views.setTextColor(R.id.txt_day0, co)*/
+            //Selected
+
             views.setInt(R.id.separator, "setBackgroundColor", co)
             views.setTextColor(R.id.clock0, co)
             views.setTextColor(R.id.txt_timezone0, co)
 
             //Selected
 
-            /*  views.setTextColor(R.id.hour1, co)
-              views.setTextColor(R.id.minute1, co)
-              views.setTextColor(R.id.am_pm1, co)
-              views.setTextColor(R.id.txt_day1, co)*/
             views.setTextColor(R.id.clock1, co)
             views.setTextColor(R.id.txt_timezone1, co)
 
 
         }
-
+        @SuppressLint("NewApi")
         internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager,
                                      appWidgetId: Int) {
-            val d = AppWidgetConfigureActivity.loadTitlePref(context, appWidgetId).split(":")
-            val timeZone = d[0]
 
-            val theme = AppWidgetConfigureActivity.loadBgColorPref(context, appWidgetId)
+            val data = loadTitlePref(context)
+
+
+            val d = data.split(SEPARATOR)
+
+            //  val country = d[0]
+            var timeZone = TimeZone.getDefault().id
+            if (d.isNotEmpty() && d.size > 2)
+                timeZone = d[2]
+
+
+            val theme = getThemePref(context)
             val views = RemoteViews(context.packageName, R.layout.app_widget)
+
+
+
             //  if (bgColor == 0)
             //    bgColor = ContextCompat.getColor(context, R.color.bgcolor)
             setThem(context, views, theme)
 
-
-            //    views.setInt(R.id.widget_root, "setBackgroundColor", bgColor)
-
-            // Construct the RemoteViews object
-
-
-            //  Change background color
-
-            /*  val wallpaperManager = WallpaperManager.getInstance(context)
-              val wallpaperDrawable = wallpaperManager.drawable
-              val bitmap = (wallpaperDrawable as BitmapDrawable).bitmap
-
-              val colClock = ViewUtils.getClockTextColor(context, Palette.from(bitmap).generate().getVibrantColor(ContextCompat.getColor(context, android.R.color.white)))
-
-              *//**//*  val r = Color.red(colClock)
-              val g = Color.green(colClock)
-              val b = Color.blue(colClock)
-
-              val invertedRed = 255 - 0;
-              val invertedGreen = 255 - 130;
-              val invertedBlue = 255 - 20;
-
-              val finalInvertedColor = Color.rgb(invertedRed, invertedGreen, invertedBlue)*//**//*
-
-
-            val colTimeZone = ViewUtils.getClockTextTimeZoneColor(context, Palette.from(bitmap).generate().getVibrantColor(ContextCompat.getColor(context, android.R.color.white)))
-            views.setTextColor(R.id.clock0, colClock)
-            views.setTextColor(R.id.clock1, colClock)
-            views.setTextColor(R.id.txt_timezone0, colTimeZone)
-            views.setTextColor(R.id.txt_timezone1, colTimeZone)*/
-            //  views.setString(R.id.clock0, "setTimeZone", TimeZone.getDefault().id)
-            // views.setString(R.id.clock1, "setTimeZone", TimeZone.getTimeZone(timeZone).id)
-            //val mFormat = DecimalFormat("00")
 
 
             views.setCharSequence(R.id.clock0, "setFormat12Hour", Utils.get12HoursFormat())
@@ -163,42 +139,46 @@ class AppWidget : AppWidgetProvider() {
 
             views.setString(R.id.clock0, "setTimeZone", TimeZone.getDefault().id)
             views.setString(R.id.clock1, "setTimeZone", TimeZone.getTimeZone(timeZone).id)
-            /*  val date = Calendar.getInstance()
-              val h0 = if (date.get(Calendar.HOUR) == 0) 12 else date.get(Calendar.HOUR)
-              views.setTextViewText(R.id.hour0, mFormat.format(h0))
-              views.setTextViewText(R.id.minute0, ":".plus(mFormat.format(date.get(Calendar.MINUTE))))
-              views.setTextViewText(R.id.am_pm0, getTimeInfix(date.get(Calendar.AM_PM)))
-
-              views.setTextViewText(R.id.txt_day0, getFullDate(date))*/
 
 
-// Selected Timezone
 
-
-            // val newDate = Calendar.getInstance(TimeZone.getTimeZone(timeZone))
-            // d(newDate.timeZone.toString())
-
-            /*   val h1 = if (newDate.get(Calendar.HOUR) == 0) 12 else newDate.get(Calendar.HOUR)
-               views.setTextViewText(R.id.hour1, mFormat.format(h1))
-               views.setTextViewText(R.id.minute1, ":".plus(mFormat.format(newDate.get(Calendar.MINUTE))))
-               views.setTextViewText(R.id.am_pm1, getTimeInfix(newDate.get(Calendar.AM_PM)))
-               views.setTextViewText(R.id.txt_day1, getFullDate(newDate))*/
-
-            var txt0 = TimeZone.getDefault().displayName
+            var txt0 = StringBuilder(TimeZone.getDefault().id)
             if (txt0.contains("/"))
-                txt0 = txt0.split("/")[1].replace("_", " ")
+                txt0 = StringBuilder(txt0.toString().split("/")[1].replace("_", " ").trim())
 
-            views.setCharSequence(R.id.txt_timezone0, "setText", txt0)
-            if (d.size>1) {
-                val txt1 = d[1]
-                views.setCharSequence(R.id.txt_timezone1, "setText", txt1)
-               /* //TimeZone.getTimeZone(timeZone).id
-                if (txt1.contains("/")) {
-                    val ch = txt1.split("/")
-                    txt1 = ch[ch.size - 1].replace("_", " ")
-                }*/
+
+            if (txt0.split(" ").size > 2) {
+                txt0 = txt0.replace(txt0.lastIndexOf(" "),txt0.lastIndexOf(" ") + 1, "\n")
+
             }
 
+            views.setCharSequence(R.id.txt_timezone0, "setText", txt0)
+
+
+
+            var txt1 = StringBuilder(TimeZone.getTimeZone(timeZone).id)
+            if (txt1.contains("/"))
+                txt1 = StringBuilder(txt1.toString().split("/")[1].replace("_", " ").trim())
+            views.setCharSequence(R.id.txt_timezone1, "setText", txt1)
+
+            /*if (d.size > 1) {
+
+                var add=d[0]
+                if (add.isEmpty())
+                    add=d[1]
+                val txt1 = StringBuilder(add.trim())
+                *//*if (txt1.split(" ").size > 2) {
+                    txt1 = txt1.replace(txt1.lastIndexOf(" "), txt1.lastIndexOf(" ") + 1, "\n")
+
+                }*//*
+
+                views.setCharSequence(R.id.txt_timezone1, "setText", txt1)
+                *//* //TimeZone.getTimeZone(timeZone).id
+                 if (txt1.contains("/")) {
+                     val ch = txt1.split("/")
+                     txt1 = ch[ch.size - 1].replace("_", " ")
+                 }*//*
+            }*/
 
 
 
@@ -206,7 +186,12 @@ class AppWidget : AppWidgetProvider() {
             val intent = Intent(context, AppWidgetConfigureActivity::class.java)
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+
             views.setOnClickPendingIntent(R.id.rel_custom_time, pendingIntent)
+
+
+            //Click listner of individual
+
 
             //views.setTextViewText(R.id.appwidget_text, widgetText)
 
