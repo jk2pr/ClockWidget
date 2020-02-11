@@ -41,7 +41,6 @@
 
             android:singleLine="true"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/sp14"
             tools:text="Kuala lumpur">
 
             <requestFocus
@@ -98,7 +97,6 @@
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/sp14"
             tools:text="Malaysia">
 
             <requestFocus
