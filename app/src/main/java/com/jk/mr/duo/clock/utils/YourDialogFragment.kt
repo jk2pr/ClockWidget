@@ -18,9 +18,6 @@ import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceSelectionListene
 import android.view.WindowManager
 
 
-
-
-
 class YourDialogFragment : DialogFragment() {
 
     val holdingActivity:AppWidgetConfigureActivity by lazy {

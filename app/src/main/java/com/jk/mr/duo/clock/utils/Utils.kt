@@ -18,8 +18,8 @@ object Utils {
         val span4 = SpannableString("E, dd MMM")
         span1.setSpan(RelativeSizeSpan(1.00f), 0, 4, 0)
         //  span2.setSpan(RelativeSizeSpan(0.60f), 0, 2, 0)
-        span3.setSpan(RelativeSizeSpan(0.40f), 0, 2, 0)
-        span4.setSpan(RelativeSizeSpan(0.40f), 0, 9, 0)
+        span3.setSpan(RelativeSizeSpan(0.50f), 0, 2, 0)
+        span4.setSpan(RelativeSizeSpan(0.50f), 0, 9, 0)
 
         return TextUtils.concat(span1, span3, span4)
     }
@@ -34,7 +34,7 @@ object Utils {
         span1.setSpan(RelativeSizeSpan(1.00f), 0, 4, 0)
         //  span2.setSpan(RelativeSizeSpan(0.60f), 0, 2, 0)
         //   span3.setSpan(RelativeSizeSpan(0.40f), 0, 2, 0)
-        span4.setSpan(RelativeSizeSpan(0.40f), 0, 9, 0)
+        span4.setSpan(RelativeSizeSpan(0.50f), 0, 9, 0)
 
         return TextUtils.concat(span1, span4)
     }

@@ -132,7 +132,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity
             textClock.apply {
                 timeZone = calData.currentCityTimeZone.trim()
                 format12Hour = Utils.getItem12HoursFormat()
-                typeface = bebasneueRegularTypeFace
+               // typeface = bebasneueRegularTypeFace
                 // setTextColor(ContextCompat.getColor(activity, tint)) America/Toronto
                 format24Hour = Utils.getItem24HoursFormat()
             }
@@ -144,11 +144,11 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity
                     final = dd.first().plus(" ").plus(dd[1])
                 text = final
                 //  setTextColor(ContextCompat.getColor(activity, tint))
-                typeface = bebasneueRegularTypeFace
+              //  typeface = bebasneueRegularTypeFace
             }
             textCity.apply {
                 text = calData.address
-                typeface = bebasneueRegularTypeFace
+              //  typeface = bebasneueRegularTypeFace
                 // setTextColor(ContextCompat.getColor(activity, tint))
             }
             val url = calData.flag

@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/light_widget_bg"
-    android:baselineAligned="false"
     android:gravity="center"
     android:orientation="horizontal">
 
@@ -12,19 +11,18 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/dp3"
-        android:layout_weight="1"
+        android:layout_weight=".4"
         android:gravity="center"
         android:orientation="vertical">
 
         <TextClock
             android:id="@+id/clock0"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/space_"
             android:format12Hour="hh:mm:ss a\nE dd MMM"
             android:gravity="center"
-            android:textSize="@dimen/sp20"
-            android:fontFamily="@font/bebasneue_regular"
+            android:textSize="@dimen/sp28"
             android:textColor="@android:color/black"
             tools:text="12:05 AM" />
 
@@ -36,7 +34,6 @@
             android:duplicateParentState="true"
             android:ellipsize="marquee"
             android:focusable="true"
-            android:fontFamily="@font/bebasneue_regular"
             android:focusableInTouchMode="true"
             android:gravity="center"
             android:marqueeRepeatLimit="marquee_forever"
@@ -44,7 +41,7 @@
 
             android:singleLine="true"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/sp10"
+            android:textSize="@dimen/sp14"
             tools:text="Kuala lumpur">
 
             <requestFocus
@@ -56,7 +53,8 @@
 
     <LinearLayout
         android:id="@+id/separator"
-        android:layout_width="1dp"
+        android:layout_width="0dp"
+        android:layout_weight=".005"
         android:layout_height="match_parent"
         android:background="@android:color/black"
         android:orientation="horizontal" />
@@ -66,7 +64,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/dp3"
-        android:layout_weight="1"
+        android:layout_weight=".4"
         android:gravity="center"
         android:orientation="vertical"
 
@@ -79,9 +77,8 @@
             android:layout_marginBottom="@dimen/space_"
             android:format12Hour="hh:mm:ss a\nE dd MMM"
             android:gravity="center"
-            android:fontFamily="@font/bebasneue_regular"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/sp20"
+            android:textSize="@dimen/sp28"
             tools:text="12:05 AM"
 
             />
@@ -100,9 +97,8 @@
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
             android:singleLine="true"
-            android:fontFamily="@font/bebasneue_regular"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/sp10"
+            android:textSize="@dimen/sp14"
             tools:text="Malaysia">
 
             <requestFocus
