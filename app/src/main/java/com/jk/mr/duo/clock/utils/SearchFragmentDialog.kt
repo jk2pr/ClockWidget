@@ -18,7 +18,7 @@ import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceSelectionListene
 import android.view.WindowManager
 
 
-class YourDialogFragment : DialogFragment() {
+class SearchFragmentDialog : DialogFragment() {
 
     val holdingActivity:AppWidgetConfigureActivity by lazy {
         activity as AppWidgetConfigureActivity
@@ -67,9 +67,8 @@ class YourDialogFragment : DialogFragment() {
                 dismiss()
             }
 
-            override fun onCancel() {
-                dismiss()
-            }
+            override fun onCancel() = dismiss()
+
         })
     }
 }

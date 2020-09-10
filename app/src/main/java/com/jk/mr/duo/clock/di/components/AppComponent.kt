@@ -5,9 +5,7 @@ import com.jk.mr.duo.clock.di.modules.NetworkModule
 import dagger.Component
 import javax.inject.Singleton
 
-/**
- * Created by M2353204 on 07/08/2017.
- */
+
 @Singleton
 @Component(modules = [ (NetworkModule::class)])
 interface AppComponent {

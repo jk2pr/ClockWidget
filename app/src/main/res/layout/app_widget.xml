@@ -2,51 +2,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/light_widget_bg"
     android:gravity="center"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:baselineAligned="false">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/dp3"
-        android:layout_weight=".4"
+        android:layout_weight="0.4"
         android:gravity="center"
+        android:layout_margin="@dimen/widget_margin"
         android:orientation="vertical">
 
         <TextClock
             android:id="@+id/clock0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/space_"
+            android:layout_marginBottom="@dimen/dp8"
             android:format12Hour="hh:mm:ss a\nE dd MMM"
-            android:gravity="center"
-            android:textSize="@dimen/sp28"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/sp24"
             android:textColor="@android:color/black"
             tools:text="12:05 AM" />
 
         <TextView
             android:id="@+id/txt_timezone0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_"
-            android:duplicateParentState="true"
-            android:ellipsize="marquee"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:scrollHorizontally="true"
-
-            android:singleLine="true"
-            android:textColor="@android:color/black"
-            tools:text="Kuala lumpur">
-
-            <requestFocus
-                android:duplicateParentState="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true" />
+            tools:text="Kuala lumpur"
+            style="@style/city_style">
+            <requestFocus/>
         </TextView>
     </LinearLayout>
 
@@ -61,9 +46,9 @@
     <LinearLayout
         android:id="@+id/rel_custom_time"
         android:layout_width="0dp"
+        android:layout_margin="@dimen/widget_margin"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/dp3"
-        android:layout_weight=".4"
+        android:layout_weight="0.4"
         android:gravity="center"
         android:orientation="vertical"
 
@@ -73,36 +58,20 @@
             android:id="@+id/clock1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/space_"
+            android:layout_marginBottom="@dimen/dp8"
             android:format12Hour="hh:mm:ss a\nE dd MMM"
             android:gravity="center"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/sp28"
+            android:textSize="@dimen/sp24"
             tools:text="12:05 AM"
 
             />
 
         <TextView
             android:id="@+id/txt_timezone1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_"
-
-            android:duplicateParentState="true"
-            android:ellipsize="marquee"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:scrollHorizontally="true"
-            android:singleLine="true"
-            android:textColor="@android:color/black"
+            style="@style/city_style"
             tools:text="Malaysia">
-
-            <requestFocus
-                android:duplicateParentState="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true" />
+        <requestFocus/>
         </TextView>
     </LinearLayout>
 </LinearLayout>

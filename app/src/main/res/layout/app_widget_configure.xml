@@ -57,7 +57,7 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:fabSize="mini"
+        app:fabSize="normal"
         android:scaleType="center"
         android:backgroundTint="?attr/selectedRowBackgroundColor"
         android:layout_gravity="bottom|end"
