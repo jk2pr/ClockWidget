@@ -125,6 +125,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
 */
         val pInfo = packageManager.getPackageInfo(packageName, 0)
+
         val version = pInfo.versionCode
         if (version < 12)
             deleteAllPref(this)
@@ -132,7 +133,9 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         appComponent = DaggerAppComponent.builder()
                 .networkModule(NetworkModule())
-                .build().also { it.inject(this) }
+                .build()
+        appComponent.inject(this)
+
 
         setSupportActionBar(toolbar)
         title = null
@@ -143,6 +146,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
             // addItemDecoration(itemDecorator)
         }
+
         val swipeHandler = object : SwipeToDeleteCallback(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = (recycler_clock.adapter as DataAdapter).removeAt(viewHolder.adapterPosition)
         }
@@ -154,11 +158,9 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         fab.setOnClickListener { openSearchDialog() }
 
-
         if (intent.action == ACTION_ADD_CLOCK)
-            Handler().postDelayed({
-                fab.performClick()
-            }, 100)
+            Handler().postDelayed(
+                    { fab.performClick() }, 100)
 
         // Find the widget id from the intent.
 
@@ -346,7 +348,8 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         return when (item.itemId) {
-            R.id.action_search -> { openSearchDialog()
+            R.id.action_search -> {
+                openSearchDialog()
                 true
             }
             R.id.action_setting -> {
@@ -413,16 +416,16 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
     }
 
-    /* fun showLoader(isShowing: Boolean) {
-         if (!isShowing) {
-             recycler_view?.visibility = View.VISIBLE
-             progress?.visibility = View.GONE
-         } else {
-             recycler_view?.visibility = View.GONE
-             progress?.visibility = View.VISIBLE
-         }
+/* fun showLoader(isShowing: Boolean) {
+     if (!isShowing) {
+         recycler_view?.visibility = View.VISIBLE
+         progress?.visibility = View.GONE
+     } else {
+         recycler_view?.visibility = View.GONE
+         progress?.visibility = View.VISIBLE
+     }
 
-     }*/
+ }*/
 
 
 }
