@@ -26,9 +26,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
         data.add(0, calData)
         notifyItemInserted(0)
         Handler().post {
-            data.forEach {
-                it.isSelected = it == calData
-            }
+            data.forEach { it.isSelected = it == calData }
             notifyDataSetChanged()
         }
         listener.invoke(calData)
@@ -36,21 +34,15 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
     }
 
     fun removeAt(position: Int) {
-
         data.removeAt(position)
         notifyItemRemoved(position)
-
     }
 
 
     private fun moveToTop(calData: CalData) {
         val currentPosition = data.indexOf(calData)
-        if (currentPosition == 0)
-            return
-
-        data.forEach {
-            it.isSelected = it == calData
-        }
+        if (currentPosition == 0) return
+        data.forEach { it.isSelected = it == calData }
         notifyDataSetChanged()
 
         mRecyclerView.post {
@@ -73,10 +65,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_cal_layout, parent, false))
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_cal_layout, parent, false))
 
     override fun getItemCount() = data.size
 

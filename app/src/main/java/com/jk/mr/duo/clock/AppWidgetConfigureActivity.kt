@@ -162,12 +162,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             Handler().postDelayed(
                     { fab.performClick() }, 100)
 
-        // Find the widget id from the intent.
-
-
-        // If this activity was started with an intent without an app widget ID, finish with an error.
-
-
     }
 
     private fun handleDashBoardClock() {
@@ -178,13 +172,8 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         if (currentTimeZone.contains("/"))
             currentTimeZone = currentTimeZone.split("/")[1].replace("_", " ")
         dashboard_timezone.text = currentTimeZone
-        // dashboard_timezone.paintFlags = Paint.UNDERLINE_TEXT_FLAG
-
         val typeface = getBebasneueRegularTypeFace(this)
         dashboard_clock.typeface = typeface
-        // dashboard_timezone.typeface = typeface
-
-
     }
 
 
@@ -294,14 +283,8 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                                 .plus(SEPARATOR)
                                 .plus(abbreviation))
 
-                }
-
-                )
-                {
-                    run {
-                        // Timber.d(e)
-                    }
-                }
+                })
+                {}
 
         subscriptions.add(subscribeOn)
 
