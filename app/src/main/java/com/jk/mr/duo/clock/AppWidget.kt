@@ -1,6 +1,5 @@
 package com.jk.mr.duo.clock
 
-import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -106,7 +105,7 @@ class AppWidget : AppWidgetProvider() {
 
         }
 
-        @SuppressLint("NewApi")
+
         internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager,
                                      appWidgetId: Int) {
 
