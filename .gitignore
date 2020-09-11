@@ -1,0 +1,8 @@
+/app/src/Keystore
+/keystore.properties
+/gradle.properties
+/app/google-services.json
+/.idea/
+/app/build/
+/.gradle/
+/local.properties

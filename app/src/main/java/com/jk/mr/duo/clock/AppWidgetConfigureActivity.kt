@@ -17,7 +17,6 @@ import android.widget.CheckedTextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,7 +49,7 @@ import com.jk.mr.duo.clock.utils.Constants.saveThemePref
 import com.jk.mr.duo.clock.utils.Constants.saveTitlePref
 import com.jk.mr.duo.clock.utils.DataAdapter
 import com.jk.mr.duo.clock.utils.Utils
-import com.jk.mr.duo.clock.utils.YourDialogFragment
+import com.jk.mr.duo.clock.utils.SearchFragmentDialog
 import com.mapbox.api.geocoding.v5.models.CarmenFeature
 import com.mapbox.geojson.Point
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -75,26 +74,14 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     var subscriptions = CompositeDisposable()
 
 
-    private fun makeString(it: CalData): String {
-
-
-        return it.address
-                .plus(SEPARATOR)
-                .plus(it.name)
-                .plus(SEPARATOR)
-                .plus(it.currentCityTimeZone)
-                .plus(SEPARATOR)
-                .plus(it.abbreviation)
-    }
+    private fun makeString(it: CalData) = "${it.address}$SEPARATOR${it.name}$SEPARATOR${it.currentCityTimeZone}$SEPARATOR${it.abbreviation}"
 
     private val dataAdapter by lazy {
-        val dd = DataAdapter(this@AppWidgetConfigureActivity) {
+        DataAdapter(this@AppWidgetConfigureActivity) {
 
             val timeZoneId = makeString(it)
-
             saveTitlePref(this, timeZoneId)
             // recreate()
-
 
             // Make sure we pass back the original appWidgetId
             val resultValue = Intent()
@@ -114,18 +101,10 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             AppWidget.updateAppWidget(this, appWidgetManager, mAppWidgetId)*/
         }
 
-
-
-
-        dd
     }
 
-    fun abc() {
-        if (dataAdapter.itemCount==0)
-            txt_empty.visibility = View.VISIBLE
-        else
-            txt_empty.visibility = View.GONE
-    }
+    fun handleDataAdapterChanges() = if (dataAdapter.itemCount == 0) txt_empty.visibility = View.VISIBLE else txt_empty.visibility = View.GONE
+
 
     public override fun onCreate(icicle: Bundle?) {
 
@@ -146,6 +125,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
 */
         val pInfo = packageManager.getPackageInfo(packageName, 0)
+
         val version = pInfo.versionCode
         if (version < 12)
             deleteAllPref(this)
@@ -157,7 +137,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         appComponent.inject(this)
 
 
-        // initToolbarDimension()
         setSupportActionBar(toolbar)
         title = null
 
@@ -167,38 +146,21 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
             // addItemDecoration(itemDecorator)
         }
+
         val swipeHandler = object : SwipeToDeleteCallback(this) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val adapter = recycler_clock.adapter as DataAdapter
-                adapter.removeAt(viewHolder.adapterPosition)
-            }
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = (recycler_clock.adapter as DataAdapter).removeAt(viewHolder.adapterPosition)
         }
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
         itemTouchHelper.attachToRecyclerView(recycler_clock)
 
 
-
-
-
-
         handleDashBoardClock()
 
-        fab.setOnClickListener {
-
-            openSearchDialog()
-        }
-
+        fab.setOnClickListener { openSearchDialog() }
 
         if (intent.action == ACTION_ADD_CLOCK)
-            Handler().postDelayed({
-                fab.performClick()
-            }, 100)
-
-        // Find the widget id from the intent.
-
-
-        // If this activity was started with an intent without an app widget ID, finish with an error.
-
+            Handler().postDelayed(
+                    { fab.performClick() }, 100)
 
     }
 
@@ -210,55 +172,26 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         if (currentTimeZone.contains("/"))
             currentTimeZone = currentTimeZone.split("/")[1].replace("_", " ")
         dashboard_timezone.text = currentTimeZone
-        // dashboard_timezone.paintFlags = Paint.UNDERLINE_TEXT_FLAG
-
         val typeface = getBebasneueRegularTypeFace(this)
         dashboard_clock.typeface = typeface
-        // dashboard_timezone.typeface = typeface
-
-
     }
 
-
-    /*private fun initToolbarDimension() {
-
-       *//* window.apply {
-            setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-           // addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            statusBarColor=Color.RED
-        }*//*
-
-        val params = toolbar.layoutParams as RelativeLayout.LayoutParams
-        params.setMargins(0, getStatusBarHeight(), 0, 0)
-        toolbar.layoutParams = params
-    }
-
-    private fun getStatusBarHeight(): Int {
-        var result = 0
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = resources.getDimensionPixelSize(resourceId)
-        }
-        return result
-    }
-*/
 
     private val dataObservable = object : RecyclerView.AdapterDataObserver() {
 
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
             super.onItemRangeInserted(positionStart, itemCount)
-            abc()
+            handleDataAdapterChanges()
         }
 
         override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
             super.onItemRangeMoved(fromPosition, toPosition, itemCount)
-            abc()
+            handleDataAdapterChanges()
         }
 
         override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
             super.onItemRangeRemoved(positionStart, itemCount)
-            abc()
+            handleDataAdapterChanges()
         }
 
 
@@ -290,7 +223,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         if (dataAdapter.itemCount > 0)
             dataAdapter.listener.invoke(dataAdapter.data[0])
 
-        abc()
+        handleDataAdapterChanges()
 
     }
 
@@ -301,7 +234,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             dataAdapter.unregisterAdapterDataObserver(dataObservable)
 
 
-        dashboard_timezone.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES;
+        dashboard_timezone.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
     }
 
     fun getResultFromDialog(carmenFeature: CarmenFeature) {
@@ -350,14 +283,8 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                                 .plus(SEPARATOR)
                                 .plus(abbreviation))
 
-                }
-
-                )
-                {
-                    run {
-                        // Timber.d(e)
-                    }
-                }
+                })
+                {}
 
         subscriptions.add(subscribeOn)
 
@@ -369,32 +296,14 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             saveTitlePref(this, timeZoneId)
             showDataInAdapter(timeZoneId)
 
-            /*val result = Intent()
-            result.putExtra(DashBoardActivity.CAL_DATA, timeZoneId)
-            setResult(Activity.RESULT_OK, result)
-            finish()*/
+        } else Toast.makeText(applicationContext, "Unknown Location found, Please enter exact location.", Toast.LENGTH_SHORT).show()
 
-
-            // It is the responsibility of the configuration activity to update the app widget
-
-            /* val appWidgetManager = AppWidgetManager.getInstance(this)
-             AppWidget.updateAppWidget(this, appWidgetManager, mAppWidgetId)
-
-             // Make sure we pass back the original appWidgetId
-             val resultValue = Intent()
-             resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
-             setResult(Activity.RESULT_OK, resultValue)*/
-            // finish()
-        } else {
-
-            Toast.makeText(applicationContext, "Unknown Location found, Please enter exact location.", Toast.LENGTH_SHORT).show()
-        }
 
     }
 
-    private fun showDataInAdapter(dd: String) {
+    private fun showDataInAdapter(data: String) {
 
-        val list = dd.split(SEPARATOR)
+        val list = data.split(SEPARATOR)
         val address = list.first().split(",").dropLast(1).joinToString()
         val country = list[1].trim().replace("United States", "United States of America")
                 .replace("United Kingdom", "United Kingdom of Great Britain and Northern Ireland")
@@ -403,20 +312,16 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         val abbreviation = list.last()
         assets.open("data.json").apply {
             val jsonString = readBytes().toString(Charsets.UTF_8)
-            val listType = object : TypeToken<List<CalData>>() {
-
-            }.type
+            val listType = object : TypeToken<List<CalData>>() {}.type
             val calData = Gson().fromJson<List<CalData>>(jsonString, listType).filter {
                 it.name.trim().equals(country, true)
             } // Dummy
-            if (calData.isEmpty())
-                return
+            if (calData.isEmpty()) return
             val singleCalData = calData.first()
             singleCalData.address = address
             singleCalData.currentCityTimeZone = timeZone
             singleCalData.abbreviation = abbreviation
             dataAdapter.addCal(singleCalData)
-
 
         }.close()
 
@@ -427,25 +332,11 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         return when (item.itemId) {
             R.id.action_search -> {
-                //    val fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
-
-                //  val intent = Autocomplete.IntentBuilder(
-                //           FULLSCREEN, fields)
-                //           .build(this)
-
-                /*  val intent = PlaceAutocomplete.IntentBuilder()
-                          .accessToken(BuildConfig.PLACE_KEY)
-                          .build(this)
-                  startActivityForResult(intent, 0)
-                  */
                 openSearchDialog()
-
                 true
             }
             R.id.action_setting -> {
-
                 showThemePickerDialog()
-                //startActivity(Intent(this, PreferenceActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -455,15 +346,14 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
     private fun openSearchDialog() {
 
-        val yourDialogFragment = YourDialogFragment()
-        yourDialogFragment.setStyle(DialogFragment.STYLE_NORMAL,R.style.myDialog)
-        yourDialogFragment.show(supportFragmentManager, TAG)
+        val searchFragmentDialog = SearchFragmentDialog()
+        searchFragmentDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.myDialog)
+        searchFragmentDialog.show(supportFragmentManager, TAG)
 
 
     }
 
     private fun showThemePickerDialog() {
-
 
         val dialog = AlertDialog.Builder(this)
         dialog.setCancelable(true)
@@ -509,16 +399,16 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
     }
 
-    /* fun showLoader(isShowing: Boolean) {
-         if (!isShowing) {
-             recycler_view?.visibility = View.VISIBLE
-             progress?.visibility = View.GONE
-         } else {
-             recycler_view?.visibility = View.GONE
-             progress?.visibility = View.VISIBLE
-         }
+/* fun showLoader(isShowing: Boolean) {
+     if (!isShowing) {
+         recycler_view?.visibility = View.VISIBLE
+         progress?.visibility = View.GONE
+     } else {
+         recycler_view?.visibility = View.GONE
+         progress?.visibility = View.VISIBLE
+     }
 
-     }*/
+ }*/
 
 
 }

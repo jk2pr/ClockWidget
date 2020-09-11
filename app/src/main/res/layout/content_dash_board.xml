@@ -71,7 +71,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/sp18"
+        android:textSize="@dimen/sp16"
         android:gravity="center"
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="@+id/dashboard_clock"

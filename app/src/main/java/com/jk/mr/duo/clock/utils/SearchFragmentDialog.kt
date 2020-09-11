@@ -18,7 +18,7 @@ import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceSelectionListene
 import android.view.WindowManager
 
 
-class YourDialogFragment : DialogFragment() {
+class SearchFragmentDialog : DialogFragment() {
 
     val holdingActivity:AppWidgetConfigureActivity by lazy {
         activity as AppWidgetConfigureActivity
@@ -44,18 +44,19 @@ class YourDialogFragment : DialogFragment() {
         val autocompleteFragment: PlaceAutocompleteFragment = PlaceAutocompleteFragment.newInstance(BuildConfig.PLACE_KEY, placeOptions)
 
 
-        val height = (resources.displayMetrics.heightPixels * 0.50).toInt()
-        val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
-
-        val d=dialog!!
+        val h = (resources.displayMetrics.heightPixels * 0.50).toInt()
+        val w = (resources.displayMetrics.widthPixels * 0.90).toInt()
 
         val lp = WindowManager.LayoutParams()
-        lp.copyFrom(d.window?.attributes)
-        lp.width = width
-        lp.height = height
-        d.show()
-        d.window?.attributes = lp
-
+        lp.apply {
+            copyFrom(dialog?.window?.attributes)
+            width = w
+            height = h
+        }
+        dialog?.let {
+            it.window?.attributes = lp
+            it.show()
+        }
         val transaction = childFragmentManager.beginTransaction()
         transaction.add(R.id.fragment_container, autocompleteFragment, TAG)
         transaction.commit()
@@ -67,9 +68,8 @@ class YourDialogFragment : DialogFragment() {
                 dismiss()
             }
 
-            override fun onCancel() {
-                dismiss()
-            }
+            override fun onCancel() = dismiss()
+
         })
     }
 }

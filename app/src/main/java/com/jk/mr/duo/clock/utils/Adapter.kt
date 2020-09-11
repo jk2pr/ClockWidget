@@ -1,6 +1,5 @@
 package com.jk.mr.duo.clock.utils
 
-import android.graphics.Typeface
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
@@ -18,8 +17,7 @@ import kotlinx.android.synthetic.main.item_cal_layout.view.*
 import java.util.*
 
 
-class DataAdapter(private val activity: AppWidgetConfigureActivity
-                  ,  val listener: (CalData) -> Unit) : RecyclerView.Adapter<DataAdapter.ViewHolder>() {
+class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener: (CalData) -> Unit) : RecyclerView.Adapter<DataAdapter.ViewHolder>() {
     private lateinit var mRecyclerView: RecyclerView
     val data = LinkedList<CalData>()
 
@@ -28,9 +26,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity
         data.add(0, calData)
         notifyItemInserted(0)
         Handler().post {
-            data.forEach {
-                it.isSelected = it == calData
-            }
+            data.forEach { it.isSelected = it == calData }
             notifyDataSetChanged()
         }
         listener.invoke(calData)
@@ -38,21 +34,15 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity
     }
 
     fun removeAt(position: Int) {
-
         data.removeAt(position)
         notifyItemRemoved(position)
-
     }
 
 
     private fun moveToTop(calData: CalData) {
         val currentPosition = data.indexOf(calData)
-        if (currentPosition == 0)
-            return
-
-        data.forEach {
-            it.isSelected = it == calData
-        }
+        if (currentPosition == 0) return
+        data.forEach { it.isSelected = it == calData }
         notifyDataSetChanged()
 
         mRecyclerView.post {
@@ -73,37 +63,20 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity
             mRecyclerView.scrollToPosition(0)
 
         }
-
-
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_cal_layout, parent, false))
 
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_cal_layout, parent, false))
-    }
+    override fun getItemCount() = data.size
 
-    override fun getItemCount(): Int {
-        return data.size
-    }
-
-    private val bebasneueRegularTypeFace by lazy {
-
-        Constants.getBebasneueRegularTypeFace(activity)
-
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val calData = data[position]
-        holder.bind(calData, listener)
-
-
-    }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(data[position], listener)
 
     fun addAll(calData: List<CalData>) {
-        data.clear()
-        data.addAll(calData)
+        data.apply {
+            clear()
+            addAll(calData)
+        }
         notifyDataSetChanged()
-       // notifyItemRangeInserted(0, data.size)
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -120,10 +93,6 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity
         private val textCity: TextView = itemView.tv_city
         private val textCountry: TextView = itemView.tv_country
 
-
-        //private val textColor = android.R.color.white
-        //  private val tint = activity.getTintFromTheme(activity.getThemePref())
-
         fun bind(calData: CalData, listener: (CalData) -> Unit) = with(itemView) {
 
             root_constraint.isSelected = calData.isSelected
@@ -132,8 +101,6 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity
             textClock.apply {
                 timeZone = calData.currentCityTimeZone.trim()
                 format12Hour = Utils.getItem12HoursFormat()
-               // typeface = bebasneueRegularTypeFace
-                // setTextColor(ContextCompat.getColor(activity, tint)) America/Toronto
                 format24Hour = Utils.getItem24HoursFormat()
             }
             textCountry.apply {
@@ -143,19 +110,13 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity
                 if (dd.size > 1)
                     final = dd.first().plus(" ").plus(dd[1])
                 text = final
-                //  setTextColor(ContextCompat.getColor(activity, tint))
-              //  typeface = bebasneueRegularTypeFace
             }
-            textCity.apply {
-                text = calData.address
-              //  typeface = bebasneueRegularTypeFace
-                // setTextColor(ContextCompat.getColor(activity, tint))
-            }
-            val url = calData.flag
+            textCity.text = calData.address
+
             SvgLoader.pluck()
                     .with(activity)
                     .setPlaceHolder(R.drawable.ic_image_black_24dp, R.drawable.ic_broken_image_black_24dp)
-                    .load(url, imgFlag)
+                    .load(calData.flag, imgFlag)
             isClickable = (adapterPosition != 0)
             if (isClickable)
                 setOnClickListener {

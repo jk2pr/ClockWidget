@@ -1,6 +1,5 @@
 package com.jk.mr.duo.clock
 
-import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -46,6 +45,7 @@ class AppWidget : AppWidgetProvider() {
         deleteAllPref(context)
 
     }
+
     companion object {
 
         private fun setThem(context: Context, views: RemoteViews, theme: String) {
@@ -104,7 +104,8 @@ class AppWidget : AppWidgetProvider() {
 
 
         }
-        @SuppressLint("NewApi")
+
+
         internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager,
                                      appWidgetId: Int) {
 
@@ -121,7 +122,6 @@ class AppWidget : AppWidgetProvider() {
 
             val theme = getThemePref(context)
             val views = RemoteViews(context.packageName, R.layout.app_widget)
-
 
 
             //  if (bgColor == 0)
@@ -141,24 +141,24 @@ class AppWidget : AppWidgetProvider() {
             views.setString(R.id.clock1, "setTimeZone", TimeZone.getTimeZone(timeZone).id)
 
 
-
             var txt0 = StringBuilder(TimeZone.getDefault().id)
             if (txt0.contains("/"))
                 txt0 = StringBuilder(txt0.toString().split("/")[1].replace("_", " ").trim())
 
 
             if (txt0.split(" ").size > 2) {
-                txt0 = txt0.replace(txt0.lastIndexOf(" "),txt0.lastIndexOf(" ") + 1, "\n")
+                txt0 = txt0.replace(txt0.lastIndexOf(" "), txt0.lastIndexOf(" ") + 1, "\n")
 
             }
 
             views.setCharSequence(R.id.txt_timezone0, "setText", txt0)
 
 
-
             var txt1 = StringBuilder(TimeZone.getTimeZone(timeZone).id)
-            if (txt1.contains("/"))
-                txt1 = StringBuilder(txt1.toString().split("/")[1].replace("_", " ").trim())
+            when {
+                (txt1.contains("/")) ->
+                    txt1 = StringBuilder(txt1.toString().split("/")[1].replace("_", " ").trim())
+            }
             views.setCharSequence(R.id.txt_timezone1, "setText", txt1)
 
             /*if (d.size > 1) {
@@ -179,8 +179,6 @@ class AppWidget : AppWidgetProvider() {
                      txt1 = ch[ch.size - 1].replace("_", " ")
                  }*//*
             }*/
-
-
 
 
             val intent = Intent(context, AppWidgetConfigureActivity::class.java)

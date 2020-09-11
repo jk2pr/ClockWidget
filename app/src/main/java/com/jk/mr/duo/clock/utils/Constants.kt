@@ -2,7 +2,6 @@ package com.jk.mr.duo.clock.utils
 
 import android.content.Context
 import android.graphics.Typeface
-import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.jk.mr.duo.clock.data.caldata.CalData
 import com.jk.mr.duo.clock.di.components.AppComponent
@@ -13,7 +12,6 @@ object Constants {
 
 
     const val SEPARATOR = "*"
-    val jsonToRestore = LinkedList<CalData>()
     private const val PREFS_NAME = "com.jk.mr.dualclock.widget.AppWidget"
     private const val PREF_PREFIX_KEY = "appwidget_"
     private const val PREF_INFIX_KEY = "background_"
@@ -61,11 +59,6 @@ object Constants {
                 ?: THEME_LIGHT
     }
 
-    internal fun deleteThemePref(context: Context) {
-        val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-        prefs.remove(PREF_PREFIX_KEY.plus(PREF_INFIX_KEY)).apply()
-    }
-
     // Read the prefix from the SharedPreferences object for this widget.
     // If there is no preference saved, get the default from a resource
     internal fun loadTitlePref(context: Context): String {
@@ -82,11 +75,6 @@ object Constants {
     }
 
 
-    internal fun deleteTitlePref(context: Context) {
-        val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-        prefs.remove(PREF_PREFIX_KEY).apply()
-    }
-
     internal fun saveDateData(context: Context, data: List<CalData>) {
 
         val json = Gson().toJson(data)
@@ -97,13 +85,7 @@ object Constants {
 
     internal fun getDateData(context: Context): String? {
         val prefs = context.getSharedPreferences(PREFS_NAME, 0)
-        val dd = prefs.getString(PREF_PREFIX_KEY.plus(PREF_PLACE_KEY), "")
-        return dd
-    }
-
-    internal fun deleteDateData(context: Context) {
-        val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-        prefs.remove(PREF_PREFIX_KEY.plus(PREF_PLACE_KEY)).apply()
+        return prefs.getString(PREF_PREFIX_KEY.plus(PREF_PLACE_KEY), "")
     }
 
     internal fun getBebasneueRegularTypeFace(activity: Context)=
