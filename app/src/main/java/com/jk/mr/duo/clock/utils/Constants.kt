@@ -27,6 +27,8 @@ object Constants {
     const val THEME_BLUE = "THEME_BLUE"
     const val THEME_INDIGO = "THEME_INDIGO"
 
+    val themeArray= arrayOf(THEME_BLUE, THEME_DARK, THEME_GREEN, THEME_INDIGO, THEME_LIGHT, THEME_ORANGE, THEME_RED, THEME_YELLOW,)
+
     const val TEXT_AM = "am"
     const val TEXT_PM = "pm"
 
@@ -42,7 +44,7 @@ object Constants {
     lateinit var appComponent: AppComponent
 
     // Write the prefix to the SharedPreferences object for this widget
-    internal fun saveTitlePref(context: Context, text: String) {
+    internal fun saveTimeZonePref(context: Context, text: String) {
         val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
         prefs.putString(PREF_PREFIX_KEY, text).apply()
     }
@@ -61,7 +63,7 @@ object Constants {
 
     // Read the prefix from the SharedPreferences object for this widget.
     // If there is no preference saved, get the default from a resource
-    internal fun loadTitlePref(context: Context): String {
+    internal fun getTimeZonePref(context: Context): String {
         val prefs = context.getSharedPreferences(PREFS_NAME, 0)
         val titleValue = prefs.getString(PREF_PREFIX_KEY, null)
         return titleValue ?: TimeZone.getDefault().id

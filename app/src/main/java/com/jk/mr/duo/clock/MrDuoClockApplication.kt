@@ -12,13 +12,7 @@ class MrDuoClockApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-        //  val shortcutManager = getSystemService<ShortcutManagerCompat>(ShortcutManagerCompat::class.java)
-
-
-        val it = Intent(this, AppWidgetConfigureActivity::class.java)
-        it.action = ACTION_ADD_CLOCK
+        val it = Intent(this, AppWidgetConfigureActivity::class.java).apply { action = ACTION_ADD_CLOCK }
         val shortcut = ShortcutInfoCompat.Builder(this, "id1")
                 .setShortLabel("Clock")
                 .setLongLabel("Add new Clock")

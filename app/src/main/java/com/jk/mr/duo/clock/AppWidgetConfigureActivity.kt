@@ -17,6 +17,7 @@ import android.widget.CheckedTextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.pm.PackageInfoCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,14 +32,6 @@ import com.jk.mr.duo.clock.services.IApi
 import com.jk.mr.duo.clock.utils.Constants.ACTION_ADD_CLOCK
 import com.jk.mr.duo.clock.utils.Constants.SEPARATOR
 import com.jk.mr.duo.clock.utils.Constants.TAG
-import com.jk.mr.duo.clock.utils.Constants.THEME_BLUE
-import com.jk.mr.duo.clock.utils.Constants.THEME_DARK
-import com.jk.mr.duo.clock.utils.Constants.THEME_GREEN
-import com.jk.mr.duo.clock.utils.Constants.THEME_INDIGO
-import com.jk.mr.duo.clock.utils.Constants.THEME_LIGHT
-import com.jk.mr.duo.clock.utils.Constants.THEME_ORANGE
-import com.jk.mr.duo.clock.utils.Constants.THEME_RED
-import com.jk.mr.duo.clock.utils.Constants.THEME_YELLOW
 import com.jk.mr.duo.clock.utils.Constants.appComponent
 import com.jk.mr.duo.clock.utils.Constants.deleteAllPref
 import com.jk.mr.duo.clock.utils.Constants.getBebasneueRegularTypeFace
@@ -46,10 +39,11 @@ import com.jk.mr.duo.clock.utils.Constants.getDateData
 import com.jk.mr.duo.clock.utils.Constants.getThemePref
 import com.jk.mr.duo.clock.utils.Constants.saveDateData
 import com.jk.mr.duo.clock.utils.Constants.saveThemePref
-import com.jk.mr.duo.clock.utils.Constants.saveTitlePref
+import com.jk.mr.duo.clock.utils.Constants.saveTimeZonePref
+import com.jk.mr.duo.clock.utils.Constants.themeArray
 import com.jk.mr.duo.clock.utils.DataAdapter
-import com.jk.mr.duo.clock.utils.Utils
 import com.jk.mr.duo.clock.utils.SearchFragmentDialog
+import com.jk.mr.duo.clock.utils.Utils
 import com.mapbox.api.geocoding.v5.models.CarmenFeature
 import com.mapbox.geojson.Point
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -66,58 +60,34 @@ import javax.inject.Inject
  */
 class AppWidgetConfigureActivity : AppCompatActivity() {
 
-
     @Inject
     lateinit var api: IApi
-
     var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     var subscriptions = CompositeDisposable()
 
-
-    private fun makeString(it: CalData) = "${it.address}$SEPARATOR${it.name}$SEPARATOR${it.currentCityTimeZone}$SEPARATOR${it.abbreviation}"
-
     private val dataAdapter by lazy {
         DataAdapter(this@AppWidgetConfigureActivity) {
-
-            val timeZoneId = makeString(it)
-            saveTitlePref(this, timeZoneId)
-            // recreate()
-
+            saveTimeZonePref(this, getStringFromCalData(it))
             // Make sure we pass back the original appWidgetId
             val resultValue = Intent()
             resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
             setResult(Activity.RESULT_OK, resultValue)
-
-
             val manager = AppWidgetManager.getInstance(this)
             val name = ComponentName(this, AppWidget::class.java)
             val appIds = manager.getAppWidgetIds(name)
-            for (appWidgetId in appIds) {
-                AppWidget.updateAppWidget(this, manager, appWidgetId)
-            }
-
-
-            /*val appWidgetManager = AppWidgetManager.getInstance(this)
-            AppWidget.updateAppWidget(this, appWidgetManager, mAppWidgetId)*/
+            for (appWidgetId in appIds) AppWidget.updateAppWidget(this, manager, appWidgetId)
         }
-
     }
 
     fun handleDataAdapterChanges() = if (dataAdapter.itemCount == 0) txt_empty.visibility = View.VISIBLE else txt_empty.visibility = View.GONE
 
-
     public override fun onCreate(icicle: Bundle?) {
-
         val theme = getThemePref()
         setTheme(theme)
         super.onCreate(icicle)
         setContentView(R.layout.app_widget_configure)
         val extras = intent.extras
-        if (extras != null) {
-            mAppWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-        }
-
+        if (extras != null) mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
         /*if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish()
             return
@@ -125,57 +95,39 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
 */
         val pInfo = packageManager.getPackageInfo(packageName, 0)
+        val version = PackageInfoCompat.getLongVersionCode(pInfo)
 
-        val version = pInfo.versionCode
-        if (version < 12)
-            deleteAllPref(this)
-
-
-        appComponent = DaggerAppComponent.builder()
-                .networkModule(NetworkModule())
-                .build()
+        if (version < 12) deleteAllPref(this)
+        appComponent = DaggerAppComponent.builder().networkModule(NetworkModule()).build()
         appComponent.inject(this)
-
-
         setSupportActionBar(toolbar)
         title = null
-
         recycler_clock.apply {
             adapter = dataAdapter
             layoutManager = LinearLayoutManager(this@AppWidgetConfigureActivity)
-
-            // addItemDecoration(itemDecorator)
         }
-
         val swipeHandler = object : SwipeToDeleteCallback(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = (recycler_clock.adapter as DataAdapter).removeAt(viewHolder.adapterPosition)
         }
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
         itemTouchHelper.attachToRecyclerView(recycler_clock)
-
-
         handleDashBoardClock()
-
         fab.setOnClickListener { openSearchDialog() }
-
-        if (intent.action == ACTION_ADD_CLOCK)
-            Handler().postDelayed(
-                    { fab.performClick() }, 100)
-
+        if (intent.action == ACTION_ADD_CLOCK) Handler().postDelayed({ fab.performClick() }, 100)
     }
 
     private fun handleDashBoardClock() {
-
-        dashboard_clock.format12Hour = Utils.getDashBoard12HoursFormat()
-        dashboard_clock.format24Hour = Utils.getDashBoard24HoursFormat()
-        var currentTimeZone = TimeZone.getDefault().id
-        if (currentTimeZone.contains("/"))
-            currentTimeZone = currentTimeZone.split("/")[1].replace("_", " ")
-        dashboard_timezone.text = currentTimeZone
-        val typeface = getBebasneueRegularTypeFace(this)
-        dashboard_clock.typeface = typeface
+        dashboard_clock.apply {
+            format12Hour = Utils.getDashBoard12HoursFormat()
+            format24Hour = Utils.getDashBoard24HoursFormat()
+            typeface = getBebasneueRegularTypeFace(this@AppWidgetConfigureActivity)
+        }
+        TimeZone.getDefault().id.also { currentTimeZone ->
+            var tz = currentTimeZone
+            if (tz.contains("/")) tz = currentTimeZone.split("/")[1].replace("_", " ")
+            dashboard_timezone.text = tz
+        }
     }
-
 
     private val dataObservable = object : RecyclerView.AdapterDataObserver() {
 
@@ -193,52 +145,34 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             super.onItemRangeRemoved(positionStart, itemCount)
             handleDataAdapterChanges()
         }
-
-
     }
-
 
     override fun onResume() {
         super.onResume()
         val jsonString = getDateData(this)
         dataAdapter.registerAdapterDataObserver(dataObservable)
-
         jsonString?.let {
-
-            if (it.isEmpty())
-                return
+            if (it.isEmpty()) return
             val listType = object : TypeToken<List<CalData>>() {}.type
             val storedData = Gson().fromJson<List<CalData>>(jsonString, listType)
-            if (storedData.isNotEmpty()) {
-                //get from stored
-                dataAdapter.addAll(storedData)
-            }
+            if (storedData.isNotEmpty()) dataAdapter.addAll(storedData) //get from stored
         }
-
-
     }
 
     override fun onPostResume() {
         super.onPostResume()
-        if (dataAdapter.itemCount > 0)
-            dataAdapter.listener.invoke(dataAdapter.data[0])
-
+        if (dataAdapter.itemCount > 0) dataAdapter.listener.invoke(dataAdapter.data[0])
         handleDataAdapterChanges()
-
     }
 
     override fun onPause() {
         super.onPause()
         saveDateData(this, dataAdapter.data)
-        if (dataAdapter.hasObservers())
-            dataAdapter.unregisterAdapterDataObserver(dataObservable)
-
-
+        if (dataAdapter.hasObservers()) dataAdapter.unregisterAdapterDataObserver(dataObservable)
         dashboard_timezone.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
     }
 
     fun getResultFromDialog(carmenFeature: CarmenFeature) {
-
         val address = carmenFeature.placeName()!!
         val country = carmenFeature.placeName()!!.split(",").last()
         val place = carmenFeature.geometry() as Point
@@ -251,7 +185,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         return true
     }
 
-
     private fun requestData(address: String, country: String, lat: String, long: String) {
         subscriptions.clear()
         //val tsLong = System.currentTimeMillis() / 1000
@@ -262,74 +195,44 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ abc ->
                     val timeZoneId = abc.resourceSets[0].resources[0].timeZone.ianaTimeZoneId
-
-                    val abbreviation =
-                            /*   if (abc.resourceSets[0].resources[0].timeZone.abbreviation != null) {
-                            abc.resourceSets[0].resources[0].timeZone.abbreviation // Timber.d(AppWidgetConfigureActivity::class.java.simpleName, timeZoneId)
-                        } else*/
-                            abc.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
+                    val abbreviation = abc.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
                     print("abbreviation $abbreviation")
-
-
-
-                    if (timeZoneId == null)
-                        sendBackResult(timeZoneId)
-                    else
-                        sendBackResult(address
-                                .plus(SEPARATOR)
-                                .plus(country)
-                                .plus(SEPARATOR)
-                                .plus(timeZoneId)
-                                .plus(SEPARATOR)
-                                .plus(abbreviation))
-
-                })
-                {}
-
+                    if (timeZoneId == null) sendBackResult(timeZoneId)
+                    else sendBackResult(address.plus(SEPARATOR).plus(country).plus(SEPARATOR).plus(timeZoneId).plus(SEPARATOR).plus(abbreviation))
+                }) {}
         subscriptions.add(subscribeOn)
-
     }
-
 
     private fun sendBackResult(timeZoneId: String?) {
         if (timeZoneId != null) {
-            saveTitlePref(this, timeZoneId)
+            saveTimeZonePref(this, timeZoneId)
             showDataInAdapter(timeZoneId)
-
         } else Toast.makeText(applicationContext, "Unknown Location found, Please enter exact location.", Toast.LENGTH_SHORT).show()
-
-
     }
 
     private fun showDataInAdapter(data: String) {
-
         val list = data.split(SEPARATOR)
         val address = list.first().split(",").dropLast(1).joinToString()
         val country = list[1].trim().replace("United States", "United States of America")
                 .replace("United Kingdom", "United Kingdom of Great Britain and Northern Ireland")
-
         val timeZone = list[2]
         val abbreviation = list.last()
         assets.open("data.json").apply {
             val jsonString = readBytes().toString(Charsets.UTF_8)
             val listType = object : TypeToken<List<CalData>>() {}.type
-            val calData = Gson().fromJson<List<CalData>>(jsonString, listType).filter {
-                it.name.trim().equals(country, true)
-            } // Dummy
+            val calData = Gson().fromJson<List<CalData>>(jsonString, listType).filter { it.name.trim().equals(country, true) }
             if (calData.isEmpty()) return
             val singleCalData = calData.first()
-            singleCalData.address = address
-            singleCalData.currentCityTimeZone = timeZone
-            singleCalData.abbreviation = abbreviation
+            singleCalData.apply {
+                this.address = address
+                currentCityTimeZone = timeZone
+                this.abbreviation = abbreviation
+            }
             dataAdapter.addCal(singleCalData)
-
         }.close()
-
     }
 
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
         return when (item.itemId) {
             R.id.action_search -> {
                 openSearchDialog()
@@ -341,85 +244,37 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-
     }
 
     private fun openSearchDialog() {
-
         val searchFragmentDialog = SearchFragmentDialog()
         searchFragmentDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.myDialog)
         searchFragmentDialog.show(supportFragmentManager, TAG)
-
-
     }
 
     private fun showThemePickerDialog() {
-
-        val dialog = AlertDialog.Builder(this)
-        dialog.setCancelable(true)
-        val ar = arrayOf(
-                THEME_DARK,
-                THEME_LIGHT,
-                THEME_RED,
-                THEME_ORANGE,
-                THEME_YELLOW,
-                THEME_GREEN,
-                THEME_BLUE,
-                THEME_INDIGO
-        )
-        val arrayAdapter = MyArrayAdapter(this, ar)
-
-        dialog.setNegativeButton("cancel") { d, _ -> d.dismiss() }
-
-        dialog.setAdapter(arrayAdapter) { _, which ->
-            val strName = arrayAdapter.getItem(which)!!
-            saveThemePref(this, strName/* (
-
-                    if (strName == THEME_DARK)
-                        0
-                    else
-                        1
-                    )*/)
-            recreate()
-            val manager = AppWidgetManager.getInstance(this)
-            val name = ComponentName(this, AppWidget::class.java)
-            val appIds = manager.getAppWidgetIds(name)
-            for (appWidgetId in appIds) {
-                AppWidget.updateAppWidget(this, manager, appWidgetId)
+        val arrayAdapter = MyArrayAdapter(this, themeArray)
+        AlertDialog.Builder(this).apply {
+            setCancelable(true)
+            setNegativeButton("cancel") { d, _ -> d.dismiss() }
+            setAdapter(arrayAdapter) { _, which ->
+                val strName = arrayAdapter.getItem(which)!!
+                saveThemePref(this@AppWidgetConfigureActivity, strName)
+                recreate()
+                val manager = AppWidgetManager.getInstance(this@AppWidgetConfigureActivity)
+                val name = ComponentName(this@AppWidgetConfigureActivity, AppWidget::class.java)
+                val appIds = manager.getAppWidgetIds(name)
+                for (appWidgetId in appIds) AppWidget.updateAppWidget(this@AppWidgetConfigureActivity, manager, appWidgetId)
             }
+        }.show()
+    }
 
-            /* val builderInner = AlertDialog.Builder(this)
-             builderInner.setMessage(strName)
-             builderInner.setTitle("Your Selected Item is")
-             builderInner.setPositiveButton("Ok") { it, which0 -> dialog.dismiss() }
-             builderInner.show()*/
+    private inner class MyArrayAdapter(act: AppWidgetConfigureActivity, val objects: Array<String>) : ArrayAdapter<String>(act, android.R.layout.simple_list_item_single_choice, objects) {
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = super.getView(position, convertView, parent)
+            (view as CheckedTextView).isChecked = getThemePref(context) == objects[position]
+            return view
         }
-
-        dialog.show()
-
     }
-
-/* fun showLoader(isShowing: Boolean) {
-     if (!isShowing) {
-         recycler_view?.visibility = View.VISIBLE
-         progress?.visibility = View.GONE
-     } else {
-         recycler_view?.visibility = View.GONE
-         progress?.visibility = View.VISIBLE
-     }
-
- }*/
-
-
-}
-
-
-private class MyArrayAdapter(act: AppWidgetConfigureActivity, val objects: Array<String>) : ArrayAdapter<String>(act, android.R.layout.simple_list_item_single_choice, objects) {
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view = super.getView(position, convertView, parent)
-        (view as CheckedTextView).isChecked = getThemePref(context) == objects[position]
-        return view
-    }
-
 }
