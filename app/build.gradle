@@ -20,7 +20,6 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-    ndkVersion "21.1.6352462"
     compileSdkVersion 30
     defaultConfig {
         applicationId "com.jk.mr.duo.clock"

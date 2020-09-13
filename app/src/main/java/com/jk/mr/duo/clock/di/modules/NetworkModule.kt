@@ -21,8 +21,6 @@ class NetworkModule {
         logging.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
 
         return Retrofit.Builder()
-            // http://ip.jsontest.com/?mime=6
-            // .baseUrl("https://maps.googleapis.com/") Google
             .baseUrl(BuildConfig.MICROSOFT_TIMEZONE_BASE_URL) // Microsoft
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
