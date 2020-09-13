@@ -29,7 +29,7 @@ jobs:
         run: chmod +x ./gradlew
       - name: Clean
         run: ./gradlew clean
-      - name: Clean
+      - name: LinkCheck
         run: ./gradlew ktlintCheck
       - name: Run Test
         run: ./gradlew assembleDebugAndroidTest
