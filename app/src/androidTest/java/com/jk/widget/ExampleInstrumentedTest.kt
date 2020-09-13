@@ -1,10 +1,8 @@
 package com.jk.widget
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
 import org.junit.Test
 import org.junit.runner.RunWith
-
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -16,7 +14,7 @@ class ExampleInstrumentedTest {
     @Test
     fun useAppContext() {
         // Context of the app under test.
-       // val appContext = InstrumentationRegistry.getTargetContext()
-        //assertEquals("com.jk.widget", appContext.packageName)
+        // val appContext = InstrumentationRegistry.getTargetContext()
+        // assertEquals("com.jk.widget", appContext.packageName)
     }
 }

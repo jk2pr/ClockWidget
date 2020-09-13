@@ -10,16 +10,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 package com.jk.mr.duo.clock.data.caldata
 
-data class Translations (
+data class Translations(
 
-	val de : String,
-	val es : String,
-	val fr : String,
-	val ja : String,
-	val it : String,
-	val br : String,
-	val pt : String,
-	val nl : String,
-	val hr : String,
-	val fa : String
+    val de: String,
+    val es: String,
+    val fr: String,
+    val ja: String,
+    val it: String,
+    val br: String,
+    val pt: String,
+    val nl: String,
+    val hr: String,
+    val fa: String
 )

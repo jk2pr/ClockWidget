@@ -1,5 +1,7 @@
 package com.jk.mr.duo.clock
 
+import com.jk.mr.duo.clock.data.caldata.CalData
+import com.jk.mr.duo.clock.utils.Constants.SEPARATOR
 import com.jk.mr.duo.clock.utils.Constants.THEME_BLUE
 import com.jk.mr.duo.clock.utils.Constants.THEME_DARK
 import com.jk.mr.duo.clock.utils.Constants.THEME_GREEN
@@ -10,24 +12,9 @@ import com.jk.mr.duo.clock.utils.Constants.THEME_RED
 import com.jk.mr.duo.clock.utils.Constants.THEME_YELLOW
 import com.jk.mr.duo.clock.utils.Constants.getThemePref
 
+fun getStringFromCalData(it: CalData) = "${it.address}${SEPARATOR}${it.name}$SEPARATOR${it.currentCityTimeZone}$SEPARATOR${it.abbreviation}"
 
-fun AppWidgetConfigureActivity.getTintFromTheme(theme: Int):Int{
-
-    return when (theme) {
-        R.style.AppThemeLight -> android.R.color.black
-        R.style.AppThemeDark -> android.R.color.white
-        R.style.AppThemeRed -> android.R.color.holo_red_light
-        R.style.AppThemeYellow -> R.color.yellow_dark
-        R.style.AppThemeGreen -> R.color.green_light
-        R.style.AppThemeBlue -> android.R.color.holo_blue_light
-        R.style.AppThemeIndigo -> R.color.indigo_light
-        R.style.AppThemeOrange -> android.R.color.holo_orange_light
-
-        else -> android.R.color.background_light
-    }
-}
-
- fun AppWidgetConfigureActivity.getThemePref(): Int {
+fun AppWidgetConfigureActivity.getThemePref(): Int {
     return when (getThemePref(this)) {
         THEME_LIGHT -> R.style.AppThemeLight
         THEME_DARK -> R.style.AppThemeDark
