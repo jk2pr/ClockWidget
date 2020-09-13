@@ -10,10 +10,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 package com.jk.mr.duo.clock.data.caldata
 
-data class Languages (
+data class Languages(
 
-	val iso639_1 : String,
-	val iso639_2 : String,
-	val name : String,
-	val nativeName : String
+    val iso639_1: String,
+    val iso639_2: String,
+    val name: String,
+    val nativeName: String
 )

@@ -1,12 +1,12 @@
 package com.jk.mr.duo.clock
 
-
 import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
@@ -51,9 +51,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.app_widget_configure.*
 import kotlinx.android.synthetic.main.content_dash_board.*
-import java.util.*
+import java.util.TimeZone
 import javax.inject.Inject
-
 
 /**
  * The configuration screen for the [AppWidget] AppWidget.
@@ -107,13 +106,13 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@AppWidgetConfigureActivity)
         }
         val swipeHandler = object : SwipeToDeleteCallback(this) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = (recycler_clock.adapter as DataAdapter).removeAt(viewHolder.adapterPosition)
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = (recycler_clock.adapter as DataAdapter).removeAt(viewHolder.absoluteAdapterPosition)
         }
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
         itemTouchHelper.attachToRecyclerView(recycler_clock)
         handleDashBoardClock()
         fab.setOnClickListener { openSearchDialog() }
-        if (intent.action == ACTION_ADD_CLOCK) Handler().postDelayed({ fab.performClick() }, 100)
+        Looper.myLooper()?.let { if (intent.action == ACTION_ADD_CLOCK) Handler(it).postDelayed({ fab.performClick() }, 100) }
     }
 
     private fun handleDashBoardClock() {
@@ -155,7 +154,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             if (it.isEmpty()) return
             val listType = object : TypeToken<List<CalData>>() {}.type
             val storedData = Gson().fromJson<List<CalData>>(jsonString, listType)
-            if (storedData.isNotEmpty()) dataAdapter.addAll(storedData) //get from stored
+            if (storedData.isNotEmpty()) dataAdapter.addAll(storedData) // get from stored
         }
     }
 
@@ -177,7 +176,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         val country = carmenFeature.placeName()!!.split(",").last()
         val place = carmenFeature.geometry() as Point
         requestData(address, country, place.latitude().toString(), place.longitude().toString())
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -187,19 +185,19 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
     private fun requestData(address: String, country: String, lat: String, long: String) {
         subscriptions.clear()
-        //val tsLong = System.currentTimeMillis() / 1000
+        // val tsLong = System.currentTimeMillis() / 1000
         //  val ts = tsLong.toString()
         val location = lat.plus(",").plus(long)
         val subscribeOn = api.getTimeZoneFromLatLong(location, /*ts,*/ BuildConfig.MAP_TIMEZONE_KEY)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ abc ->
-                    val timeZoneId = abc.resourceSets[0].resources[0].timeZone.ianaTimeZoneId
-                    val abbreviation = abc.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
-                    print("abbreviation $abbreviation")
-                    if (timeZoneId == null) sendBackResult(timeZoneId)
-                    else sendBackResult(address.plus(SEPARATOR).plus(country).plus(SEPARATOR).plus(timeZoneId).plus(SEPARATOR).plus(abbreviation))
-                }) {}
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ abc ->
+                val timeZoneId = abc.resourceSets[0].resources[0].timeZone.ianaTimeZoneId
+                val abbreviation = abc.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
+                print("abbreviation $abbreviation")
+                if (timeZoneId == null) sendBackResult(timeZoneId)
+                else sendBackResult(address.plus(SEPARATOR).plus(country).plus(SEPARATOR).plus(timeZoneId).plus(SEPARATOR).plus(abbreviation))
+            }) {}
         subscriptions.add(subscribeOn)
     }
 
@@ -214,16 +212,15 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         val list = data.split(SEPARATOR)
         val address = list.first().split(",").dropLast(1).joinToString()
         val country = list[1].trim().replace("United States", "United States of America")
-                .replace("United Kingdom", "United Kingdom of Great Britain and Northern Ireland")
+            .replace("United Kingdom", "United Kingdom of Great Britain and Northern Ireland")
         val timeZone = list[2]
         val abbreviation = list.last()
         assets.open("data.json").apply {
             val jsonString = readBytes().toString(Charsets.UTF_8)
             val listType = object : TypeToken<List<CalData>>() {}.type
-            val calData = Gson().fromJson<List<CalData>>(jsonString, listType).filter { it.name.trim().equals(country, true) }
+            val calData = Gson().fromJson<List<CalData>>(jsonString, listType).filter { it.name.trim().equals(country.trim(), true) }
             if (calData.isEmpty()) return
-            val singleCalData = calData.first()
-            singleCalData.apply {
+            val singleCalData = calData.first().apply {
                 this.address = address
                 currentCityTimeZone = timeZone
                 this.abbreviation = abbreviation

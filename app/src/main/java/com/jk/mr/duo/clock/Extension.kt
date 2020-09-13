@@ -12,9 +12,9 @@ import com.jk.mr.duo.clock.utils.Constants.THEME_RED
 import com.jk.mr.duo.clock.utils.Constants.THEME_YELLOW
 import com.jk.mr.duo.clock.utils.Constants.getThemePref
 
- fun getStringFromCalData(it: CalData) = "${it.address}${SEPARATOR}${it.name}$SEPARATOR${it.currentCityTimeZone}$SEPARATOR${it.abbreviation}"
+fun getStringFromCalData(it: CalData) = "${it.address}${SEPARATOR}${it.name}$SEPARATOR${it.currentCityTimeZone}$SEPARATOR${it.abbreviation}"
 
- fun AppWidgetConfigureActivity.getThemePref(): Int {
+fun AppWidgetConfigureActivity.getThemePref(): Int {
     return when (getThemePref(this)) {
         THEME_LIGHT -> R.style.AppThemeLight
         THEME_DARK -> R.style.AppThemeDark

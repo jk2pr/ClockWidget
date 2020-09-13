@@ -1,6 +1,7 @@
 package com.jk.mr.duo.clock.utils
 
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +15,7 @@ import com.jk.mr.duo.clock.AppWidgetConfigureActivity
 import com.jk.mr.duo.clock.R
 import com.jk.mr.duo.clock.data.caldata.CalData
 import kotlinx.android.synthetic.main.item_cal_layout.view.*
-import java.util.*
-
+import java.util.LinkedList
 
 class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener: (CalData) -> Unit) : RecyclerView.Adapter<DataAdapter.ViewHolder>() {
     private lateinit var mRecyclerView: RecyclerView
@@ -25,9 +25,11 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
         calData.isSelected = true
         data.add(0, calData)
         notifyItemInserted(0)
-        Handler().post {
-            data.forEach { it.isSelected = it == calData }
-            notifyDataSetChanged()
+        Looper.myLooper()?.let {
+            Handler(it).post {
+                data.forEach { it.isSelected = it == calData }
+                notifyDataSetChanged()
+            }
         }
         listener.invoke(calData)
         mRecyclerView.scrollToPosition(0)
@@ -37,7 +39,6 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
         data.removeAt(position)
         notifyItemRemoved(position)
     }
-
 
     private fun moveToTop(calData: CalData) {
         val currentPosition = data.indexOf(calData)
@@ -54,14 +55,12 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
             val previousViewHolder = mRecyclerView.findViewHolderForAdapterPosition(currentPosition)
             previousViewHolder?.itemView?.isClickable = true
 
-
             notifyItemChanged(0, zeroViewHolder?.itemView?.isClickable)
             notifyItemChanged(currentPosition, zeroViewHolder?.itemView?.isClickable)
 
             notifyItemMoved(currentPosition, 0)
 
             mRecyclerView.scrollToPosition(0)
-
         }
     }
 
@@ -114,10 +113,10 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
             textCity.text = calData.address
 
             SvgLoader.pluck()
-                    .with(activity)
-                    .setPlaceHolder(R.drawable.ic_image_black_24dp, R.drawable.ic_broken_image_black_24dp)
-                    .load(calData.flag, imgFlag)
-            isClickable = (adapterPosition != 0)
+                .with(activity)
+                .setPlaceHolder(R.drawable.ic_image_black_24dp, R.drawable.ic_broken_image_black_24dp)
+                .load(calData.flag, imgFlag)
+            isClickable = (absoluteAdapterPosition != 0)
             if (isClickable)
                 setOnClickListener {
                     rootConstraint.isSelected = true
@@ -125,8 +124,5 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
                     listener(calData)
                 }
         }
-
     }
-
 }
-

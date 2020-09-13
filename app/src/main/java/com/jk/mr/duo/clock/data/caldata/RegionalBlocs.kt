@@ -10,10 +10,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 package com.jk.mr.duo.clock.data.caldata
 
-data class RegionalBlocs (
+data class RegionalBlocs(
 
-	val acronym : String,
-	val name : String,
-	val otherAcronyms : List<String>,
-	val otherNames : List<String>
+    val acronym: String,
+    val name: String,
+    val otherAcronyms: List<String>,
+    val otherNames: List<String>
 )

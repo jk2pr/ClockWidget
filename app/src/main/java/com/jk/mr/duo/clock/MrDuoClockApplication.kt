@@ -14,13 +14,13 @@ class MrDuoClockApplication : Application() {
 
         val it = Intent(this, AppWidgetConfigureActivity::class.java).apply { action = ACTION_ADD_CLOCK }
         val shortcut = ShortcutInfoCompat.Builder(this, "id1")
-                .setShortLabel("Clock")
-                .setLongLabel("Add new Clock")
-                .setIcon(IconCompat.createWithResource(this, R.drawable.ic_add_circle_black_24dp))
-                .setIntent(it)
-                .build()
+            .setShortLabel("Clock")
+            .setLongLabel("Add new Clock")
+            .setIcon(IconCompat.createWithResource(this, R.drawable.ic_add_circle_black_24dp))
+            .setIntent(it)
+            .build()
 
         ShortcutManagerCompat.addDynamicShortcuts(this, listOf(shortcut))
     }
-    //}
+    // }
 }

@@ -20,8 +20,7 @@ import com.jk.mr.duo.clock.utils.Constants.deleteAllPref
 import com.jk.mr.duo.clock.utils.Constants.getThemePref
 import com.jk.mr.duo.clock.utils.Constants.getTimeZonePref
 import com.jk.mr.duo.clock.utils.Utils
-import java.util.*
-
+import java.util.TimeZone
 
 /**
  * Implementation of App Widget functionality.
@@ -45,7 +44,7 @@ class AppWidget : AppWidgetProvider() {
             var co = ContextCompat.getColor(context, android.R.color.white) // Default White
             views.apply {
                 when (theme) {
-                    //Background
+                    // Background
                     THEME_DARK -> setInt(R.id.widget_root, "setBackgroundResource", R.drawable.dark_widget_bg)
                     THEME_GREEN -> setInt(R.id.widget_root, "setBackgroundResource", R.drawable.green_widget_bg)
                     THEME_BLUE -> setInt(R.id.widget_root, "setBackgroundResource", R.drawable.blue_widget_bg)
@@ -63,11 +62,11 @@ class AppWidget : AppWidgetProvider() {
                 }
             }
             views.apply {
-                //Normal Selected
+                // Normal Selected
                 setInt(R.id.separator, "setBackgroundColor", co)
                 setTextColor(R.id.clock0, co)
                 setTextColor(R.id.txt_timezone0, co)
-                //Selected
+                // Selected
                 setTextColor(R.id.clock1, co)
                 setTextColor(R.id.txt_timezone1, co)
             }
@@ -103,8 +102,5 @@ class AppWidget : AppWidgetProvider() {
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
-
-
     }
 }
-
