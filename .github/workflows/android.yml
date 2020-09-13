@@ -26,7 +26,7 @@ jobs:
           GOOGLE_SERVICE_JSON: ${{ secrets.GOOGLE_SERVICE_JSON }}
         run: echo "$GOOGLE_SERVICE_JSON" > ./app/google-services.json
       - name: Install NDK
-        run: echo "y" | sudo /usr/local/lib/android/tools/bin/sdkmanager --install "ndk;21.0.6113669" --sdk_root=${ANDROID_SDK_ROOT}
+        run: echo "y" | sudo /usr/local/lib/android/sdk/tools/bin/sdkmanager --install "ndk;21.0.6113669" --sdk_root=${ANDROID_SDK_ROOT}
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
       - name: Clean
