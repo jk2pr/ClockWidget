@@ -1,5 +1,6 @@
 package com.jk.mr.duo.clock.utils
 
+import android.content.Context
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.jk.mr.duo.clock.AppWidgetConfigureActivity
 import com.jk.mr.duo.clock.BuildConfig
@@ -29,14 +31,9 @@ class SearchFragmentDialog : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val typedValue = TypedValue()
-        val theme = holdingActivity.theme
-        theme.resolveAttribute(R.attr.selectedRowBackgroundColor, typedValue, true)
-        @ColorInt val color = typedValue.data
-
         val placeOptions = PlaceOptions.builder()
-            .toolbarColor(color)
-            //  .backgroundColor(ContextCompat.getColor(activity as Context, android.R.color.holo_red_dark))
+            .toolbarColor(ContextCompat.getColor(activity as Context, android.R.color.white))
+          //      .backgroundColor(color)
             .build(PlaceOptions.MODE_FULLSCREEN)
         val autocompleteFragment: PlaceAutocompleteFragment = PlaceAutocompleteFragment.newInstance(BuildConfig.PLACE_KEY, placeOptions)
 
