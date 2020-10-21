@@ -10,6 +10,7 @@ import java.util.TimeZone
 object Constants {
 
     const val SEPARATOR = "*"
+    const val AUTOCOMPLETE_REQUEST: Int=1
     private const val PREFS_NAME = "com.jk.mr.dualclock.widget.AppWidget"
     private const val PREF_PREFIX_KEY = "appwidget_"
     private const val PREF_INFIX_KEY = "background_"

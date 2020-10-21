@@ -37,7 +37,7 @@ class SearchFragmentDialog : DialogFragment() {
         val placeOptions = PlaceOptions.builder()
             .toolbarColor(color)
             //  .backgroundColor(ContextCompat.getColor(activity as Context, android.R.color.holo_red_dark))
-            .build(PlaceOptions.MODE_CARDS)
+            .build(PlaceOptions.MODE_FULLSCREEN)
         val autocompleteFragment: PlaceAutocompleteFragment = PlaceAutocompleteFragment.newInstance(BuildConfig.PLACE_KEY, placeOptions)
 
         val h = (resources.displayMetrics.heightPixels * 0.50).toInt()
