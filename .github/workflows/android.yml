@@ -31,7 +31,7 @@ jobs:
         run: chmod +x ./gradlew
       - name: Clean
         run: ./gradlew clean
-      - name: LinkCheck
+      - name: LintCheck
         run: ./gradlew ktlintCheck
       - name: Run Test
         run: ./gradlew assembleDebugAndroidTest
