@@ -46,7 +46,6 @@ import com.jk.mr.duo.clock.utils.SearchFragmentDialog
 import com.jk.mr.duo.clock.utils.Utils
 import com.mapbox.api.geocoding.v5.models.CarmenFeature
 import com.mapbox.geojson.Point
-import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -59,7 +58,6 @@ import javax.inject.Inject
  * The configuration screen for the [AppWidget] AppWidget.
  */
 class AppWidgetConfigureActivity : AppCompatActivity() {
-
 
     @Inject
     lateinit var api: IApi
