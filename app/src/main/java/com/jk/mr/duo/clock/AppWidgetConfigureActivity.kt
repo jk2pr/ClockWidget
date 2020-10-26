@@ -61,8 +61,8 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
     @Inject
     lateinit var api: IApi
-    var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
-    var subscriptions = CompositeDisposable()
+    private var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+    private var subscriptions = CompositeDisposable()
 
     private val dataAdapter by lazy {
         DataAdapter(this@AppWidgetConfigureActivity) {
@@ -121,7 +121,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             format24Hour = Utils.getDashBoard24HoursFormat()
             typeface = getBebasneueRegularTypeFace(this@AppWidgetConfigureActivity)
         }
-        TimeZone.getDefault().id.also { currentTimeZone ->
+        TimeZone.getDefault().id.let { currentTimeZone ->
             var tz = currentTimeZone
             if (tz.contains("/")) tz = currentTimeZone.split("/")[1].replace("_", " ")
             dashboard_timezone.text = tz
