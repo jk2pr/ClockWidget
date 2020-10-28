@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.jk.mr.duo.clock.AppWidgetConfigureActivity
@@ -34,20 +33,6 @@ class SearchFragmentDialog : DialogFragment() {
             //      .backgroundColor(color)
             .build(PlaceOptions.MODE_FULLSCREEN)
         val autocompleteFragment: PlaceAutocompleteFragment = PlaceAutocompleteFragment.newInstance(BuildConfig.PLACE_KEY, placeOptions)
-
-        val h = (resources.displayMetrics.heightPixels * 0.50).toInt()
-        val w = (resources.displayMetrics.widthPixels * 0.90).toInt()
-
-        val lp = WindowManager.LayoutParams()
-        lp.apply {
-            copyFrom(dialog?.window?.attributes)
-            width = w
-            height = h
-        }
-        dialog?.let {
-            it.window?.attributes = lp
-            it.show()
-        }
         val transaction = childFragmentManager.beginTransaction()
         transaction.add(R.id.fragment_container, autocompleteFragment, TAG)
         transaction.commit()

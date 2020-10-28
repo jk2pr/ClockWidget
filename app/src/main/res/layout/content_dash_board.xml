@@ -23,22 +23,7 @@
         app:layout_constraintTop_toBottomOf="@+id/guideline"
         tools:text="dash" />
 
-    <TextView
-        android:id="@+id/txt_empty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:drawableTop="@drawable/ic_icons8_empty_box"
-        android:gravity="center"
-        android:text="@string/no_city_to_show_add_from"
-        android:textColor="?attr/colorPrimaryDark"
-        app:drawableTint="?attr/colorPrimaryDark"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_timezone" />
+
 
 <!--
 

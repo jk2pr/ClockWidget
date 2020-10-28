@@ -31,7 +31,6 @@ import com.jk.mr.duo.clock.di.modules.NetworkModule
 import com.jk.mr.duo.clock.services.IApi
 import com.jk.mr.duo.clock.utils.Constants.ACTION_ADD_CLOCK
 import com.jk.mr.duo.clock.utils.Constants.SEPARATOR
-import com.jk.mr.duo.clock.utils.Constants.TAG
 import com.jk.mr.duo.clock.utils.Constants.appComponent
 import com.jk.mr.duo.clock.utils.Constants.deleteAllPref
 import com.jk.mr.duo.clock.utils.Constants.getBebasneueRegularTypeFace
@@ -77,9 +76,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             for (appWidgetId in appIds) AppWidget.updateAppWidget(this, manager, appWidgetId)
         }
     }
-
-    fun handleDataAdapterChanges() = if (dataAdapter.itemCount == 0) txt_empty.visibility = View.VISIBLE else txt_empty.visibility = View.GONE
-
     public override fun onCreate(icicle: Bundle?) {
         val theme = getThemePref()
         setTheme(theme)
@@ -128,28 +124,9 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private val dataObservable = object : RecyclerView.AdapterDataObserver() {
-
-        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-            super.onItemRangeInserted(positionStart, itemCount)
-            handleDataAdapterChanges()
-        }
-
-        override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
-            super.onItemRangeMoved(fromPosition, toPosition, itemCount)
-            handleDataAdapterChanges()
-        }
-
-        override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-            super.onItemRangeRemoved(positionStart, itemCount)
-            handleDataAdapterChanges()
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         val jsonString = getDateData(this)
-        dataAdapter.registerAdapterDataObserver(dataObservable)
         jsonString?.let {
             if (it.isEmpty()) return
             val listType = object : TypeToken<List<CalData>>() {}.type
@@ -161,13 +138,11 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     override fun onPostResume() {
         super.onPostResume()
         if (dataAdapter.itemCount > 0) dataAdapter.listener.invoke(dataAdapter.data[0])
-        handleDataAdapterChanges()
     }
 
     override fun onPause() {
         super.onPause()
         saveDateData(this, dataAdapter.data)
-        if (dataAdapter.hasObservers()) dataAdapter.unregisterAdapterDataObserver(dataObservable)
         dashboard_timezone.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
     }
 
@@ -244,9 +219,14 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private fun openSearchDialog() {
-        val searchFragmentDialog = SearchFragmentDialog()
-        searchFragmentDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.myDialog)
-        searchFragmentDialog.show(supportFragmentManager, TAG)
+
+        supportFragmentManager.let {
+            val searchFragmentDialog = SearchFragmentDialog()
+            searchFragmentDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.myDialog)
+            searchFragmentDialog.apply {
+                show(it, tag)
+            }
+        }
     }
 
     private fun showThemePickerDialog() {

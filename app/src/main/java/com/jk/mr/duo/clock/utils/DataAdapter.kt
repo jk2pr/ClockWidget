@@ -25,7 +25,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
         calData.isSelected = true
         data.add(0, calData)
         notifyItemInserted(0)
-        Looper.myLooper()?.let {
+        Looper.myLooper()?.let { it ->
             Handler(it).post {
                 data.forEach { it.isSelected = it == calData }
                 notifyDataSetChanged()
