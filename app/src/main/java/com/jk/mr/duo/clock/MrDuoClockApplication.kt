@@ -6,7 +6,9 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import com.jk.mr.duo.clock.utils.Constants.ACTION_ADD_CLOCK
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class MrDuoClockApplication : Application() {
 
     override fun onCreate() {

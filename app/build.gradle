@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'dagger.hilt.android.plugin'
 
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -33,6 +34,10 @@ android {
         buildConfigField 'String', 'MICROSOFT_TIMEZONE_BASE_URL', MICROSOFT_TIMEZONE_BASE_URL
 
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     /* flavorDimensions "mode"
 
     productFlavors {
@@ -45,10 +50,7 @@ android {
             dimension "mode"
         }
     }*/
-    compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
-    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -65,14 +67,15 @@ dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    // Dagger 2
-    implementation 'com.google.dagger:dagger:2.27'
+    // hilt
+    // hilt
+    implementation "com.google.dagger:hilt-android:2.28-alpha"
+    kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
+
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'
-    kapt 'com.google.dagger:dagger-compiler:2.21'
     //   implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    compileOnly 'org.glassfish:javax.annotation:10.0-b28'
 
 //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -86,7 +89,6 @@ dependencies {
 
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v7:0.7.0'
 
-    implementation 'com.github.rtugeek:colorseekbar:1.7.3'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.3'
