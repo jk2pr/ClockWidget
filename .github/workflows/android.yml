@@ -37,3 +37,8 @@ jobs:
         run: ./gradlew assembleDebugAndroidTest
       - name: Build debug APK
         run: ./gradlew assembleDebug --stacktrace
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: apk
+          path: app/build/outputs/apk/debug/**.apk

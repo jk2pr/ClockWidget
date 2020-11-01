@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Typeface
 import com.google.gson.Gson
 import com.jk.mr.duo.clock.data.caldata.CalData
-import com.jk.mr.duo.clock.di.components.AppComponent
 import java.util.TimeZone
 
 object Constants {
@@ -33,8 +32,6 @@ object Constants {
     const val ACTION_ADD_CLOCK = "ACTION_ADD_CLOCK"
 
     const val TAG = "AppWidgetConfigure"
-
-    lateinit var appComponent: AppComponent
 
     // Write the prefix to the SharedPreferences object for this widget
     internal fun saveTimeZonePref(context: Context, text: String) {

@@ -26,12 +26,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jk.mr.duo.clock.callbacks.SwipeToDeleteCallback
 import com.jk.mr.duo.clock.data.caldata.CalData
-import com.jk.mr.duo.clock.di.components.DaggerAppComponent
-import com.jk.mr.duo.clock.di.modules.NetworkModule
 import com.jk.mr.duo.clock.services.IApi
 import com.jk.mr.duo.clock.utils.Constants.ACTION_ADD_CLOCK
 import com.jk.mr.duo.clock.utils.Constants.SEPARATOR
-import com.jk.mr.duo.clock.utils.Constants.appComponent
 import com.jk.mr.duo.clock.utils.Constants.deleteAllPref
 import com.jk.mr.duo.clock.utils.Constants.getBebasneueRegularTypeFace
 import com.jk.mr.duo.clock.utils.Constants.getDateData
@@ -45,6 +42,7 @@ import com.jk.mr.duo.clock.utils.SearchFragmentDialog
 import com.jk.mr.duo.clock.utils.Utils
 import com.mapbox.api.geocoding.v5.models.CarmenFeature
 import com.mapbox.geojson.Point
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -56,6 +54,7 @@ import javax.inject.Inject
 /**
  * The configuration screen for the [AppWidget] AppWidget.
  */
+@AndroidEntryPoint
 class AppWidgetConfigureActivity : AppCompatActivity() {
 
     @Inject
@@ -93,8 +92,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         val version = PackageInfoCompat.getLongVersionCode(pInfo)
 
         if (version < 12) deleteAllPref(this)
-        appComponent = DaggerAppComponent.builder().networkModule(NetworkModule()).build()
-        appComponent.inject(this)
         setSupportActionBar(toolbar)
         title = null
         recycler_clock.apply {
@@ -137,7 +134,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
     override fun onPostResume() {
         super.onPostResume()
-        if (dataAdapter.itemCount > 0) dataAdapter.listener.invoke(dataAdapter.data[0])
+        if (dataAdapter.itemCount > 0) dataAdapter.listener(dataAdapter.data[0])
     }
 
     override fun onPause() {
