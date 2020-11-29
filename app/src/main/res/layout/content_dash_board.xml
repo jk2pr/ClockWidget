@@ -15,15 +15,28 @@
         android:gravity="center"
         android:includeFontPadding="true"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/sp50"
+        android:textSize="@dimen/sp48"
         android:typeface="normal"
         app:layout_constraintBottom_toBottomOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+
         app:layout_constraintTop_toBottomOf="@+id/guideline"
-        tools:text="dash" />
+        tools:text="Dash" />
 
+    <androidx.appcompat.widget.AppCompatTextView
 
+        android:id="@+id/dashboard_timezone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/sp16"
+        android:gravity="center"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="@+id/dashboard_clock"
+        app:layout_constraintStart_toStartOf="@+id/dashboard_clock"
+        app:layout_constraintTop_toBottomOf="@+id/dashboard_clock"
+        tools:text="Kuala ljmpjr" />
 
 <!--
 
@@ -50,19 +63,7 @@
         android:background="?attr/colorAccent"
         app:layout_constraintTop_toBottomOf="@+id/dashboard_timezone" />
 
-    <androidx.appcompat.widget.AppCompatTextView
 
-        android:id="@+id/dashboard_timezone"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/sp16"
-        android:gravity="center"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="@+id/dashboard_clock"
-        app:layout_constraintStart_toStartOf="@+id/dashboard_clock"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_clock"
-        tools:text="Kuala ljmpjr" />
 
 
     <androidx.constraintlayout.widget.Guideline

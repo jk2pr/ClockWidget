@@ -1,9 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widget_root"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/light_widget_bg"
     android:gravity="center"
     android:orientation="horizontal"
     android:baselineAligned="false">
@@ -11,7 +10,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.4"
+        android:layout_weight="1"
         android:gravity="center"
         android:layout_margin="@dimen/widget_margin"
         android:orientation="vertical">
@@ -31,14 +30,12 @@
             android:id="@+id/txt_timezone0"
             tools:text="Kuala lumpur"
             style="@style/city_style">
-            <requestFocus/>
         </TextView>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/separator"
-        android:layout_width="0dp"
-        android:layout_weight=".005"
+        android:layout_width="1dp"
         android:layout_height="match_parent"
         android:background="@android:color/black"
         android:orientation="horizontal" />
@@ -48,7 +45,7 @@
         android:layout_width="0dp"
         android:layout_margin="@dimen/widget_margin"
         android:layout_height="match_parent"
-        android:layout_weight="0.4"
+        android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical"
 
@@ -71,7 +68,6 @@
             android:id="@+id/txt_timezone1"
             style="@style/city_style"
             tools:text="Malaysia">
-        <requestFocus/>
         </TextView>
     </LinearLayout>
 </LinearLayout>

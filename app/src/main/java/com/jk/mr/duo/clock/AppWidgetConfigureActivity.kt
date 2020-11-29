@@ -26,7 +26,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jk.mr.duo.clock.callbacks.SwipeToDeleteCallback
 import com.jk.mr.duo.clock.data.caldata.CalData
-import com.jk.mr.duo.clock.services.IApi
+import com.jk.mr.duo.clock.network.IApi
 import com.jk.mr.duo.clock.utils.Constants.ACTION_ADD_CLOCK
 import com.jk.mr.duo.clock.utils.Constants.SEPARATOR
 import com.jk.mr.duo.clock.utils.Constants.deleteAllPref
@@ -134,7 +134,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
     override fun onPostResume() {
         super.onPostResume()
-        if (dataAdapter.itemCount > 0) dataAdapter.listener(dataAdapter.data[0])
+        if (dataAdapter.itemCount > 0) dataAdapter.addCallback(dataAdapter.data[0])
     }
 
     override fun onPause() {

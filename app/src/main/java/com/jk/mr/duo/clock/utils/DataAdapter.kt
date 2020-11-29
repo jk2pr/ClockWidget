@@ -17,7 +17,7 @@ import com.jk.mr.duo.clock.data.caldata.CalData
 import kotlinx.android.synthetic.main.item_cal_layout.view.*
 import java.util.LinkedList
 
-class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener: (CalData) -> Unit) : RecyclerView.Adapter<DataAdapter.ViewHolder>() {
+class DataAdapter(private val activity: AppWidgetConfigureActivity, val addCallback: (CalData) -> Unit) : RecyclerView.Adapter<DataAdapter.ViewHolder>() {
     private lateinit var mRecyclerView: RecyclerView
     val data = LinkedList<CalData>()
 
@@ -31,7 +31,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
                 notifyDataSetChanged()
             }
         }
-        listener.invoke(calData)
+        addCallback(calData)
         mRecyclerView.scrollToPosition(0)
     }
 
@@ -68,7 +68,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
 
     override fun getItemCount() = data.size
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(data[position], listener)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(data[position], addCallback)
 
     fun addAll(calData: List<CalData>) {
         data.apply {
@@ -92,7 +92,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
         private val textCity: TextView = itemView.tv_city
         private val textCountry: TextView = itemView.tv_country
 
-        fun bind(calData: CalData, listener: (CalData) -> Unit) = with(itemView) {
+        fun bind(calData: CalData, selectCallBack: (CalData) -> Unit) = with(itemView) {
 
             root_constraint.isSelected = calData.isSelected
             tag = calData
@@ -121,7 +121,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
                 setOnClickListener {
                     rootConstraint.isSelected = true
                     moveToTop(calData)
-                    listener(calData)
+                    selectCallBack(calData)
                 }
         }
     }

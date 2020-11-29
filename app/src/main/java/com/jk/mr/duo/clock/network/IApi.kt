@@ -1,4 +1,4 @@
-package com.jk.mr.duo.clock.services
+package com.jk.mr.duo.clock.network
 
 import com.jk.mr.duo.clock.data.MResponse
 import io.reactivex.Observable
