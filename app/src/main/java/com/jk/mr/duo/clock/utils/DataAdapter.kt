@@ -17,7 +17,7 @@ import com.jk.mr.duo.clock.data.caldata.CalData
 import kotlinx.android.synthetic.main.item_cal_layout.view.*
 import java.util.LinkedList
 
-class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener: (CalData) -> Unit) : RecyclerView.Adapter<DataAdapter.ViewHolder>() {
+class DataAdapter(private val activity: AppWidgetConfigureActivity, val addCallback: (CalData) -> Unit) : RecyclerView.Adapter<DataAdapter.ViewHolder>() {
     private lateinit var mRecyclerView: RecyclerView
     val data = LinkedList<CalData>()
 
@@ -31,7 +31,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
                 notifyDataSetChanged()
             }
         }
-        listener(calData)
+        addCallback(calData)
         mRecyclerView.scrollToPosition(0)
     }
 
@@ -68,7 +68,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
 
     override fun getItemCount() = data.size
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(data[position], listener)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(data[position], addCallback)
 
     fun addAll(calData: List<CalData>) {
         data.apply {

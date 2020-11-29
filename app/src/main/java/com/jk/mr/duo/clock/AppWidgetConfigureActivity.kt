@@ -134,7 +134,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
     override fun onPostResume() {
         super.onPostResume()
-        if (dataAdapter.itemCount > 0) dataAdapter.listener(dataAdapter.data[0])
+        if (dataAdapter.itemCount > 0) dataAdapter.addCallback(dataAdapter.data[0])
     }
 
     override fun onPause() {
