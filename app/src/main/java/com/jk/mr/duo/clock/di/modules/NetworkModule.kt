@@ -1,7 +1,7 @@
 package com.jk.mr.duo.clock.di.modules
 
 import com.jk.mr.duo.clock.BuildConfig
-import com.jk.mr.duo.clock.services.IApi
+import com.jk.mr.duo.clock.network.IApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
