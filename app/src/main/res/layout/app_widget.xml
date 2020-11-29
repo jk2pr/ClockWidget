@@ -3,7 +3,6 @@
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/light_widget_bg"
     android:gravity="center"
     android:orientation="horizontal"
     android:baselineAligned="false">

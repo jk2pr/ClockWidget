@@ -30,49 +30,54 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
-        <TextClock
-            android:id="@+id/tv_time"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp8"
-            android:layout_marginEnd="@dimen/dp8"
-            android:textSize="@dimen/sp16"
-            android:textColor="@drawable/selctor_row_txt_color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/img_flag"
-            app:layout_constraintTop_toTopOf="@+id/img_flag"
-            tools:text="TextClock" />
 
         <TextView
             android:id="@+id/tv_city"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp8"
-            android:layout_marginEnd="@dimen/dp8"
-            android:maxLines="1"
-            android:textColor="@drawable/selctor_row_txt_color"
+            android:layout_marginTop="@dimen/dp8"
+            android:layout_marginEnd="8dp"
             android:gravity="center_vertical"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:ellipsize="marquee"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:textColor="@drawable/selctor_row_txt_color"
             android:textSize="@dimen/sp16"
-            app:layout_constraintBottom_toBottomOf="@+id/img_flag"
-            app:layout_constraintEnd_toStartOf="@+id/tv_country"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/img_flag"
-            app:layout_constraintTop_toBottomOf="@+id/tv_time"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="City" />
 
         <TextView
             android:id="@+id/tv_country"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp8"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:textAllCaps="true"
             android:textColor="@drawable/selctor_row_txt_color"
             android:textSize="@dimen/sp16"
-            app:layout_constraintBottom_toBottomOf="@+id/img_flag"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_time"
+            app:layout_constraintStart_toEndOf="@+id/img_flag"
+            app:layout_constraintTop_toBottomOf="@+id/tv_city"
             tools:text="Country" />
 
+        <TextClock
+            android:id="@+id/tv_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp8"
+            android:gravity="end"
+            android:textColor="@drawable/selctor_row_txt_color"
+            android:textSize="@dimen/sp14"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_city"
+            tools:text="TextClock" />
+
         <View
+            android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="?attr/colorAccent"

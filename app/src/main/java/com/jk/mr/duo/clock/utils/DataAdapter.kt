@@ -31,7 +31,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
                 notifyDataSetChanged()
             }
         }
-        listener.invoke(calData)
+        listener(calData)
         mRecyclerView.scrollToPosition(0)
     }
 
@@ -92,7 +92,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
         private val textCity: TextView = itemView.tv_city
         private val textCountry: TextView = itemView.tv_country
 
-        fun bind(calData: CalData, listener: (CalData) -> Unit) = with(itemView) {
+        fun bind(calData: CalData, selectCallBack: (CalData) -> Unit) = with(itemView) {
 
             root_constraint.isSelected = calData.isSelected
             tag = calData
@@ -121,7 +121,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val listener
                 setOnClickListener {
                     rootConstraint.isSelected = true
                     moveToTop(calData)
-                    listener(calData)
+                    selectCallBack(calData)
                 }
         }
     }
