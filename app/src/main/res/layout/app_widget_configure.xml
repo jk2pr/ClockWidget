@@ -37,7 +37,8 @@
         android:backgroundTint="?attr/selectedRowBackgroundColor"
         android:layout_gravity="bottom|end"
         app:srcCompat="@drawable/ic_add_circle_outline_black_24dp"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_margin="@dimen/dp16"
+        app:borderWidth="0dp"
 
         />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
