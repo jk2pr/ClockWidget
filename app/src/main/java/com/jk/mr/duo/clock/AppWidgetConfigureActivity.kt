@@ -19,12 +19,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.fragment.app.DialogFragment
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.ernestoyaquello.dragdropswiperecyclerview.listener.OnItemSwipeListener
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.jk.mr.duo.clock.callbacks.SwipeToDeleteCallback
 import com.jk.mr.duo.clock.data.caldata.CalData
 import com.jk.mr.duo.clock.network.IApi
 import com.jk.mr.duo.clock.utils.Constants.ACTION_ADD_CLOCK
@@ -97,17 +96,32 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         recycler_clock.apply {
             adapter = dataAdapter
             layoutManager = LinearLayoutManager(this@AppWidgetConfigureActivity)
+            swipeListener = onItemSwipeListener
         }
-        val swipeHandler = object : SwipeToDeleteCallback(this) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = (recycler_clock.adapter as DataAdapter).removeAt(viewHolder.absoluteAdapterPosition)
-        }
-        val itemTouchHelper = ItemTouchHelper(swipeHandler)
-        itemTouchHelper.attachToRecyclerView(recycler_clock)
         handleDashBoardClock()
         fab.setOnClickListener { openSearchDialog() }
         Looper.myLooper()?.let { if (intent.action == ACTION_ADD_CLOCK) Handler(it).postDelayed({ fab.performClick() }, 100) }
     }
 
+    private val onItemSwipeListener = object : OnItemSwipeListener<CalData> {
+        override fun onItemSwiped(position: Int, direction: OnItemSwipeListener.SwipeDirection, item: CalData): Boolean {
+            if (direction == OnItemSwipeListener.SwipeDirection.RIGHT_TO_LEFT || direction == OnItemSwipeListener.SwipeDirection.LEFT_TO_RIGHT) {
+                onItemDelete(item, position)
+                return true
+            }
+            return false
+        }
+    }
+
+    private fun onItemDelete(item: CalData, position: Int) = removeItemFromList(item, position)
+    private fun removeItemFromList(item: CalData, position: Int) {
+        dataAdapter.removeItem(position)
+        val itemSwipedSnackBar = Snackbar.make(root_coordinate, getString(R.string.itemRemovedMessage, item.name), Snackbar.LENGTH_SHORT)
+        itemSwipedSnackBar.setAction(getString(R.string.undoCaps)) {
+            dataAdapter.insertItem(position, item)
+        }
+        itemSwipedSnackBar.show()
+    }
     private fun handleDashBoardClock() {
         dashboard_clock.apply {
             format12Hour = Utils.getDashBoard12HoursFormat()
@@ -128,18 +142,18 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             if (it.isEmpty()) return
             val listType = object : TypeToken<List<CalData>>() {}.type
             val storedData = Gson().fromJson<List<CalData>>(jsonString, listType)
-            if (storedData.isNotEmpty()) dataAdapter.addAll(storedData) // get from stored
+            if (storedData.isNotEmpty()) dataAdapter.dataSet = storedData // get from stored
         }
     }
 
     override fun onPostResume() {
         super.onPostResume()
-        if (dataAdapter.itemCount > 0) dataAdapter.addCallback(dataAdapter.data[0])
+        if (dataAdapter.itemCount > 0) dataAdapter.addCallback(dataAdapter.dataSet[0])
     }
 
     override fun onPause() {
         super.onPause()
-        saveDateData(this, dataAdapter.data)
+        saveDateData(this, dataAdapter.dataSet)
         dashboard_timezone.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
     }
 

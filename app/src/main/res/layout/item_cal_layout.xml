@@ -10,7 +10,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardElevation="0dp"
-    card_view:cardCornerRadius="2dp">
+    card_view:cardCornerRadius="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/root_constraint"
@@ -38,14 +38,14 @@
             android:layout_marginStart="@dimen/dp8"
             android:layout_marginTop="@dimen/dp8"
             android:layout_marginEnd="8dp"
+            android:ellipsize="marquee"
             android:gravity="center_vertical"
             android:marqueeRepeatLimit="marquee_forever"
-            android:ellipsize="marquee"
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:textColor="@drawable/selctor_row_txt_color"
             android:textSize="@dimen/sp16"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/drag_icon"
             app:layout_constraintStart_toEndOf="@+id/img_flag"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="City" />
@@ -72,9 +72,22 @@
             android:textColor="@drawable/selctor_row_txt_color"
             android:textSize="@dimen/sp14"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/drag_icon"
             app:layout_constraintTop_toBottomOf="@+id/tv_city"
             tools:text="TextClock" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/drag_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:padding="@dimen/dp8"
+            android:tint="@drawable/selctor_row_txt_color"
+            android:src="@drawable/ic_drag"
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:focusable="true" />
 
         <View
             android:id="@+id/view"
