@@ -2,101 +2,43 @@ package com.jk.mr.duo.clock.utils
 
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextClock
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.RecyclerView
 import com.ahmadrosid.svgloader.SvgLoader
+import com.ernestoyaquello.dragdropswiperecyclerview.DragDropSwipeAdapter
 import com.jk.mr.duo.clock.AppWidgetConfigureActivity
 import com.jk.mr.duo.clock.R
 import com.jk.mr.duo.clock.data.caldata.CalData
 import kotlinx.android.synthetic.main.item_cal_layout.view.*
-import java.util.LinkedList
 
-class DataAdapter(private val activity: AppWidgetConfigureActivity, val addCallback: (CalData) -> Unit) : RecyclerView.Adapter<DataAdapter.ViewHolder>() {
-    private lateinit var mRecyclerView: RecyclerView
-    val data = LinkedList<CalData>()
+class DataAdapter(private val activity: AppWidgetConfigureActivity, dataSet: List<CalData> = emptyList(), val addCallback: (CalData) -> Unit) : DragDropSwipeAdapter<CalData, DataAdapter.ViewHolder>(dataSet) {
 
     fun addCal(calData: CalData) {
-        calData.isSelected = true
-        data.add(0, calData)
-        notifyItemInserted(0)
-        Looper.myLooper()?.let { it ->
-            Handler(it).post {
-                data.forEach { it.isSelected = it == calData }
-                notifyDataSetChanged()
-            }
-        }
+        insertItem(0, calData)
+        Looper.myLooper()?.let { it -> Handler(it).post { updateSelection() } }
         addCallback(calData)
-        mRecyclerView.scrollToPosition(0)
     }
 
     fun removeAt(position: Int) {
-        data.removeAt(position)
-        notifyItemRemoved(position)
+        removeItem(position)
     }
+    override fun getViewHolder(itemView: View): ViewHolder = ViewHolder(itemView)
 
-    private fun moveToTop(calData: CalData) {
-        val currentPosition = data.indexOf(calData)
-        if (currentPosition == 0) return
-        data.forEach { it.isSelected = it == calData }
-        notifyDataSetChanged()
+    override fun onBindViewHolder(item: CalData, viewHolder: ViewHolder, position: Int) = viewHolder.bind(item)
 
-        mRecyclerView.post {
-            data.remove(calData)
-            data.addFirst(calData)
-            val zeroViewHolder = mRecyclerView.findViewHolderForAdapterPosition(0)
-            zeroViewHolder?.itemView?.isClickable = false
+    inner class ViewHolder(itemView: View) : DragDropSwipeAdapter.ViewHolder(itemView) {
 
-            val previousViewHolder = mRecyclerView.findViewHolderForAdapterPosition(currentPosition)
-            previousViewHolder?.itemView?.isClickable = true
-
-            notifyItemChanged(0, zeroViewHolder?.itemView?.isClickable)
-            notifyItemChanged(currentPosition, zeroViewHolder?.itemView?.isClickable)
-
-            notifyItemMoved(currentPosition, 0)
-
-            mRecyclerView.scrollToPosition(0)
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_cal_layout, parent, false))
-
-    override fun getItemCount() = data.size
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(data[position], addCallback)
-
-    fun addAll(calData: List<CalData>) {
-        data.apply {
-            clear()
-            addAll(calData)
-        }
-        notifyDataSetChanged()
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-
-        mRecyclerView = recyclerView
-    }
-
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val rootConstraint: ConstraintLayout = itemView.root_constraint
+        val dragIcon: View = itemView.findViewById(R.id.drag_icon)
         private val textClock: TextClock = itemView.tv_time
         private val imgFlag: ImageView = itemView.img_flag
         private val textCity: TextView = itemView.tv_city
         private val textCountry: TextView = itemView.tv_country
 
-        fun bind(calData: CalData, selectCallBack: (CalData) -> Unit) = with(itemView) {
+        fun bind(calData: CalData): Unit = with(itemView) {
 
             root_constraint.isSelected = calData.isSelected
-            tag = calData
-            // viewSprt.setBackgroundColor(ContextCompat.getColor(activity, tint))
             textClock.apply {
                 timeZone = calData.currentCityTimeZone.trim()
                 format12Hour = Utils.getItem12HoursFormat()
@@ -106,8 +48,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val addCallb
 
                 var final: String = calData.name
                 val dd = final.split(" ".toRegex(), 3)
-                if (dd.size > 1)
-                    final = dd.first().plus(" ").plus(dd[1])
+                if (dd.size > 1) final = dd.first().plus(" ").plus(dd[1])
                 text = final
             }
             textCity.text = calData.address
@@ -116,13 +57,21 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, val addCallb
                 .with(activity)
                 .setPlaceHolder(R.drawable.ic_image_black_24dp, R.drawable.ic_broken_image_black_24dp)
                 .load(calData.flag, imgFlag)
-            isClickable = (absoluteAdapterPosition != 0)
-            if (isClickable)
-                setOnClickListener {
-                    rootConstraint.isSelected = true
-                    moveToTop(calData)
-                    selectCallBack(calData)
-                }
         }
     }
+
+    private fun updateSelection() {
+        (dataSet as MutableList).forEachIndexed { index, element -> element.isSelected = index == 0 }
+        notifyDataSetChanged()
+    }
+    override fun onDragFinished(item: CalData, viewHolder: ViewHolder) {
+        super.onDragFinished(item, viewHolder)
+        updateSelection()
+        addCallback(item)
+    }
+
+    override fun canBeDragged(item: CalData, viewHolder: ViewHolder, position: Int): Boolean = position != 0
+    override fun canBeSwiped(item: CalData, viewHolder: ViewHolder, position: Int): Boolean = position != 0
+
+    override fun getViewToTouchToStartDraggingItem(item: CalData, viewHolder: ViewHolder, position: Int) = viewHolder.dragIcon
 }
