@@ -13,12 +13,12 @@ import com.jk.mr.duo.clock.R
 import com.jk.mr.duo.clock.data.caldata.CalData
 import kotlinx.android.synthetic.main.item_cal_layout.view.*
 
-class DataAdapter(private val activity: AppWidgetConfigureActivity, dataSet: List<CalData> = emptyList(), val addCallback: (CalData) -> Unit) : DragDropSwipeAdapter<CalData, DataAdapter.ViewHolder>(dataSet) {
+class DataAdapter(private val activity: AppWidgetConfigureActivity, dataSet: List<CalData> = emptyList(), val updateClock: (CalData) -> Unit) : DragDropSwipeAdapter<CalData, DataAdapter.ViewHolder>(dataSet) {
 
     fun addCal(calData: CalData) {
         insertItem(0, calData)
         Looper.myLooper()?.let { it -> Handler(it).post { updateSelection() } }
-        addCallback(calData)
+        updateClock(calData)
     }
 
     fun removeAt(position: Int) {
@@ -63,14 +63,13 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, dataSet: Lis
     private fun updateSelection() {
         (dataSet as MutableList).forEachIndexed { index, element -> element.isSelected = index == 0 }
         notifyDataSetChanged()
+        updateClock(dataSet[0])
     }
     override fun onDragFinished(item: CalData, viewHolder: ViewHolder) {
         super.onDragFinished(item, viewHolder)
         updateSelection()
-        addCallback(item)
     }
 
-    override fun canBeDragged(item: CalData, viewHolder: ViewHolder, position: Int): Boolean = position != 0
     override fun canBeSwiped(item: CalData, viewHolder: ViewHolder, position: Int): Boolean = position != 0
 
     override fun getViewToTouchToStartDraggingItem(item: CalData, viewHolder: ViewHolder, position: Int) = viewHolder.dragIcon
