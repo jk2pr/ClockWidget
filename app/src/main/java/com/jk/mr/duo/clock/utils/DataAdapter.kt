@@ -63,6 +63,12 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, dataSet: Lis
     private fun updateSelection() {
         (dataSet as MutableList).forEachIndexed { index, element -> element.isSelected = index == 0 }
         notifyDataSetChanged()
+        }
+    }
+
+    private fun updateSelection() {
+        (dataSet as MutableList).forEachIndexed { index, element -> element.isSelected = index == 0 }
+        notifyDataSetChanged()
         updateClock(dataSet[0])
     }
     override fun onDragFinished(item: CalData, viewHolder: ViewHolder) {
