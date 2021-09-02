@@ -52,16 +52,18 @@ object Utils {
         val span1 = SpannableString("hh:mm")
         // val span2 = SpannableString(" : ss ")
         val span3 = SpannableString(" a ")
-        val span4 = SpannableString("\n E, dd MMMM yyyy")
+        val span4 = SpannableString("E, dd MMMM yyyy")
 
         span3.setSpan(RelativeSizeSpan(0.90f), 0, span3.length, 0)
         span4.setSpan(RelativeSizeSpan(0.90f), 0, span4.length, 0)
 
         return TextUtils.concat(span1, span3, span4)
-    } fun getItem24HoursFormat(): CharSequence {
+    }
+
+    fun getItem24HoursFormat(): CharSequence {
 
         val span1 = SpannableString("HH:mm")
-        val span4 = SpannableString("\n E, dd MMMM yyyy")
+        val span4 = SpannableString("E, dd MMMM yyyy")
         //  span4.setSpan(RelativeSizeSpan(0.50f), 0, span4.length, 0)
         span4.setSpan(
             AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE),
