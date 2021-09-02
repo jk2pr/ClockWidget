@@ -54,11 +54,10 @@
             android:id="@+id/tv_country"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:textAllCaps="true"
+            android:layout_margin="@dimen/dp8"
             android:textColor="@drawable/selctor_row_txt_color"
             android:textSize="@dimen/sp16"
+            app:layout_constraintEnd_toStartOf="@+id/drag_icon"
             app:layout_constraintStart_toEndOf="@+id/img_flag"
             app:layout_constraintTop_toBottomOf="@+id/tv_city"
             tools:text="Country" />
@@ -68,12 +67,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp8"
-            android:gravity="end"
             android:textColor="@drawable/selctor_row_txt_color"
             android:textSize="@dimen/sp14"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/drag_icon"
-            app:layout_constraintTop_toBottomOf="@+id/tv_city"
+            app:layout_constraintStart_toEndOf="@+id/img_flag"
+            app:layout_constraintTop_toBottomOf="@+id/tv_country"
             tools:text="TextClock" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -81,13 +80,13 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginEnd="8dp"
+            android:focusable="true"
             android:padding="@dimen/dp8"
-            android:tint="@drawable/selctor_row_txt_color"
             android:src="@drawable/ic_drag"
+            android:tint="@drawable/selctor_row_txt_color"
             app:layout_constraintBottom_toTopOf="@+id/view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:focusable="true" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <View
             android:id="@+id/view"
