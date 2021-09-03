@@ -35,7 +35,7 @@ jobs:
       - name: Run Test
         run: ./gradlew assembleDebugAndroidTest
       - name: build prod
-        run: ./gradlew app:bundleRelease --stacktrace
+        run: ./gradlew app:bundleDebug --stacktrace
       - name: Upload AAB
         uses: actions/upload-artifact@v2
         with:
