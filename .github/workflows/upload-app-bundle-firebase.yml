@@ -46,5 +46,5 @@ jobs:
         with:
           app_id: ${{secrets.FIREBASE_APP_ID}}
           firebase_token: ${{secrets.FIREBASE_TOKEN}}
-          app_file: app/build/outputs/bundle/debug/app-debug.apk
+          app_file: app/build/outputs/bundle/debug/app-debug.aab
           tester_groups: maintainers
