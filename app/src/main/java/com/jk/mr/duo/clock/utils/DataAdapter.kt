@@ -21,9 +21,6 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, dataSet: Lis
         updateClock(calData)
     }
 
-    fun removeAt(position: Int) {
-        removeItem(position)
-    }
     override fun getViewHolder(itemView: View): ViewHolder = ViewHolder(itemView)
 
     override fun onBindViewHolder(item: CalData, viewHolder: ViewHolder, position: Int) = viewHolder.bind(item)
@@ -61,9 +58,13 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, dataSet: Lis
     }
 
     private fun updateSelection() {
-        (dataSet as MutableList).forEachIndexed { index, element -> element.isSelected = index == 0 }
-        notifyDataSetChanged()
-        updateClock(dataSet[0])
+        (dataSet as MutableList).forEachIndexed { index, element ->
+            run {
+                element.isSelected = index == 0
+                notifyItemChanged(index, element.isSelected)
+            }
+            updateClock(dataSet[0])
+        }
     }
     override fun onDragFinished(item: CalData, viewHolder: ViewHolder) {
         super.onDragFinished(item, viewHolder)
