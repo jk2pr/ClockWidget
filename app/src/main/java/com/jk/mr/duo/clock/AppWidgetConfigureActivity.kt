@@ -178,11 +178,10 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ abc ->
-                val timeZoneId = abc.resourceSets[0].resources[0].timeZone.ianaTimeZoneId
+                val timeZoneId = abc.resourceSets[0].resources[0].timeZone.convertedTime.timeZoneDisplayName
                 val abbreviation = abc.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
                 print("abbreviation $abbreviation")
-                if (timeZoneId == null) sendBackResult(timeZoneId)
-                else sendBackResult(address.plus(SEPARATOR).plus(country).plus(SEPARATOR).plus(timeZoneId).plus(SEPARATOR).plus(abbreviation))
+                sendBackResult(address.plus(SEPARATOR).plus(country).plus(SEPARATOR).plus(timeZoneId).plus(SEPARATOR).plus(abbreviation))
             }) {}
         subscriptions.add(subscribeOn)
     }
@@ -201,6 +200,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             .replace("United Kingdom", "United Kingdom of Great Britain and Northern Ireland")
         val timeZone = list[2]
         val abbreviation = list.last()
+
         assets.open("data.json").apply {
             val jsonString = readBytes().toString(Charsets.UTF_8)
             val listType = object : TypeToken<List<CalData>>() {}.type
