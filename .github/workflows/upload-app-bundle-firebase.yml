@@ -24,6 +24,12 @@ jobs:
         env:
           GOOGLE_SERVICE_JSON: ${{ secrets.GOOGLE_SERVICE_JSON }}
         run: echo "$GOOGLE_SERVICE_JSON" > ./app/google-services.json
+      - name: Bump version
+        uses: chkfung/android-version-actions@v1.1
+        with:
+          gradlePath: app/build.gradle # or app/build.gradle.kts 
+          versionCode: ${{github.run_number}}
+          versionName: 1.0.0
       - name: Install NDK
         run: echo "y" | sudo /usr/local/lib/android/sdk/tools/bin/sdkmanager --install "ndk;21.0.6113669" --sdk_root=${ANDROID_SDK_ROOT}
       - name: Change wrapper permissions
