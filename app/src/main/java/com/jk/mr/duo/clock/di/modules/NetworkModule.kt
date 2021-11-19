@@ -9,7 +9,6 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
@@ -21,13 +20,20 @@ class NetworkModule {
     @Singleton
     fun getRetrofit(): IApi {
         val logging = HttpLoggingInterceptor()
-        logging.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+        logging.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BASIC else HttpLoggingInterceptor.Level.NONE
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val request = chain.request()
+                val response = chain.proceed(request)
+                response
+            }.addInterceptor(logging)
+            .build()
 
         return Retrofit.Builder()
             .baseUrl(BuildConfig.MICROSOFT_TIMEZONE_BASE_URL) // Microsoft
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
-            .client(OkHttpClient.Builder().addInterceptor(logging).build())
+            .client(client)
             .build()
             .create(IApi::class.java)
     }

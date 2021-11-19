@@ -90,7 +90,7 @@ dependencies {
 
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v7:0.7.0'
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.0"
     // implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
     //  implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -112,7 +112,7 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-crashlytics:18.2.4'
 
-    //implementation "android.arch.work:work-runtime-ktx:1.0.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
 
     /* configurations{
          all*.exclude group: 'com.google.guava', module: 'listenablefuture'
