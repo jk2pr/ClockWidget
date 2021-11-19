@@ -37,7 +37,7 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, dataSet: Lis
 
             root_constraint.isSelected = calData.isSelected
             textClock.apply {
-                timeZone = calData.currentCityTimeZone.trim()
+                timeZone = calData.currentCityTimeZoneId?.trim()
                 format12Hour = Utils.getItem12HoursFormat()
                 format24Hour = Utils.getItem24HoursFormat()
             }

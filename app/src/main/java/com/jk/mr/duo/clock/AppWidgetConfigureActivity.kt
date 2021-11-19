@@ -14,7 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CheckedTextView
-import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.pm.PackageInfoCompat
@@ -27,7 +27,6 @@ import com.google.gson.reflect.TypeToken
 import com.jk.mr.duo.clock.data.caldata.CalData
 import com.jk.mr.duo.clock.network.IApi
 import com.jk.mr.duo.clock.utils.Constants.ACTION_ADD_CLOCK
-import com.jk.mr.duo.clock.utils.Constants.SEPARATOR
 import com.jk.mr.duo.clock.utils.Constants.deleteAllPref
 import com.jk.mr.duo.clock.utils.Constants.getBebasneueRegularTypeFace
 import com.jk.mr.duo.clock.utils.Constants.getDateData
@@ -39,15 +38,13 @@ import com.jk.mr.duo.clock.utils.Constants.themeArray
 import com.jk.mr.duo.clock.utils.DataAdapter
 import com.jk.mr.duo.clock.utils.SearchFragmentDialog
 import com.jk.mr.duo.clock.utils.Utils
+import com.jk.mr.duo.clock.viewmodels.CalDataViewModel
 import com.mapbox.api.geocoding.v5.models.CarmenFeature
 import com.mapbox.geojson.Point
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.app_widget_configure.*
 import kotlinx.android.synthetic.main.content_dash_board.*
-import java.util.TimeZone
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -59,11 +56,11 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     @Inject
     lateinit var api: IApi
     private var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
-    private var subscriptions = CompositeDisposable()
+    private val viewModel by viewModels<CalDataViewModel>()
 
     private val dataAdapter by lazy {
         DataAdapter(this@AppWidgetConfigureActivity) {
-            saveTimeZonePref(this, getStringFromCalData(it))
+            saveTimeZonePref(this, it.toString())
             // Make sure we pass back the original appWidgetId
             val resultValue = Intent()
             resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
@@ -81,12 +78,10 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         setContentView(R.layout.app_widget_configure)
         val extras = intent.extras
         if (extras != null) mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-        /*if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            finish()
-            return
-        }
 
-*/
+        viewModel.mutableState.observe(this, {
+            updateAdapter(it)
+        })
         val pInfo = packageManager.getPackageInfo(packageName, 0)
         val version = PackageInfoCompat.getLongVersionCode(pInfo)
 
@@ -161,7 +156,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         val address = carmenFeature.placeName()!!
         val country = carmenFeature.placeName()!!.split(",").last()
         val place = carmenFeature.geometry() as Point
-        requestData(address, country, place.latitude().toString(), place.longitude().toString())
+        viewModel.getData(address, country, place.latitude().toString().plus(",").plus(place.longitude().toString()))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -169,50 +164,9 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         return true
     }
 
-    private fun requestData(address: String, country: String, lat: String, long: String) {
-        subscriptions.clear()
-        // val tsLong = System.currentTimeMillis() / 1000
-        //  val ts = tsLong.toString()
-        val location = lat.plus(",").plus(long)
-        val subscribeOn = api.getTimeZoneFromLatLong(location, /*ts,*/ BuildConfig.MAP_TIMEZONE_KEY)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ abc ->
-                val timeZoneId = abc.resourceSets[0].resources[0].timeZone.convertedTime.timeZoneDisplayName
-                val abbreviation = abc.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
-                print("abbreviation $abbreviation")
-                sendBackResult(address.plus(SEPARATOR).plus(country).plus(SEPARATOR).plus(timeZoneId).plus(SEPARATOR).plus(abbreviation))
-            }) {}
-        subscriptions.add(subscribeOn)
-    }
-
-    private fun sendBackResult(timeZoneId: String?) {
-        if (timeZoneId != null) {
-            saveTimeZonePref(this, timeZoneId)
-            showDataInAdapter(timeZoneId)
-        } else Toast.makeText(applicationContext, "Unknown Location found, Please enter exact location.", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showDataInAdapter(data: String) {
-        val list = data.split(SEPARATOR)
-        val address = list.first().split(",").dropLast(1).joinToString()
-        val country = list[1].trim().replace("United States", "United States of America")
-            .replace("United Kingdom", "United Kingdom of Great Britain and Northern Ireland")
-        val timeZone = list[2]
-        val abbreviation = list.last()
-
-        assets.open("data.json").apply {
-            val jsonString = readBytes().toString(Charsets.UTF_8)
-            val listType = object : TypeToken<List<CalData>>() {}.type
-            val calData = Gson().fromJson<List<CalData>>(jsonString, listType).filter { it.name.trim().equals(country.trim(), true) }
-            if (calData.isEmpty()) return
-            val singleCalData = calData.first().apply {
-                this.address = address
-                currentCityTimeZone = timeZone
-                this.abbreviation = abbreviation
-            }
-            dataAdapter.addCal(singleCalData)
-        }.close()
+    private fun updateAdapter(calData: CalData) {
+        saveTimeZonePref(this, calData.toString())
+        dataAdapter.addCal(calData)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

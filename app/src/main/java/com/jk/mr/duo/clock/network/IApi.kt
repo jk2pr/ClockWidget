@@ -1,16 +1,22 @@
 package com.jk.mr.duo.clock.network
 
+import com.jk.mr.duo.clock.data.FlagResponse
 import com.jk.mr.duo.clock.data.MResponse
-import io.reactivex.Observable
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface IApi {
 
     @GET("REST/v1/timezone/{location}")
-    fun getTimeZoneFromLatLong(
+    suspend fun getTimeZoneFromLatLong(
         @Path("location") query: String,
         @Query("key") key: String
-    ): Observable<MResponse>
+    ): MResponse
+
+    // https://countriesnow.space/api/v0.1/countries/flag/images
+
+    @POST
+    suspend fun getFlag(
+        @Url url: String = "https://countriesnow.space/api/v0.1/countries/flag/images",
+        @Body query: MutableMap<String, String>
+    ): FlagResponse
 }
