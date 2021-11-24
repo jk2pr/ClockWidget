@@ -1,4 +1,4 @@
-name: Build Release App Bundle
+name: Internal release on google play store
 
 on:
   workflow_dispatch
@@ -24,6 +24,11 @@ jobs:
         env:
           GOOGLE_SERVICE_JSON: ${{ secrets.GOOGLE_SERVICE_JSON }}
         run: echo "$GOOGLE_SERVICE_JSON" > ./app/google-services.json
+      - name: Decode Keystore
+        env:
+            ENCODED_STRING: ${{ secrets.KEYSTORE_JKS_STRING }}
+        run: echo "$ENCODED_STRING" | base64 -di > .app/Keystore
+
       - name: Bump version
         uses: chkfung/android-version-actions@v1.1
         with:
