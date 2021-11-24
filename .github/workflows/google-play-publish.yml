@@ -28,8 +28,7 @@ jobs:
       - name: Decode Keystore
         uses: timheuer/base64-to-file@v1
         with:
-          fileDir: app
-          fileName: Keystore
+          fileName: './app/Keystore'
           encodedString: ${{ secrets.KEYSTORE_JKS_STRING }}
 
       - name: Bump version
