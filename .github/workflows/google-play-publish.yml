@@ -26,10 +26,11 @@ jobs:
         run: echo "$GOOGLE_SERVICE_JSON" > ./app/google-services.json
         
       - name: Decode Keystore
-        uses: timheuer/base64-to-file@v1
+        uses: davidSchuppa/base64Secret-toFile-action@v1
         with:
-          fileName: 'app/Keystore'
-          encodedString: ${{ secrets.KEYSTORE_JKS_STRING }}
+          secret: ${{ secrets.KEYSTORE_JKS_STRING }}
+          filename: Keystore
+          destination-path: ~/app
 
       - name: Bump version
         uses: chkfung/android-version-actions@v1.1
