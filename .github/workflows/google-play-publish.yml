@@ -28,7 +28,8 @@ jobs:
       - name: Decode Keystore
         uses: timheuer/base64-to-file@v1
         with:
-          fileName: ./app/Keystore
+          fileDir: app
+          fileName: Keystore
           encodedString: ${{ secrets.KEYSTORE_JKS_STRING }}
 
       - name: Bump version
@@ -49,7 +50,7 @@ jobs:
         run: ./gradlew assembleDebugAndroidTest
       - name: Build Release AAB
         id: buildRelease
-        run: ./gradlew bundleRelease
+        run: ./gradlew bundleRelease --stacktrace
       - name: Upload AAB
         uses: actions/upload-artifact@v2
         with:
