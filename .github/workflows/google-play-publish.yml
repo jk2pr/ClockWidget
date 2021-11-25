@@ -8,29 +8,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      
       - name: set up JDK 11
         uses: actions/setup-java@v1
         with:
           java-version: 11
+          
       - name: create keystore.properties
         env:
           KEYSTORE: ${{ secrets.KEYSTORE }}
         run: echo "$KEYSTORE" > ./keystore.properties
+        
       - name: create gradle.properties
         env:
           GRADLE_PROPERTIES: ${{ secrets.GRADLE_PROPERTIES }}
         run: echo "$GRADLE_PROPERTIES" > ./gradle.properties
+        
       - name: create google_service.json
         env:
           GOOGLE_SERVICE_JSON: ${{ secrets.GOOGLE_SERVICE_JSON }}
         run: echo "$GOOGLE_SERVICE_JSON" > ./app/google-services.json
         
-      - name: Decode Keystore
-        uses: davidSchuppa/base64Secret-toFile-action@v1
+      - name: Decode Keystore 
+        id: decode_keystore
+        uses: timheuer/base64-to-file@v1
         with:
-          secret: ${{ secrets.KEYSTORE_JKS_STRING }}
-          filename: Keystore
-          destination-path: /app
+          fileName: ./app/Keystore
+          encodedString: ${{ secrets.KEYSTORE_JKS_STRING }}
 
       - name: Bump version
         uses: chkfung/android-version-actions@v1.1
@@ -38,24 +42,31 @@ jobs:
           gradlePath: app/build.gradle # or app/build.gradle.kts 
           versionCode: ${{github.run_number}}
           versionName: 2.0.0
+          
       - name: Install NDK
         run: echo "y" | sudo /usr/local/lib/android/sdk/tools/bin/sdkmanager --install "ndk;21.0.6113669" --sdk_root=${ANDROID_SDK_ROOT}
+     
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
       - name: Clean
         run: ./gradlew clean
+     
       - name: LintCheck
         run: ./gradlew ktlintCheck
+     
       - name: Run Test
         run: ./gradlew assembleDebugAndroidTest
+     
       - name: Build Release AAB
         id: buildRelease
         run: ./gradlew bundleRelease --stacktrace
+     
       - name: Upload AAB
         uses: actions/upload-artifact@v2
         with:
           name: aab
           path: app/build/outputs/bundle/release/app-release.aab
+     
       - name: Internal App Sharing
         uses: sagar-viradiya/internal-app-sharing-action@v1.1.0
         with: 
