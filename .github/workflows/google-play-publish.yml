@@ -73,4 +73,4 @@ jobs:
          packageName: com.jk.mr.duo.clock
          releaseFiles: app/build/outputs/bundle/release/app-release.aab
          track: internal
-        
+         changesNotSentForReview: true
