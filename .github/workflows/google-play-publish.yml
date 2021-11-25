@@ -31,12 +31,12 @@ jobs:
         
       - name: Decode Keystore 
         id: decode_keystore
-        uses: timheuer/base64-to-file@v1
+        uses: timheuer/base64-to-file@v1.1
         with:
           fileDir: ${{ env.RUNNER_TEMP }}/app
           fileName: Keystore
           encodedString: ${{ secrets.KEYSTORE_JKS_STRING }}
-          run: echo ${{ env.RUNNER_TEMP }}/app
+          run: echo ${{ env.RUNNER_TEMP }}
 
       - name: Bump version
         uses: chkfung/android-version-actions@v1.1
