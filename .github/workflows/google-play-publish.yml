@@ -70,7 +70,7 @@ jobs:
         uses: sokchanbo/android-upload-google-play@v1.0.0
         with: 
          service-account: ${{ secrets.GOOGLE_PLAY_STORE_JSON_PLAIN }}
-         packageName: com.jk.mr.duo.clock
-         releaseFiles: app/build/outputs/bundle/release/app-release.aab
+         package-name: com.jk.mr.duo.clock
+         release-file: app/build/outputs/bundle/release/app-release.aab
          track: internal
         
