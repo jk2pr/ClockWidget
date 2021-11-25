@@ -69,7 +69,7 @@ jobs:
       - name: Internal App Sharing
         uses: sokchanbo/android-upload-google-play@v1.0.0
         with: 
-         serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_STORE_JSON_PLAIN }}
+         service-account: ${{ secrets.GOOGLE_PLAY_STORE_JSON_PLAIN }}
          packageName: com.jk.mr.duo.clock
          releaseFiles: app/build/outputs/bundle/release/app-release.aab
          track: internal
