@@ -67,10 +67,10 @@ jobs:
           path: app/build/outputs/bundle/release/app-release.aab
      
       - name: Internal App Sharing
-        uses: sokchanbo/android-upload-google-play@v1.0.0
+        uses: Swootte/upload-google-play@V1.1.5
         with: 
-         service-account: ${{ secrets.GOOGLE_PLAY_STORE_JSON_PLAIN }}
-         package-name: com.jk.mr.duo.clock
-         release-file: app/build/outputs/bundle/release/app-release.aab
+         serviceAccountJson: ${{ secrets.GOOGLE_PLAY_STORE_JSON_PLAIN }}
+         packageName: com.jk.mr.duo.clock
+         releaseFiles: app/build/outputs/bundle/release/app-release.aab
          track: internal
         
