@@ -67,8 +67,9 @@ jobs:
           path: app/build/outputs/bundle/release/app-release.aab
      
       - name: Internal App Sharing
-        uses: sagar-viradiya/internal-app-sharing-action@v1.1.0
+        uses: r0adkll/upload-google-play@v1
         with: 
          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_STORE_JSON_PLAIN }}
          packageName: com.jk.mr.duo.clock
-         aabFilePath: app/build/outputs/bundle/release/app-release.aab
+         track: internal
+         releaseFiles: app/build/outputs/bundle/release/app-release.aab
