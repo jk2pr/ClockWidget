@@ -69,7 +69,7 @@ jobs:
       - name: Internal App Sharing
         uses: Swootte/upload-google-play@V1.1.5
         with: 
-         serviceAccountJson: ${{ secrets.GOOGLE_PLAY_STORE_JSON_PLAIN }}
+         serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_STORE_JSON_PLAIN }}
          packageName: com.jk.mr.duo.clock
          releaseFiles: app/build/outputs/bundle/release/app-release.aab
          track: internal
