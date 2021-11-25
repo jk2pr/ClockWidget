@@ -33,7 +33,7 @@ jobs:
         id: decode_keystore
         env:
           KEYSTORE_JKS_STRING: ${{ secrets.KEYSTORE_JKS_STRING }}
-        run: echo "$secrets.KEYSTORE_JKS_STRING" | base64 -di > ./app/Keystore
+        run: echo "$secrets.KEYSTORE_JKS_STRING" | base64 -d -i > ./app/Keystore
 
       - name: Bump version
         uses: chkfung/android-version-actions@v1.1
