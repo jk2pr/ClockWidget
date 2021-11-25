@@ -30,7 +30,7 @@ jobs:
         with:
           secret: ${{ secrets.KEYSTORE_JKS_STRING }}
           filename: Keystore
-          destination-path: ~/app
+          destination-path: /app
 
       - name: Bump version
         uses: chkfung/android-version-actions@v1.1
