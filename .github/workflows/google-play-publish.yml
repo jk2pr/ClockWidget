@@ -72,4 +72,5 @@ jobs:
          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_STORE_JSON_PLAIN }}
          packageName: com.jk.mr.duo.clock
          releaseFiles: app/build/outputs/bundle/release/app-release.aab
+         status: draft
          track: internal
