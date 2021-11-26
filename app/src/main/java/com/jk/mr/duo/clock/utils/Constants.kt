@@ -46,8 +46,8 @@ object Constants {
 
     internal fun getThemePref(context: Context): String {
         val prefs = context.getSharedPreferences(PREFS_NAME, 0)
-        return prefs.getString(PREF_PREFIX_KEY.plus(PREF_INFIX_KEY), THEME_LIGHT)
-            ?: THEME_LIGHT
+        return prefs.getString(PREF_PREFIX_KEY.plus(PREF_INFIX_KEY), THEME_BLUE)
+            ?: THEME_BLUE
     }
 
     // Read the prefix from the SharedPreferences object for this widget.
