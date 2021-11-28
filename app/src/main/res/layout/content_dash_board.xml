@@ -46,7 +46,17 @@
         android:background="?attr/colorAccent"
         app:layout_constraintTop_toBottomOf="@+id/dashboard_timezone" />
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:indicatorColor="@android:color/white"
+        app:trackThickness="2dp"
+        android:indeterminate="true"
+        android:visibility="gone"
+        tools:visibility="visible"
 
+        app:layout_constraintBottom_toTopOf="@+id/top_sprt" />
 
 
     <androidx.constraintlayout.widget.Guideline
