@@ -68,11 +68,12 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         super.onCreate(icicle)
         setTheme(getThemePref())
         setContentView(R.layout.app_widget_configure)
-        val extras = intent.extras
-        if (extras != null) mAppWidgetId = extras.getInt(
+        intent.extras?.let {
+            mAppWidgetId = it.getInt(
             AppWidgetManager.EXTRA_APPWIDGET_ID,
             AppWidgetManager.INVALID_APPWIDGET_ID
         )
+        }
 
         viewModel.mutableState.observe(this, { calendarData ->
             calendarData?.let {
