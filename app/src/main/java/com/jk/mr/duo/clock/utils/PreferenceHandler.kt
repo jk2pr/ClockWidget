@@ -21,7 +21,7 @@ class PreferenceHandler @Inject constructor(var prefs: SharedPreferences) {
         )
             ?: Constants.THEME_BLUE
 
-     fun getTimeZonePref(): String? = prefs.getString(Constants.PREF_PREFIX_KEY, null)
+    fun getTimeZonePref(): String? = prefs.getString(Constants.PREF_PREFIX_KEY, null)
 
     fun deleteAllPref() = prefs.edit().clear().apply()
 
