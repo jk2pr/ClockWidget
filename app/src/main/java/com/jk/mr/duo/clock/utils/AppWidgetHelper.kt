@@ -38,18 +38,14 @@ class AppWidgetHelper constructor(
     }
 }
 
-private fun setUpViews(views: RemoteViews, calData: CalData?, selectedTimeZone: String) {
+private fun setUpViews(views: RemoteViews, calData: CalData, selectedTimeZone: String) {
     views.apply {
         setCharSequence(R.id.clock0, SET_FORMAT12HOUR, Utils.get12HoursFormat())
         setCharSequence(R.id.clock1, SET_FORMAT12HOUR, Utils.get12HoursFormat())
         setCharSequence(R.id.clock0, SET_FORMAT24HOUR, Utils.get24HoursFormat())
         setCharSequence(R.id.clock1, SET_FORMAT24HOUR, Utils.get24HoursFormat())
-        setCharSequence(R.id.txt_timezone0, SET_TEXT, calData?.displayTimeZoneCityById())
-        setCharSequence(
-            R.id.txt_timezone1,
-            SET_TEXT,
-            calData?.displayTimeZoneCityById(selectedTimeZone)
-        )
+        setCharSequence(R.id.txt_timezone0, SET_TEXT, calData.displayTimeZoneCityById())
+        setCharSequence(R.id.txt_timezone1, SET_TEXT, calData.displayTimeZoneCityById(selectedTimeZone))
         setString(R.id.clock0, SET_TIME_ZONE, TimeZone.getDefault().id)
         setString(R.id.clock1, SET_TIME_ZONE, TimeZone.getTimeZone(selectedTimeZone).id)
     }
