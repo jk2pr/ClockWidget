@@ -13,7 +13,11 @@ import com.jk.mr.duo.clock.R
 import com.jk.mr.duo.clock.data.caldata.CalData
 import kotlinx.android.synthetic.main.item_cal_layout.view.*
 
-class DataAdapter(private val activity: AppWidgetConfigureActivity, dataSet: List<CalData> = emptyList(), val updateClock: (CalData) -> Unit) : DragDropSwipeAdapter<CalData, DataAdapter.ViewHolder>(dataSet) {
+class DataAdapter(
+    private val activity: AppWidgetConfigureActivity,
+    dataSet: List<CalData> = emptyList(),
+    val updateClock: (CalData) -> Unit
+) : DragDropSwipeAdapter<CalData, DataAdapter.ViewHolder>(dataSet) {
 
     fun addCal(calData: CalData) {
         insertItem(0, calData)
@@ -23,7 +27,8 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, dataSet: Lis
 
     override fun getViewHolder(itemView: View): ViewHolder = ViewHolder(itemView)
 
-    override fun onBindViewHolder(item: CalData, viewHolder: ViewHolder, position: Int) = viewHolder.bind(item)
+    override fun onBindViewHolder(item: CalData, viewHolder: ViewHolder, position: Int) =
+        viewHolder.bind(item)
 
     inner class ViewHolder(itemView: View) : DragDropSwipeAdapter.ViewHolder(itemView) {
 
@@ -41,19 +46,13 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, dataSet: Lis
                 format12Hour = Utils.getItem12HoursFormat()
                 format24Hour = Utils.getItem24HoursFormat()
             }
-            textCountry.apply {
-
-                var final: String = calData.name
-                val dd = final.split(" ".toRegex(), 3)
-                if (dd.size > 1) final = dd.first().plus(" ").plus(dd[1])
-                text = final
-            }
+            textCountry.text = calData.name
             textCity.text = calData.address
 
             SvgLoader.pluck()
                 .with(activity)
                 .setPlaceHolder(R.drawable.ic_image_black_24dp, R.drawable.ic_broken_image_black_24dp)
-                .load(calData.flag, imgFlag)
+                .load(calData.flag ?: "", imgFlag)
         }
     }
 
@@ -63,8 +62,9 @@ class DataAdapter(private val activity: AppWidgetConfigureActivity, dataSet: Lis
                 element.isSelected = index == 0
                 notifyItemChanged(index, element.isSelected)
             }
-            updateClock(dataSet[0])
         }
+
+        updateClock(dataSet[0])
     }
     override fun onDragFinished(item: CalData, viewHolder: ViewHolder) {
         super.onDragFinished(item, viewHolder)

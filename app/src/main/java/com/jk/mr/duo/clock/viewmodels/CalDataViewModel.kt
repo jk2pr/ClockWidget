@@ -20,43 +20,30 @@ class CalDataViewModel @Inject constructor(
 
     fun getData(address: String, country: String, location: String) {
         viewModelScope.launch {
+            var mResponse: MResponse? = null
+            var flagResponse: FlagResponse? = null
             try {
-                val mResponse: MResponse = calRepository.getTimeZone(location)
+                mResponse = calRepository.getTimeZone(location)
                 val requestBody: MutableMap<String, String> = HashMap()
                 requestBody["country"] = country.trim()
-                print(requestBody)
-                val flagResponse: FlagResponse = calRepository.getFlag(requestBody)
-                val timeZoneId = mResponse.resourceSets[0].resources[0].timeZone.ianaTimeZoneId
-                val abbreviation = mResponse.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
-                val calData = CalData(address, country, timeZoneId, abbreviation, false, flagResponse.data.flag)
-                mutableState.postValue(calData)
+                flagResponse = calRepository.getFlag(requestBody)
             } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                mResponse?.let {
+                    val timeZoneId = it.resourceSets[0].resources[0].timeZone.ianaTimeZoneId
+                    val abbreviation = it.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
+                    val calData = CalData(
+                        address,
+                        country,
+                        timeZoneId,
+                        abbreviation,
+                        false,
+                        flagResponse?.data?.flag
+                    )
+                    mutableState.postValue(calData)
+                } ?: mutableState.postValue(null)
             }
         }
-        /*   fun getTimeZone(address: String, country: String, lat: String, long: String) {
-
-        // val tsLong = System.currentTimeMillis() / 1000
-        //  val ts = tsLong.toString()
-        val location = lat.plus(",").plus(long)
-        val subscribeOn = calRepository.getTimeZone(lat.plus(",").plus(long))
-            .subscribeOn(Schedulers.io())
-            .flatMap {
-
-                api.getFlag(query = countryString)
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ abc ->
-                val timeZoneId =
-                    abc.resourceSets[0].resources[0].timeZone.convertedTime.timeZoneDisplayName
-                val abbreviation = abc.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
-                print("abbreviation $abbreviation")
-                sendBackResult(
-                    address.plus(Constants.SEPARATOR).plus(country).plus(Constants.SEPARATOR).plus(timeZoneId)
-                        .plus(Constants.SEPARATOR).plus(abbreviation)
-                )
-            }) {}
-        subscriptions.add(subscribeOn)
-    }*/
     }
 }

@@ -8,10 +8,9 @@ import com.jk.mr.duo.clock.utils.Constants.THEME_LIGHT
 import com.jk.mr.duo.clock.utils.Constants.THEME_ORANGE
 import com.jk.mr.duo.clock.utils.Constants.THEME_RED
 import com.jk.mr.duo.clock.utils.Constants.THEME_YELLOW
-import com.jk.mr.duo.clock.utils.Constants.getThemePref
 
 fun AppWidgetConfigureActivity.getThemePref(): Int {
-    return when (getThemePref(this)) {
+    return when (preferenceHandler.getThemePref()) {
         THEME_LIGHT -> R.style.AppThemeLight
         THEME_DARK -> R.style.AppThemeDark
         THEME_RED -> R.style.AppThemeRed
