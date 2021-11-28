@@ -1,10 +1,8 @@
 package com.jk.mr.duo.clock.utils
 
-import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.jk.mr.duo.clock.data.caldata.CalData
-import java.util.*
 import javax.inject.Inject
 
 class PreferenceHandler @Inject constructor(var prefs: SharedPreferences) {
@@ -23,12 +21,7 @@ class PreferenceHandler @Inject constructor(var prefs: SharedPreferences) {
         )
             ?: Constants.THEME_BLUE
 
-    // Read the prefix from the SharedPreferences object for this widget.
-    // If there is no preference saved, get the default from a resource
-    fun getTimeZonePref(context: Context): String {
-        val titleValue = prefs.getString(Constants.PREF_PREFIX_KEY, null)
-        return titleValue ?: TimeZone.getDefault().id
-    }
+    fun getTimeZonePref(): String? = prefs.getString(Constants.PREF_PREFIX_KEY, null)
 
     fun deleteAllPref() = prefs.edit().clear().apply()
 

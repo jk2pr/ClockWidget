@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.widget.RemoteViews
 import com.google.gson.Gson
 import com.jk.mr.duo.clock.AppWidgetConfigureActivity
@@ -24,15 +25,16 @@ class AppWidgetHelper constructor(
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int
     ) {
-
-        val calDataJSON = preferenceHandler.getTimeZonePref(context)
-        val calData = Gson().fromJson(calDataJSON, CalData::class.java)
-        val selectedTimeZone = calData.currentCityTimeZoneId ?: TimeZone.getDefault().id
-
         val views = RemoteViews(context.packageName, R.layout.app_widget)
         themeHandler.setWidgetTheme(context, views, preferenceHandler.getThemePref())
-        setUpViews(views, calData, selectedTimeZone)
-        updateWidget(context, appWidgetId, views, appWidgetManager)
+
+        val calDataJSON = preferenceHandler.getTimeZonePref()
+        calDataJSON?.let {
+            val calData = Gson().fromJson(it, CalData::class.java)
+            val selectedTimeZone = calData.currentCityTimeZoneId ?: TimeZone.getDefault().id
+            setUpViews(views, calData, selectedTimeZone)
+            updateWidget(context, appWidgetId, views, appWidgetManager)
+        }
     }
 }
 
@@ -57,7 +59,14 @@ private fun updateWidget(
 ) {
     val intent = Intent(context, AppWidgetConfigureActivity::class.java)
     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-    val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+    val pendingIntent = PendingIntent.getActivity(
+        context, 0, intent,
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+    )
     views.setOnClickPendingIntent(R.id.rel_custom_time, pendingIntent)
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
