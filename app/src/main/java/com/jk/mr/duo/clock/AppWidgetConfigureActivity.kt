@@ -70,9 +70,9 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         setContentView(R.layout.app_widget_configure)
         intent.extras?.let {
             mAppWidgetId = it.getInt(
-            AppWidgetManager.EXTRA_APPWIDGET_ID,
-            AppWidgetManager.INVALID_APPWIDGET_ID
-        )
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID
+            )
         }
 
         viewModel.mutableState.observe(this, { calendarData ->
