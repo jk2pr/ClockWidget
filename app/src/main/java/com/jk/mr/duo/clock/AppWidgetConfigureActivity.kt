@@ -82,7 +82,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                 when (it) {
                     is Resource.Success -> {
                         updateAdapter(it.calData)
-                        showLoader(false)
                     }
                     is Resource.Loading ->
                         showLoader(true)
@@ -138,6 +137,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             }
             snackBar.show()
         }
+        showLoader(false)
     }
 
     private val onItemSwipeListener = object : OnItemSwipeListener<CalData> {
