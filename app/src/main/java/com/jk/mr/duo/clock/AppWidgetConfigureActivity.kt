@@ -80,15 +80,11 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         viewModel.mutableState.observe(this, { calendarData ->
             calendarData?.let {
                 when (it) {
-                    is Resource.Success -> {
-                        updateAdapter(it.calData)
-                    }
-                    is Resource.Loading ->
-                        showLoader(true)
-                    is Resource.Error ->
-                        showError()
+                    is Resource.Success -> updateAdapter(it.calData)
+                    is Resource.Error -> showError()
                     else -> Unit
                 }
+                showLoader(it is Resource.Loading)
             }
         })
 
@@ -226,7 +222,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private fun updateAdapter(calData: CalData) {
-        showLoader(false)
         preferenceHandler.saveTimeZonePref(calData.toJSON())
         recycler_clock.layoutManager?.scrollToPosition(0)
         dataAdapter.addCal(calData)
