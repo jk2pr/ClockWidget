@@ -226,6 +226,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private fun updateAdapter(calData: CalData) {
+        showLoader(false)
         preferenceHandler.saveTimeZonePref(calData.toJSON())
         recycler_clock.layoutManager?.scrollToPosition(0)
         dataAdapter.addCal(calData)
