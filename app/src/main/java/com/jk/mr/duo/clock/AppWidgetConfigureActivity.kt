@@ -78,12 +78,12 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         }
 
         viewModel.mutableState.observe(this, { calendarData ->
-                when (calendarData) {
-                    is Resource.Success -> updateAdapter(calendarData.calData)
-                    is Resource.Error -> showError()
-                    else -> Unit
-                }
-                showLoader(calendarData is Resource.Loading)
+            when (calendarData) {
+                is Resource.Success -> updateAdapter(calendarData.calData)
+                is Resource.Error -> showError()
+                else -> Unit
+            }
+            showLoader(calendarData is Resource.Loading)
         })
 
         setSupportActionBar(toolbar)
