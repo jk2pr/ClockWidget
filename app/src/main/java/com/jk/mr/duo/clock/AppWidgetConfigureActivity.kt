@@ -134,12 +134,10 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                         )
                         compoundDrawablePadding =
                             context.resources.getDimensionPixelOffset(R.dimen.dp8)
-
                     }
             }
             snackBar.show()
         }
-
     }
 
     private val onItemSwipeListener = object : OnItemSwipeListener<CalData> {
