@@ -131,7 +131,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             }
             snackBar.show()
         }
-        showLoader(false)
     }
 
     private val onItemSwipeListener = object : OnItemSwipeListener<CalData> {
@@ -202,7 +201,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         val address = carmenFeature.placeName()!!
         val country = carmenFeature.placeName()!!.split(",").last()
         val place = carmenFeature.geometry() as Point
-        showLoader(isLoading = true)
         viewModel.getData(
             address,
             country,
