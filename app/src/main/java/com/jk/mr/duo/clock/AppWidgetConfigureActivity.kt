@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CheckedTextView
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jk.mr.duo.clock.data.caldata.CalData
+import com.jk.mr.duo.clock.data.caldata.Resource
 import com.jk.mr.duo.clock.utils.*
 import com.jk.mr.duo.clock.utils.Constants.ACTION_ADD_CLOCK
 import com.jk.mr.duo.clock.utils.Constants.themeArray
@@ -76,17 +78,14 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         }
 
         viewModel.mutableState.observe(this, { calendarData ->
-            calendarData?.let {
-                updateAdapter(calendarData)
-            } ?: Snackbar.make(
-                root_coordinate,
-                getString(R.string.lostInternet),
-                Snackbar.LENGTH_SHORT
-            )
-                .show()
-
-            showLoader(false)
+            when (calendarData) {
+                is Resource.Success -> updateAdapter(calendarData.calData)
+                is Resource.Error -> showError()
+                else -> Unit
+            }
+            showLoader(calendarData is Resource.Loading)
         })
+
         setSupportActionBar(toolbar)
         title = null
         recycler_clock.apply {
@@ -101,6 +100,36 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                 { fab.performClick() },
                 100
             )
+        }
+    }
+
+    private fun showError() {
+        val snackBar = Snackbar.make(
+            root_coordinate,
+            getString(R.string.lostInternet),
+            Snackbar.LENGTH_INDEFINITE
+        ).apply {
+            setAction("Ok") {
+                if (isShown) {
+                    dismiss()
+                }
+            }
+        }
+        snackBar.view.apply {
+            run {
+                findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+                    .apply {
+                        setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.ic_baseline_error_24,
+                            0,
+                            0,
+                            0
+                        )
+                        compoundDrawablePadding =
+                            context.resources.getDimensionPixelOffset(R.dimen.dp8)
+                    }
+            }
+            snackBar.show()
         }
     }
 
@@ -172,7 +201,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         val address = carmenFeature.placeName()!!
         val country = carmenFeature.placeName()!!.split(",").last()
         val place = carmenFeature.geometry() as Point
-        showLoader(isLoading = true)
         viewModel.getData(
             address,
             country,

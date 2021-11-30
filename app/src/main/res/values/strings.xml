@@ -15,7 +15,7 @@
 
     <string name="undoCaps">UNDO</string>
     <string name="itemRemovedMessage">%1$s was removed.</string>
-    <string name="lostInternet">Lost internet</string>
+    <string name="lostInternet">No internet connection, please connect to mobile data or wifi</string>
     <string name="fab">Fab</string>
 
 </resources>

@@ -7,7 +7,12 @@ import com.jk.mr.duo.clock.data.CalRepository
 import com.jk.mr.duo.clock.data.FlagResponse
 import com.jk.mr.duo.clock.data.MResponse
 import com.jk.mr.duo.clock.data.caldata.CalData
+import com.jk.mr.duo.clock.data.caldata.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,10 +21,12 @@ class CalDataViewModel @Inject constructor(
     private val calRepository: CalRepository
 ) : ViewModel() {
 
-    val mutableState = MutableLiveData<CalData>()
+    val mutableState = MutableLiveData<Resource>()
 
-    fun getData(address: String, country: String, location: String) {
-        viewModelScope.launch {
+    fun getData(address: String, country: String, location: String) = viewModelScope.launch {
+
+        flow {
+            emit(Resource.Loading)
             var mResponse: MResponse? = null
             var flagResponse: FlagResponse? = null
             try {
@@ -32,7 +39,8 @@ class CalDataViewModel @Inject constructor(
             } finally {
                 mResponse?.let {
                     val timeZoneId = it.resourceSets[0].resources[0].timeZone.ianaTimeZoneId
-                    val abbreviation = it.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
+                    val abbreviation =
+                        it.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
                     val calData = CalData(
                         address,
                         country,
@@ -41,9 +49,11 @@ class CalDataViewModel @Inject constructor(
                         false,
                         flagResponse?.data?.flag
                     )
-                    mutableState.postValue(calData)
-                } ?: mutableState.postValue(null)
+                    emit(Resource.Success(calData))
+                } ?: emit(Resource.Error("Error"))
             }
+        }.flowOn(Dispatchers.IO).collect {
+            mutableState.value = it
         }
     }
 }
