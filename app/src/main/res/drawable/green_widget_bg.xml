@@ -11,7 +11,12 @@
 
     <item android:bottom="3dp">
         <shape>
-            <solid android:color="@color/green_light" />
+            <gradient
+                android:type="linear"
+                android:angle="-45"
+                android:startColor="@color/green_dark"
+                android:centerColor="@android:color/black"
+                android:endColor="@color/green_light" />
             <corners android:radius="5dp"/>
 
             <!-- <stroke

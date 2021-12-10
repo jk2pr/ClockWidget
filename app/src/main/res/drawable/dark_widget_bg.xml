@@ -13,7 +13,12 @@
 
     <item android:bottom="3dp">
         <shape>
-            <solid android:color="@android:color/background_dark" />
+            <gradient
+                android:type="linear"
+                android:angle="-45"
+                android:startColor="@color/light_gray"
+                android:centerColor="@android:color/black"
+                android:endColor="@color/cardview_dark_background" />
             <corners android:radius="5dp"/>
 
             <!-- <stroke

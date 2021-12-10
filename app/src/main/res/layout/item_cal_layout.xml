@@ -4,8 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?android:attr/selectableItemBackground"
-    android:foreground="?android:attr/selectableItemBackground"
     card_view:cardBackgroundColor="@android:color/transparent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -17,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/dp16"
-        android:background="@drawable/selctor_row_bg">
+        android:background="@drawable/selector_row_bg">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_flag"

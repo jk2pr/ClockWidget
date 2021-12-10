@@ -33,7 +33,6 @@ class ThemeHandler {
                 }
                 THEME_YELLOW -> {
                     setInt(R.id.widget_root, SET_BACKGROUND_RESOURCE, R.drawable.yellow_widget_bg)
-                    color = ContextCompat.getColor(context, android.R.color.black)
                 }
             }
         }

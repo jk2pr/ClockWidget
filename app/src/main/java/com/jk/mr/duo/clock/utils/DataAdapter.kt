@@ -37,8 +37,8 @@ class DataAdapter(
         private val imgFlag: ImageView = itemView.img_flag
         private val textCity: TextView = itemView.tv_city
         private val textCountry: TextView = itemView.tv_country
-        val bebaBoldTypeFace = UiUtils.getBebasneueRegularTypeFace(itemView.context)
-        val abelRegularTypeFace = UiUtils.getAbelRegularTypeFace(itemView.context)
+        private val bebaBoldTypeFace = UiUtils.getBebasneueRegularTypeFace(itemView.context)
+        private val abelRegularTypeFace = UiUtils.getAbelRegularTypeFace(itemView.context)
 
         fun bind(calData: CalData): Unit = with(itemView) {
 
