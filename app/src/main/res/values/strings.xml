@@ -11,7 +11,7 @@
     <string name="change_theme">Change theme</string>
 
     <!-- Example settings for Notifications -->
-    <string name="no_city_to_show_add_from">Nothing to show, Tap Plus to add cities</string>
+   <!-- <string name="no_city_to_show_add_from">Nothing to show, Tap Plus to add cities</string>-->
 
     <string name="undoCaps">UNDO</string>
     <string name="itemRemovedMessage">%1$s was removed.</string>

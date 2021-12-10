@@ -8,7 +8,6 @@
     tools:showIn="@layout/app_widget_configure">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_dashboard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/round_view"

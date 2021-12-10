@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.jk.mr.duo.clock.data.caldata.CalData
 import javax.inject.Inject
 
-class PreferenceHandler @Inject constructor(var prefs: SharedPreferences) {
+class PreferenceHandler @Inject constructor(private var prefs: SharedPreferences) {
 
     fun saveTimeZonePref(text: String) =
         prefs.edit().putString(Constants.PREF_PREFIX_KEY, text).apply()

@@ -267,11 +267,12 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                 val manager = AppWidgetManager.getInstance(this@AppWidgetConfigureActivity)
                 val name = ComponentName(this@AppWidgetConfigureActivity, AppWidget::class.java)
                 val appIds = manager.getAppWidgetIds(name)
-                for (appWidgetId in appIds) appWidgetHelper.updateAppWidget(
-                    this@AppWidgetConfigureActivity,
-                    manager,
-                    appWidgetId
-                )
+                for (appWidgetId in appIds)
+                    appWidgetHelper.updateAppWidget(
+                        this@AppWidgetConfigureActivity,
+                        manager,
+                        appWidgetId
+                    )
             }
         }.show()
     }
