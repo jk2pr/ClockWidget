@@ -4,6 +4,7 @@ import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,6 +21,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ernestoyaquello.dragdropswiperecyclerview.listener.OnItemSwipeListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -92,6 +94,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             adapter = dataAdapter
             layoutManager = LinearLayoutManager(this@AppWidgetConfigureActivity)
             swipeListener = onItemSwipeListener
+            addItemDecoration(MarginItemDecoration(resources.getDimensionPixelSize(R.dimen.dp8)))
         }
         handleDashBoardClock()
         fab.setOnClickListener { openSearchDialog() }
@@ -162,15 +165,19 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private fun handleDashBoardClock() {
+        val font = UiUtils.getBebasneueRegularTypeFace(this@AppWidgetConfigureActivity)
         dashboard_clock.apply {
             format12Hour = Utils.getDashBoard12HoursFormat()
             format24Hour = Utils.getDashBoard24HoursFormat()
-            typeface = UiUtils.getBebasneueRegularTypeFace(this@AppWidgetConfigureActivity)
+            typeface = font
         }
         TimeZone.getDefault().id.let { currentTimeZone ->
             var tz = currentTimeZone
             if (tz.contains("/")) tz = currentTimeZone.split("/")[1].replace("_", " ")
-            dashboard_timezone.text = tz
+            dashboard_timezone.apply {
+                text = tz
+                typeface = font
+            }
         }
     }
 
@@ -276,9 +283,26 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val view = super.getView(position, convertView, parent)
-            (view as CheckedTextView).isChecked =
-                preferenceHandler.getThemePref() == objects[position]
-            return view
+            with(view as CheckedTextView) {
+                isChecked = preferenceHandler.getThemePref() == objects[position]
+                typeface = UiUtils.getAbelRegularTypeFace(view.context)
+                return view
+            }
+        }
+    }
+
+    private inner class MarginItemDecoration(private val spaceSize: Int) :
+        RecyclerView.ItemDecoration() {
+        override fun getItemOffsets(
+            outRect: Rect, view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
+            with(outRect) {
+                left = spaceSize
+                right = spaceSize
+                bottom = spaceSize
+            }
         }
     }
 }
