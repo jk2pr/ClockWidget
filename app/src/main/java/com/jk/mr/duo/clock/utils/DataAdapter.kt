@@ -37,6 +37,8 @@ class DataAdapter(
         private val imgFlag: ImageView = itemView.img_flag
         private val textCity: TextView = itemView.tv_city
         private val textCountry: TextView = itemView.tv_country
+        val bebaBoldTypeFace = UiUtils.getBebasneueRegularTypeFace(itemView.context)
+        val abelRegularTypeFace = UiUtils.getAbelRegularTypeFace(itemView.context)
 
         fun bind(calData: CalData): Unit = with(itemView) {
 
@@ -45,8 +47,12 @@ class DataAdapter(
                 timeZone = calData.currentCityTimeZoneId?.trim()
                 format12Hour = Utils.getItem12HoursFormat()
                 format24Hour = Utils.getItem24HoursFormat()
+                typeface = abelRegularTypeFace
             }
             textCountry.text = calData.name
+            textCountry.typeface = abelRegularTypeFace
+
+            textCity.typeface = bebaBoldTypeFace
             textCity.text = calData.address
 
             SvgLoader.pluck()

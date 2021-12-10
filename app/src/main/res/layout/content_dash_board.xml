@@ -7,80 +7,80 @@
     tools:context=".AppWidgetConfigureActivity"
     tools:showIn="@layout/app_widget_configure">
 
-
-    <TextClock
-        android:id="@+id/dashboard_clock"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_dashboard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:includeFontPadding="true"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/sp48"
-        android:typeface="normal"
-        app:layout_constraintBottom_toBottomOf="@+id/guideline"
+        android:background="@drawable/round_view"
+        android:padding="@dimen/dp56"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        app:layout_constraintTop_toBottomOf="@+id/guideline"
-        tools:text="Dash" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+        <TextClock
+            android:id="@+id/dashboard_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/sp40"
+            android:textAllCaps="true"
+            android:typeface="normal"
+            app:layout_constraintBottom_toTopOf="@+id/dashboard_timezone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Dash" />
 
-        android:id="@+id/dashboard_timezone"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/sp16"
-        android:gravity="center"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="@+id/dashboard_clock"
-        app:layout_constraintStart_toStartOf="@+id/dashboard_clock"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_clock"
-        tools:text="Kuala ljmpjr" />
+        <androidx.appcompat.widget.AppCompatTextView
 
-    <View
-        android:id="@+id/top_sprt"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dp48"
-        android:background="?attr/colorAccent"
-        app:layout_constraintTop_toBottomOf="@+id/dashboard_timezone" />
+            android:id="@+id/dashboard_timezone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAllCaps="false"
+            app:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/sp16"
+            app:layout_constraintEnd_toEndOf="@+id/dashboard_clock"
+            app:layout_constraintStart_toStartOf="@+id/dashboard_clock"
+            app:layout_constraintTop_toBottomOf="@+id/dashboard_clock"
+            tools:text="Bharat" />
 
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progress_horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:indicatorColor="@android:color/white"
-        app:trackThickness="2dp"
-        android:indeterminate="true"
-        android:visibility="gone"
-        tools:visibility="visible"
 
-        app:layout_constraintBottom_toTopOf="@+id/top_sprt" />
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.2" />
+        app:layout_constraintGuide_percent="0.4" />
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp8"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:indicatorColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/recycler_clock"
+        app:trackThickness="2dp"
+        tools:visibility="visible" />
 
     <com.ernestoyaquello.dragdropswiperecyclerview.DragDropSwipeRecyclerView
         android:id="@+id/recycler_clock"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:item_layout="@layout/item_cal_layout"
-        app:behind_swiped_item_bg_color="@color/red"
-        app:behind_swiped_item_bg_color_secondary="@color/red_light"
-        app:behind_swiped_item_icon="@drawable/ic_delete_black_24dp"
-        app:behind_swiped_item_icon_margin="@dimen/dp8"
-        app:behind_swiped_item_icon_centered="false"
         app:layout_constraintBottom_toBottomOf="parent"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_sprt"
+        app:layout_constraintTop_toBottomOf="@+id/guideline"
+        app:swiped_item_opacity_fades_on_swiping="true"
         tools:listitem="@layout/item_cal_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

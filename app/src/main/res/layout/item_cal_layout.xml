@@ -9,20 +9,20 @@
     card_view:cardBackgroundColor="@android:color/transparent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardElevation="0dp"
-    card_view:cardCornerRadius="0dp">
+    app:cardElevation="@dimen/dp8"
+    card_view:cardCornerRadius="@dimen/dp8">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/root_constraint"
         android:layout_width="match_parent"
-        android:background="@drawable/selctor_row_bg"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:padding="@dimen/dp16"
+        android:background="@drawable/selctor_row_bg">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_flag"
             android:layout_width="80dp"
             android:layout_height="60dp"
-            android:layout_margin="@dimen/dp8"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -36,7 +36,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp8"
-            android:layout_marginTop="@dimen/dp8"
             android:layout_marginEnd="8dp"
             android:ellipsize="marquee"
             android:gravity="center_vertical"
@@ -44,7 +43,6 @@
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:textColor="@drawable/selctor_row_txt_color"
-            android:textSize="@dimen/sp16"
             app:layout_constraintEnd_toStartOf="@+id/drag_icon"
             app:layout_constraintStart_toEndOf="@+id/img_flag"
             app:layout_constraintTop_toTopOf="parent"
@@ -56,7 +54,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp8"
             android:textColor="@drawable/selctor_row_txt_color"
-            android:textSize="@dimen/sp16"
             app:layout_constraintEnd_toStartOf="@+id/drag_icon"
             app:layout_constraintStart_toEndOf="@+id/img_flag"
             app:layout_constraintTop_toBottomOf="@+id/tv_city"
@@ -68,7 +65,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp8"
             android:textColor="@drawable/selctor_row_txt_color"
-            android:textSize="@dimen/sp14"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/drag_icon"
             app:layout_constraintStart_toEndOf="@+id/img_flag"
@@ -84,15 +80,8 @@
             android:padding="@dimen/dp8"
             android:src="@drawable/ic_drag"
             android:tint="@drawable/selctor_row_txt_color"
-            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <View
-            android:id="@+id/view"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?attr/colorAccent"
-            app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

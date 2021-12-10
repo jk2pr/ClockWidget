@@ -3,6 +3,7 @@
     <color name="colorPrimary">#101010</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FF4081</color>
+
     <color name="indigo_light">#9c4dcc</color>
     <color name="indigo_dark">#38006b</color>
     <color name="yellow_dark">#c49000</color>
@@ -16,6 +17,6 @@
     <color name="light_gray">#B3B3B3</color>
     <color name="light_orange">#ff9100</color>
     <color name="dark_orange">#c56200</color>
-    <color name="light_blue">#0097a7</color>
-    <color name="dark_blue">#005662</color>
+    <color name="light_blue">#01BBD4</color>
+    <color name="dark_blue">#0096a7</color>
 </resources>

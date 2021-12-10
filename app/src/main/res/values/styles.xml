@@ -23,14 +23,6 @@
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowDisablePreview">true</item>
         <item name="windowNoTitle">true</item>
-        <item name="colorPrimaryDark">@android:color/black</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
-        <item name="iconTint">@android:color/black</item>
-        <item name="android:navigationBarColor">?attr/colorPrimaryDark</item>
-        <item name="colorAccent">@android:color/black</item>
-        <item name="colorPrimaryLight">@android:color/darker_gray</item>
-
-
         <item name="selectedRowBackgroundColor">#333333</item>
 
         <item name="rowTextColor">?attr/selectedRowBackgroundColor</item>
@@ -42,16 +34,8 @@
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@drawable/dashboard_bg</item>
         <item name="windowActionBar">false</item>
-        <item name="android:statusBarColor">@android:color/black</item>
-
-        <item name="iconTint">@android:color/black</item>
         <!-- <item name="tint">@android:color/white</item>-->
         <item name="windowNoTitle">true</item>
-        <item name="colorAccent">@android:color/white</item>
-        <item name="colorPrimaryLight">@color/light_black</item>
-        <item name="colorPrimaryDark">@android:color/black</item>
-
-
         <item name="selectedRowBackgroundColor">@android:color/black</item>
 
         <item name="rowTextColor">@android:color/white</item>
@@ -59,7 +43,7 @@
 
     </style>
 
-    <style name="AppThemeRed" parent="AppThemeLight">
+    <style name="AppThemeRed" parent="AppThemeDark">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/red</item>
         <item name="colorPrimaryDark">@color/red_dark</item>
@@ -67,7 +51,6 @@
         <item name="colorAccent">@color/red_light</item>
 
         <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
-        <item name="iconTint">@color/red_dark</item>
 
         <item name="selectedRowBackgroundColor">?attr/colorPrimaryDark</item>
 
@@ -77,14 +60,14 @@
 
     </style>
 
-    <style name="AppThemeOrange" parent="AppThemeLight">
+    <style name="AppThemeOrange" parent="AppThemeDark">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/dark_orange</item>
         <item name="colorPrimaryDark">@color/dark_orange</item>
         <item name="colorPrimaryLight">@color/light_orange</item>
         <item name="colorAccent">@color/light_orange</item>
         <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
-        <item name="iconTint">@color/dark_orange</item>
+
 
 
         <item name="selectedRowBackgroundColor">?attr/colorPrimaryDark</item>
@@ -95,7 +78,7 @@
 
     </style>
 
-    <style name="AppThemeYellow" parent="AppThemeLight">
+    <style name="AppThemeYellow" parent="AppThemeDark">
         <!-- Customize your theme here. -->
 
         <item name="colorPrimary">@color/yellow_dark</item>
@@ -103,46 +86,45 @@
         <item name="colorPrimaryLight">@color/yellow_light</item>
         <item name="colorAccent">@color/yellow_light</item>
         <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
-        <item name="iconTint">@color/yellow_dark</item>
         <item name="selectedRowBackgroundColor">?attr/colorPrimaryDark</item>
         <item name="rowTextColor">?attr/colorAccent</item>
 
     </style>
 
-    <style name="AppThemeIndigo" parent="AppThemeLight">
+    <style name="AppThemeIndigo" parent="AppThemeDark">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/indigo_dark</item>
         <item name="colorPrimaryDark">@color/indigo_dark</item>
         <item name="colorPrimaryLight">@color/indigo_light</item>
         <item name="colorAccent">@color/indigo_light</item>
         <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
-        <item name="iconTint">@color/indigo_dark</item>
+
         <item name="selectedRowBackgroundColor">?attr/colorPrimaryDark</item>
         <item name="rowTextColor">?attr/colorAccent</item>
 
     </style>
 
-    <style name="AppThemeGreen" parent="AppThemeLight">
+    <style name="AppThemeGreen" parent="AppThemeDark">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/green_light</item>
         <item name="colorPrimaryDark">@color/green_dark</item>
         <item name="colorPrimaryLight">@color/green_light</item>
         <item name="colorAccent">@color/green_light</item>
         <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
-        <item name="iconTint">@color/green_light</item>
+
         <item name="selectedRowBackgroundColor">?attr/colorPrimaryDark</item>
         <item name="rowTextColor">?attr/colorAccent</item>
 
     </style>
 
-    <style name="AppThemeBlue" parent="AppThemeLight">
+    <style name="AppThemeBlue" parent="AppThemeDark">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/light_blue</item>
         <item name="colorPrimaryDark">@color/dark_blue</item>
         <item name="colorPrimaryLight">@color/light_blue</item>
         <item name="colorAccent">@color/light_blue</item>
         <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
-        <item name="iconTint">@color/dark_blue</item>
+
         <item name="selectedRowBackgroundColor">?attr/colorPrimaryDark</item>
         <item name="rowTextColor">?attr/colorAccent</item>
 

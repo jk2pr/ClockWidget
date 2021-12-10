@@ -13,6 +13,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="dp8">8dp</dimen>
     <dimen name="dp16">16dp</dimen>
     <dimen name="dp48">48dp</dimen>
-    <dimen name="sp48">48sp</dimen>
+    <dimen name="dp56">56dp</dimen>
+    <dimen name="sp40">40sp</dimen>
 
 </resources>
