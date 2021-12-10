@@ -52,7 +52,7 @@ class DataAdapter(
             textCountry.text = calData.name
             textCountry.typeface = abelRegularTypeFace
 
-            textCity. typeface = bebaBoldTypeFace
+            textCity.typeface = bebaBoldTypeFace
             textCity.text = calData.address
 
             SvgLoader.pluck()
