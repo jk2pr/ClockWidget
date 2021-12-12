@@ -2,7 +2,7 @@
 
     <item>
         <shape
-            android:innerRadiusRatio="3"
+            android:innerRadiusRatio="4"
             android:shape="ring"
             android:thickness="@dimen/dp8"
             android:useLevel="false">

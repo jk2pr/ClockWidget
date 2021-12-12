@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    tools:showIn="@layout/content_dash_board">
+
+
+    <TextClock
+        android:id="@+id/dashboard_clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/sp40"
+        android:typeface="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Dash" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+
+        android:id="@+id/dashboard_timezone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAllCaps="false"
+        app:textAllCaps="true"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/sp16"
+        app:layout_constraintEnd_toEndOf="@+id/dashboard_clock"
+        app:layout_constraintStart_toStartOf="@+id/dashboard_clock"
+        app:layout_constraintTop_toBottomOf="@+id/dashboard_clock"
+        tools:text="Bharat" />
+
+
+</LinearLayout>

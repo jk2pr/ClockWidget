@@ -37,6 +37,7 @@ import com.mapbox.geojson.Point
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.app_widget_configure.*
 import kotlinx.android.synthetic.main.content_dash_board.*
+import kotlinx.android.synthetic.main.dashboard_clock.*
 import java.util.*
 import javax.inject.Inject
 
@@ -284,11 +285,11 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val view = super.getView(position, convertView, parent)
-            with(view as CheckedTextView) {
+             with(view as CheckedTextView) {
                 isChecked = preferenceHandler.getThemePref() == objects[position]
                 typeface = UiUtils.getAbelRegularTypeFace(view.context)
-                return view
             }
+            return view
         }
     }
 
