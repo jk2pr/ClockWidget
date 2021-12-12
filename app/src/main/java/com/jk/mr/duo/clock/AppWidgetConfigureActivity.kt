@@ -285,7 +285,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val view = super.getView(position, convertView, parent)
-             with(view as CheckedTextView) {
+            with(view as CheckedTextView) {
                 isChecked = preferenceHandler.getThemePref() == objects[position]
                 typeface = UiUtils.getAbelRegularTypeFace(view.context)
             }
