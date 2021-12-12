@@ -8,47 +8,23 @@
     tools:showIn="@layout/app_widget_configure">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@drawable/round_view"
-        android:padding="@dimen/dp56"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
-        <TextClock
-            android:id="@+id/dashboard_clock"
+        <include
+            layout="@layout/dashboard_clock"
             android:layout_width="wrap_content"
+
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/sp40"
-            android:textAllCaps="true"
-            android:typeface="normal"
-            app:layout_constraintBottom_toTopOf="@+id/dashboard_timezone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Dash" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-
-            android:id="@+id/dashboard_timezone"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textAllCaps="false"
-            app:textAllCaps="true"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/sp16"
-            app:layout_constraintEnd_toEndOf="@+id/dashboard_clock"
-            app:layout_constraintStart_toStartOf="@+id/dashboard_clock"
-            app:layout_constraintTop_toBottomOf="@+id/dashboard_clock"
-            tools:text="Bharat" />
-
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -57,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.4" />
+        app:layout_constraintGuide_percent="0.40" />
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progress_horizontal"
         android:layout_width="match_parent"

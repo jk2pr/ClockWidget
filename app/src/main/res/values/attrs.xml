@@ -4,4 +4,5 @@
     <attr name="rowTextColor" format="reference|color" />
     <attr name="rowBackGroundColor" format="reference|color" />
     <attr name="colorPrimaryLight" format="reference|color" />
+    <attr name="colorBlack" format="reference|color" />
 </resources>
