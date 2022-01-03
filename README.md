@@ -1,8 +1,7 @@
 # ClockWidget
 This is Dual Clock Widget, to demonstrate how to create widget in android 
 
-
-https://play.google.com/store/apps/details?id=com.jk.mr.duo.clock
+<a href="https://play.google.com/store/apps/details?id=com.jk.mr.duo.clock"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height=60px /></a>
 
 To run this on android Studio
 
