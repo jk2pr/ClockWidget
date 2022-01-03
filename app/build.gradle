@@ -29,8 +29,8 @@ android {
         versionName "2.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        buildConfigField 'String', 'PLACE_KEY', PLACE_KEY
-        buildConfigField 'String', 'MAP_TIMEZONE_KEY', MAP_TIMEZONE_KEY
+        buildConfigField 'String', 'MAPBOX_ACCESS_TOKEN', MAPBOX_ACCESS_TOKEN
+        buildConfigField 'String', 'BING_MAP_KEY', BING_MAP_KEY
         buildConfigField 'String', 'MICROSOFT_TIMEZONE_BASE_URL', MICROSOFT_TIMEZONE_BASE_URL
 
     }

@@ -29,7 +29,7 @@ class SearchFragmentDialog : DialogFragment() {
             .toolbarColor(ContextCompat.getColor(activity as Context, android.R.color.white))
             //      .backgroundColor(color)
             .build(PlaceOptions.MODE_FULLSCREEN)
-        val autocompleteFragment: PlaceAutocompleteFragment = PlaceAutocompleteFragment.newInstance(BuildConfig.PLACE_KEY, placeOptions)
+        val autocompleteFragment: PlaceAutocompleteFragment = PlaceAutocompleteFragment.newInstance(BuildConfig.MAPBOX_ACCESS_TOKEN, placeOptions)
         val transaction = childFragmentManager.beginTransaction()
         transaction.add(R.id.fragment_container, autocompleteFragment, TAG)
         transaction.commit()
