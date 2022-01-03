@@ -27,6 +27,7 @@
 
         <item name="rowTextColor">?attr/selectedRowBackgroundColor</item>
         <item name="rowBackGroundColor">@android:color/transparent</item>
+        <item name="colorBlack">@android:color/black</item>
 
     </style>
     <!--Dark Theme-->
@@ -40,7 +41,7 @@
 
         <item name="rowTextColor">@android:color/white</item>
         <item name="rowBackGroundColor">@android:color/transparent</item>
-
+        <item name="colorBlack">@android:color/black</item>
     </style>
 
     <style name="AppThemeRed" parent="AppThemeDark">
