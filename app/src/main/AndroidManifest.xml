@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.jk.mr.duo.clock">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:icon="@mipmap/ic_launcher"
@@ -15,7 +14,7 @@
             android:noHistory="true"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:name=".AppWidgetConfigureActivity"
+            android:name=".ui.AppWidgetConfigureActivity"
             android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>

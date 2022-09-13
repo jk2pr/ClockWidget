@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="com.jk.mr.duo.clock.AppWidgetConfigureActivity"
+    android:configure="com.jk.mr.duo.clock.ui.AppWidgetConfigureActivity"
     android:initialKeyguardLayout="@layout/app_widget"
     android:initialLayout="@layout/app_widget"
     android:minWidth="180dp"

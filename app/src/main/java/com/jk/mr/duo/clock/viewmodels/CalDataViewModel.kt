@@ -1,32 +1,44 @@
 package com.jk.mr.duo.clock.viewmodels
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jk.mr.duo.clock.data.CalRepository
 import com.jk.mr.duo.clock.data.FlagResponse
 import com.jk.mr.duo.clock.data.MResponse
+import com.jk.mr.duo.clock.data.UiState
 import com.jk.mr.duo.clock.data.caldata.CalData
-import com.jk.mr.duo.clock.data.caldata.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+interface ComplexViewModelInterface {
+
+}
+
 @HiltViewModel
 class CalDataViewModel @Inject constructor(
-    private val calRepository: CalRepository
-) : ViewModel() {
+    private val calRepository: CalRepository,
+) : ViewModel(), ComplexViewModelInterface {
 
-    val mutableState = MutableLiveData<Resource>()
+    var data: MutableList<CalData> = mutableListOf()
+    val uiState = MutableStateFlow<UiState>(UiState.Empty)
+
+    companion object {
+        val calDataViewModel by lazy {
+            object : ComplexViewModelInterface {
+
+            }
+        }
+    }
 
     fun getData(address: String, country: String, location: String) = viewModelScope.launch {
 
         flow {
-            emit(Resource.Loading)
+            emit(UiState.Loading)
             var mResponse: MResponse? = null
             var flagResponse: FlagResponse? = null
             try {
@@ -39,21 +51,21 @@ class CalDataViewModel @Inject constructor(
             } finally {
                 mResponse?.let {
                     val timeZoneId = it.resourceSets[0].resources[0].timeZone.ianaTimeZoneId
+                    val traceId = it.traceId//[0].resources[0].trimeZone.tra
                     val abbreviation =
                         it.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
-                    val calData = CalData(
-                        address,
-                        country,
-                        timeZoneId,
-                        abbreviation,
-                        false,
-                        flagResponse?.data?.flag
-                    )
-                    emit(Resource.Success(calData))
-                } ?: emit(Resource.Error("Error"))
+                    val calData = CalData(name = address,
+                        abbreviation = abbreviation,
+                        address = country,
+                        currentCityTimeZoneId = timeZoneId,
+                        flag = flagResponse?.data?.flag,
+                        isSelected = false,
+                        )
+                    emit(UiState.Content(calData))
+                } ?: emit(UiState.Error("Error"))
             }
         }.flowOn(Dispatchers.IO).collect {
-            mutableState.value = it
+            uiState.value = it
         }
     }
 }

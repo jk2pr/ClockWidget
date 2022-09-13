@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.Build
 import android.widget.RemoteViews
 import com.google.gson.Gson
-import com.jk.mr.duo.clock.AppWidgetConfigureActivity
+import com.jk.mr.duo.clock.ui.AppWidgetConfigureActivity
 import com.jk.mr.duo.clock.R
 import com.jk.mr.duo.clock.data.caldata.CalData
 import com.jk.mr.duo.clock.utils.Constants.SET_FORMAT12HOUR

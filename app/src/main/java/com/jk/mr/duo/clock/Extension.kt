@@ -1,5 +1,6 @@
 package com.jk.mr.duo.clock
 
+import com.jk.mr.duo.clock.ui.AppWidgetConfigureActivity
 import com.jk.mr.duo.clock.utils.Constants.THEME_BLUE
 import com.jk.mr.duo.clock.utils.Constants.THEME_DARK
 import com.jk.mr.duo.clock.utils.Constants.THEME_GREEN

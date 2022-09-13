@@ -1,10 +1,13 @@
 package com.jk.mr.duo.clock
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import coil.ImageLoader
+import com.jk.mr.duo.clock.ui.AppWidgetConfigureActivity
 import com.jk.mr.duo.clock.utils.Constants.ACTION_ADD_CLOCK
 import dagger.hilt.android.HiltAndroidApp
 

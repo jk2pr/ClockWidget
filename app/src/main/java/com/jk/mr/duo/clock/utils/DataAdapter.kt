@@ -1,5 +1,6 @@
-package com.jk.mr.duo.clock.utils
 
+package com.jk.mr.duo.clock.utils
+/*
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -8,7 +9,7 @@ import android.widget.TextClock
 import android.widget.TextView
 import com.ahmadrosid.svgloader.SvgLoader
 import com.ernestoyaquello.dragdropswiperecyclerview.DragDropSwipeAdapter
-import com.jk.mr.duo.clock.AppWidgetConfigureActivity
+import com.jk.mr.duo.clock.ui.AppWidgetConfigureActivity
 import com.jk.mr.duo.clock.R
 import com.jk.mr.duo.clock.data.caldata.CalData
 import kotlinx.android.synthetic.main.item_cal_layout.view.*
@@ -81,3 +82,4 @@ class DataAdapter(
 
     override fun getViewToTouchToStartDraggingItem(item: CalData, viewHolder: ViewHolder, position: Int) = viewHolder.dragIcon
 }
+*/
