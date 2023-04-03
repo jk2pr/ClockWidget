@@ -7,21 +7,10 @@ import javax.inject.Inject
 
 class PreferenceHandler @Inject constructor(private var prefs: SharedPreferences) {
 
-    fun saveTimeZonePref(text: String) =
-        prefs.edit().putString(Constants.PREF_PREFIX_KEY, text).apply()
-
-    fun saveThemePref(theme: String) =
-        prefs.edit().putString(Constants.PREF_PREFIX_KEY.plus(Constants.PREF_INFIX_KEY), theme)
-            .apply()
-
-    fun getThemePref() =
-        prefs.getString(
-            Constants.PREF_PREFIX_KEY.plus(Constants.PREF_INFIX_KEY),
-            Constants.THEME_BLUE
-        )
-            ?: Constants.THEME_BLUE
-
-    fun getTimeZonePref(): String? = prefs.getString(Constants.PREF_PREFIX_KEY, null)
+    fun saveAppColorScheme(colorString: String) {
+        prefs.edit().putString(Constants.APP_COLOR_SCHEME, colorString).apply()
+    }
+    fun getAppColorScheme() = prefs.getString(Constants.APP_COLOR_SCHEME, null)
 
     fun deleteAllPref() = prefs.edit().clear().apply()
 

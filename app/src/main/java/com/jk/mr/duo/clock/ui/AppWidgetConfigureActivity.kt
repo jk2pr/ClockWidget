@@ -1,138 +1,56 @@
 package com.jk.mr.duo.clock.ui
 
-import android.app.Activity
+import Start
 import android.appwidget.AppWidgetManager
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
-import android.view.*
-import android.widget.ArrayAdapter
-import android.widget.CheckedTextView
-import android.widget.TextClock
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.recyclerview.widget.RecyclerView
-import coil.size.Dimension
-import com.ernestoyaquello.dragdropswiperecyclerview.listener.OnItemSwipeListener
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.navigation.compose.rememberNavController
 import com.jk.mr.duo.clock.AppWidget
-import com.jk.mr.duo.clock.R
-import com.jk.mr.duo.clock.component.Page
-import com.jk.mr.duo.clock.data.UiState
-import com.jk.mr.duo.clock.data.caldata.CalData
-import com.jk.mr.duo.clock.ui.screen.ClockScreen
+import com.jk.mr.duo.clock.MrDuoClockApplication
+import com.jk.mr.duo.clock.common.localproviders.LocalNavController
+import com.jk.mr.duo.clock.common.localproviders.LocalScaffold
 import com.jk.mr.duo.clock.ui.theme.ClockTheme
-import com.jk.mr.duo.clock.ui.theme.DarkColorPalette
-import com.jk.mr.duo.clock.ui.theme.LightColorPalette
-import com.jk.mr.duo.clock.utils.*
-import com.jk.mr.duo.clock.utils.Constants.themeArray
-import com.jk.mr.duo.clock.viewmodels.CalDataViewModel
-import com.mapbox.api.geocoding.v5.models.CarmenFeature
-import com.mapbox.geojson.Point
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import java.util.*
-import javax.inject.Inject
 
 /**
  * The configuration screen for the [AppWidget] AppWidget.
  */
 @AndroidEntryPoint
-class AppWidgetConfigureActivity : AppCompatActivity() {
+class AppWidgetConfigureActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var preferenceHandler: PreferenceHandler
-
-    @Inject
-    lateinit var appWidgetHelper: AppWidgetHelper
-    private var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
-    private val viewModel by viewModels<CalDataViewModel>()
+    var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     public override fun onCreate(icicle: Bundle?) {
         super.onCreate(icicle)
         intent.extras?.let {
-            mAppWidgetId = it.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID)
+            mAppWidgetId = it.getInt(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID
+            )
         }
         setContent {
-            ClockTheme(
-                customColor = (if (isSystemInDarkTheme()) DarkColorPalette else LightColorPalette)
+            val scaffold = rememberScaffoldState()
+            CompositionLocalProvider(
+                LocalNavController provides rememberNavController(),
+                LocalScaffold provides scaffold
             ) {
-                Page(floatingActionButton = {
-                    FloatingActionButton(modifier = Modifier.padding(24.dp),
-                        onClick = { openSearchDialog() },
-                        content = { Icon(imageVector = Icons.Default.Add, "") }
-                    )
-                }) {
-                    Surface(modifier = Modifier.fillMaxSize()) {
-                        val dataList = remember { mutableStateListOf<CalData>() }
-                        val snackBarHostState = remember { SnackbarHostState() }
-                        val context = LocalContext.current
-                        val scope = rememberCoroutineScope()
-                        val lifCycleOwner = LocalLifecycleOwner.current
-                        ManageState(dataList = dataList, context = context)
-                        ManageLifeCycle(dataList = dataList, lifCycleOwner = lifCycleOwner)
-                        Column(modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally) {
-                            ClockDashBoard()
 
-                            ClockScreen(
-                                dataList = dataList,
-                                updateClock = { updateClock(it, context) },
-                            )
-                        }
-                        SnackbarHost(
-                            hostState = snackBarHostState,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight(Alignment.Bottom)
-                        )
+                val application = applicationContext as MrDuoClockApplication
+                val defaultScheme = application.defaultScheme
 
-                    }
-                }
+                ClockTheme(
+                    content = { Start() },
+                    primaryColor = defaultScheme.primaryColor,
+                    secondaryColor = defaultScheme.secondaryColor
+                )
             }
         }
 
         // setTheme(getThemePref())
-        //setContentView(R.layout.app_widget_configure)
-
+        // setContentView(R.layout.app_widget_configure)
 
         /* viewModel.mutableState.observe(this) { calendarData ->
              when (calendarData) {
@@ -161,114 +79,6 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
          }*/
     }
 
-    @Composable
-    private fun ManageLifeCycle(dataList: MutableList<CalData>, lifCycleOwner: LifecycleOwner) {
-        DisposableEffect(key1 = lifCycleOwner) {
-            val observer = LifecycleEventObserver { _, event ->
-                if (event == Lifecycle.Event.ON_RESUME) {
-                    val jsonString = preferenceHandler.getDateData()
-                    jsonString?.let { it ->
-                        if (it.isEmpty()) return@LifecycleEventObserver
-                        val listType = object : TypeToken<List<CalData>>() {}.type
-                        val storedData =
-                            Gson().fromJson<List<CalData>>(it, listType)
-                        if (storedData.isNotEmpty()) {
-                            dataList.clear()
-                            dataList.addAll(storedData)// get from stored
-                        }
-                    }
-                }
-                if (event == Lifecycle.Event.ON_PAUSE)
-                    preferenceHandler.saveDateData(dataList)
-            }
-            lifCycleOwner.lifecycle.addObserver(observer)
-            onDispose {
-                lifCycleOwner.lifecycle.removeObserver(observer)
-            }
-        }
-    }
-
-    private fun updateClock(selectedDate: CalData, context: Context) {
-        preferenceHandler.saveTimeZonePref(selectedDate.toJSON())
-        // Make sure we pass back the original appWidgetId
-        val resultValue =
-            Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
-        setResult(Activity.RESULT_OK, resultValue)
-        val manager = AppWidgetManager.getInstance(context)
-        val name = ComponentName(context, AppWidget::class.java)
-        val appIds = manager.getAppWidgetIds(name)
-        for (appWidgetId in appIds) appWidgetHelper.updateAppWidget(
-            context,
-            manager,
-            appWidgetId)
-    }
-
-    @Composable
-    private fun ManageState(context: Context, dataList: MutableList<CalData>) {
-        when (val result = viewModel.uiState.collectAsState().value) {
-            is UiState.Content ->
-                if (result.data is CalData)
-                    dataList.add(result.data).apply { updateClock(result.data, context) }
-            is UiState.Error -> {}
-            is UiState.Loading ->
-                Box(contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            is UiState.Empty ->
-                ShowEmpty(dataList)
-        }
-    }
-
-    @Composable
-    private fun ShowEmpty(dataList: MutableList<CalData>) {
-        if (dataList.isEmpty()) Box(contentAlignment = Alignment.Center) { Text(text = "Your additional clock will appear here") }
-    }
-
-    @Composable
-    private fun ClockDashBoard() {
-        val circleShape = CircleShape
-        val modifier = Modifier
-            .size(200.dp)
-            .clip(circleShape)
-            .border(
-                border = BorderStroke(
-                    width = 8.dp,
-                    color = colorResource(id = R.color.colorAccent)
-                ), shape = circleShape
-            )
-        Box(modifier = modifier, contentAlignment = Alignment.Center) {
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                TextClock()
-                TimeZone.getDefault().id.let { currentTimeZone ->
-                    var tz = currentTimeZone
-                    if (tz.contains("/")) tz = currentTimeZone.split("/")[1].replace("_", " ")
-                    Text(text = tz, style = MaterialTheme.typography.body1)
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun TextClock(
-        modifier: Modifier = Modifier,
-        timeZone: String? = null,
-    ) {
-        AndroidView(
-            factory = { context ->
-                TextClock(context).apply {
-                    setFormat12Hour(Utils.getDashBoard12HoursFormat())
-                    setFormat24Hour(Utils.get24HoursFormat())
-                    timeZone?.let { this.timeZone = TimeZone.getDefault().id }
-                    typeface = UiUtils.getBebasneueRegularTypeFace(context)
-                    textSize = 40.0f
-                    gravity = Gravity.CENTER
-                }
-            },
-            modifier = modifier
-        )
-    }
 /*private fun showError() {
     val snackBar = Snackbar.make(
         root_coordinate,
@@ -298,7 +108,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         snackBar.show()
     }
 }*/
-
+/*
     private val onItemSwipeListener = object : OnItemSwipeListener<CalData> {
         override fun onItemSwiped(
             position: Int,
@@ -315,7 +125,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
     private fun onItemDelete(item: CalData, position: Int) = removeItemFromList(item, position)
     private fun removeItemFromList(item: CalData, position: Int) {
-        /* dataAdapter.removeItem(position)
+        *//* dataAdapter.removeItem(position)
          val itemSwipedSnackBar = Snackbar.make(
              root_coordinate,
              getString(R.string.itemRemovedMessage, item.name),
@@ -324,7 +134,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
          itemSwipedSnackBar.setAction(getString(R.string.undoCaps)) {
              dataAdapter.insertItem(position, item)
          }
-         itemSwipedSnackBar.show()*/
+         itemSwipedSnackBar.show()*//*
     }
 
     private fun handleDashBoardClock() {
@@ -361,7 +171,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         //        InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
     }
 
-    fun getResultFromDialog(carmenFeature: CarmenFeature) {
+    *//*fun getResultFromDialog(carmenFeature: CarmenFeature) {
         val address = carmenFeature.placeName()!!
         val country = carmenFeature.placeName()!!.split(",").last()
         val place = carmenFeature.geometry() as Point
@@ -370,7 +180,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             country,
             place.latitude().toString().plus(",").plus(place.longitude().toString())
         )
-    }
+    }*//*
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -400,13 +210,13 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
     private fun openSearchDialog() {
 
-        supportFragmentManager.let {
+       *//* supportFragmentManager.let {
             val searchFragmentDialog = SearchFragmentDialog()
             searchFragmentDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.myDialog)
             searchFragmentDialog.apply {
                 show(it, tag)
             }
-        }
+        }*//*
     }
 
     private fun showThemePickerDialog() {
@@ -461,4 +271,5 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             }
         }
     }
+}*/
 }

@@ -2,11 +2,13 @@ package com.jk.mr.duo.clock.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jk.mr.duo.clock.data.CalRepository
+import com.jk.mr.duo.clock.data.AddressSearchResult
 import com.jk.mr.duo.clock.data.FlagResponse
 import com.jk.mr.duo.clock.data.MResponse
 import com.jk.mr.duo.clock.data.UiState
 import com.jk.mr.duo.clock.data.caldata.CalData
+import com.jk.mr.duo.clock.repositories.CalRepository
+import com.jk.mr.duo.clock.utils.PreferenceHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,57 +17,64 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-interface ComplexViewModelInterface {
-
-}
+interface ComplexViewModelInterface
 
 @HiltViewModel
 class CalDataViewModel @Inject constructor(
     private val calRepository: CalRepository,
+    var preferenceHandler: PreferenceHandler,
+    private val flags: FlagResponse,
 ) : ViewModel(), ComplexViewModelInterface {
 
-    var data: MutableList<CalData> = mutableListOf()
     val uiState = MutableStateFlow<UiState>(UiState.Empty)
 
     companion object {
         val calDataViewModel by lazy {
             object : ComplexViewModelInterface {
-
             }
         }
     }
 
-    fun getData(address: String, country: String, location: String) = viewModelScope.launch {
+    fun getData(searchResult: AddressSearchResult, lat: String, long: String) =
+        viewModelScope.launch {
 
-        flow {
-            emit(UiState.Loading)
-            var mResponse: MResponse? = null
-            var flagResponse: FlagResponse? = null
-            try {
-                mResponse = calRepository.getTimeZone(location)
-                val requestBody: MutableMap<String, String> = HashMap()
-                requestBody["country"] = country.trim()
-                flagResponse = calRepository.getFlag(requestBody)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                mResponse?.let {
-                    val timeZoneId = it.resourceSets[0].resources[0].timeZone.ianaTimeZoneId
-                    val traceId = it.traceId//[0].resources[0].trimeZone.tra
-                    val abbreviation =
-                        it.resourceSets[0].resources[0].timeZone.windowsTimeZoneId
-                    val calData = CalData(name = address,
-                        abbreviation = abbreviation,
-                        address = country,
-                        currentCityTimeZoneId = timeZoneId,
-                        flag = flagResponse?.data?.flag,
-                        isSelected = false,
+            flow {
+                emit(UiState.Loading)
+                var mResponse: MResponse? = null
+                // var flagResponse: FlagResponse? = null
+                val country = searchResult.searchAddress?.country ?: "Malaysia"
+                try {
+                    mResponse = calRepository.getTimeZone(lat, long)
+                    // flagResponse = calRepository.getFlag(countryString = country)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    mResponse?.let {
+                        val localResource = it.resourceSets[0].resources[0]
+                        val timeZoneId =
+                            localResource.timeZoneAtLocation?.first()?.timeZone?.ianaTimeZoneId
+                                ?: localResource.timeZone.ianaTimeZoneId
+                        val traceId = it.traceId // [0].resources[0].trimeZone.tra
+                        val abbreviation =
+                            localResource.timeZoneAtLocation?.first()?.timeZone?.abbreviation
+                                ?: localResource.timeZone.abbreviation
+
+                        val flag = flags.data.firstOrNull { response ->
+                            response.name == searchResult.searchAddress?.country
+                        }
+                        val calData = CalData(
+                            name = searchResult.name,
+                            abbreviation = abbreviation ?: "",
+                            address = country,
+                            currentCityTimeZoneId = timeZoneId,
+                            flag = flag?.flag,
+                            isSelected = false,
                         )
-                    emit(UiState.Content(calData))
-                } ?: emit(UiState.Error("Error"))
+                        emit(UiState.Content(calData))
+                    } ?: emit(UiState.Error("Error"))
+                }
+            }.flowOn(Dispatchers.IO).collect {
+                uiState.value = it
             }
-        }.flowOn(Dispatchers.IO).collect {
-            uiState.value = it
         }
-    }
 }
