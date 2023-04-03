@@ -1,42 +1,56 @@
 package com.jk.mr.duo.clock.data
 
-import com.google.gson.annotations.SerializedName
-
+@kotlinx.serialization.Serializable
 data class ConvertedTime(
 
-    @SerializedName("localTime") val localTime: String,
-    @SerializedName("utcOffsetWithDst") val utcOffsetWithDst: String,
-    @SerializedName("timeZoneDisplayName") val timeZoneDisplayName: String,
-    @SerializedName("timeZoneDisplayAbbr") val timeZoneDisplayAbbr: String
+    val localTime: String,
+    val utcOffsetWithDst: String,
+    val timeZoneDisplayName: String,
+    val timeZoneDisplayAbbr: String,
 )
 
+@kotlinx.serialization.Serializable
 data class MResponse(
 
-    @SerializedName("authenticationResultCode") val authenticationResultCode: String,
-    @SerializedName("brandLogoUri") val brandLogoUri: String,
-    @SerializedName("copyright") val copyright: String,
-    @SerializedName("resourceSets") val resourceSets: List<ResourceSets>,
-    @SerializedName("statusCode") val statusCode: Int,
-    @SerializedName("statusDescription") val statusDescription: String,
-    @SerializedName("traceId") val traceId: String
+    val authenticationResultCode: String,
+    val brandLogoUri: String,
+    val copyright: String,
+    val resourceSets: List<ResourceSets>,
+    val statusCode: Int,
+    val statusDescription: String,
+    val traceId: String,
 )
+
+@kotlinx.serialization.Serializable
 data class Resources(
 
-    @SerializedName("__type") val __type: String,
-    @SerializedName("timeZone") val timeZone: TimeZone
+    val __type: String,
+    val timeZoneAtLocation: List<TimeZoneAtLocation>? = null,
+    val timeZone: TimeZone, // sometime timezone comes
 )
+
+@kotlinx.serialization.Serializable
+data class TimeZoneAtLocation(
+
+    val placeName: String,
+    val timeZone: TimeZone,
+)
+
+@kotlinx.serialization.Serializable
 data class ResourceSets(
 
-    @SerializedName("estimatedTotal") val estimatedTotal: Int,
-    @SerializedName("resources") val resources: List<Resources>
+    val estimatedTotal: Int,
+    val resources: List<Resources>,
 )
 
+@kotlinx.serialization.Serializable
 data class TimeZone(
 
-    @SerializedName("genericName") val genericName: String,
-    @SerializedName("abbreviation") val abbreviation: String?,
-    @SerializedName("ianaTimeZoneId") val ianaTimeZoneId: String?,
-    @SerializedName("windowsTimeZoneId") val windowsTimeZoneId: String,
-    @SerializedName("utcOffset") val utcOffset: String,
-    @SerializedName("convertedTime") val convertedTime: ConvertedTime
+    val genericName: String,
+
+    val abbreviation: String? = null,
+    val ianaTimeZoneId: String? = null,
+    val windowsTimeZoneId: String,
+    val utcOffset: String,
+    val convertedTime: ConvertedTime,
 )

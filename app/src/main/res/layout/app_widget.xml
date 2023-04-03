@@ -1,6 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -16,7 +15,6 @@
         android:orientation="vertical">
 
         <TextClock
-            android:id="@+id/clock0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp8"
@@ -24,24 +22,22 @@
             android:gravity="center_horizontal"
             android:textSize="@dimen/sp24"
             android:textColor="@android:color/black"
+            android:text="@null"
             tools:text="12:05 AM" />
 
         <TextView
-            android:id="@+id/txt_timezone0"
             tools:text="Kuala lumpur"
             style="@style/city_style">
         </TextView>
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/separator"
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:background="@android:color/black"
         android:orientation="horizontal" />
 
     <LinearLayout
-        android:id="@+id/rel_custom_time"
         android:layout_width="0dp"
         android:layout_margin="@dimen/widget_margin"
         android:layout_height="match_parent"
@@ -52,7 +48,6 @@
         >
 
         <TextClock
-            android:id="@+id/clock1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp8"
@@ -65,7 +60,6 @@
             />
 
         <TextView
-            android:id="@+id/txt_timezone1"
             style="@style/city_style"
             tools:text="Malaysia">
         </TextView>
