@@ -7,3 +7,5 @@
 /local.properties
 /app/Keystore
 /build/
+/buildSrc/build/
+/buildSrc/.gradle/
