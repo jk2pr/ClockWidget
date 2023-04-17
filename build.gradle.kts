@@ -13,7 +13,7 @@ buildscript {
 
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.43.2")
 
-        classpath("com.google.gms:google-services:4.3.15")  // Google Services plugin
+        classpath("com.google.gms:google-services:4.3.15") // Google Services plugin
         classpath(AppPath.serializtionClassPath)
     }
 }
