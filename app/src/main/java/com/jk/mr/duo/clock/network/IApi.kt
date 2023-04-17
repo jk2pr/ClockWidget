@@ -11,7 +11,7 @@ interface IApi {
     suspend fun getTimeZoneFromLatLong(
         @Path("lat") lat: String,
         @Path("long") long: String,
-        @Query("key") key: String,
+        @Query("key") key: String
     ): MResponse
 }
 // https://countriesnow.space/api/v0.1/countries/flag/images

@@ -8,7 +8,6 @@ import com.jk.mr.duo.clock.ui.screen.SearchLocationScreen
 
 @Composable
 fun Start() {
-
     NavHost(navController = LocalNavController.current, startDestination = AppScreens.DashBoard.route) {
         composable(route = AppScreens.DashBoard.route) {
             DashBoardScreen()

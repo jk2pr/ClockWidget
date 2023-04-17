@@ -92,5 +92,6 @@ object BuildPlugins {
     const val androidApplicationPlugin = "com.android.application"
     const val kotlinAndroidPlugin = "kotlin-android"
     const val kotlinKaptPlugin = "kotlin-kapt"
+    const val ktlintPlugin = "org.jlleitschuh.gradle.ktlint"
 
 }

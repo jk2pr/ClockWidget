@@ -22,8 +22,9 @@ import java.util.*
 fun ClockDashBoard() {
     val currentTimeZone = TimeZone.getDefault().id
     var tz = currentTimeZone
-    if (tz.contains("/"))
+    if (tz.contains("/")) {
         tz = currentTimeZone.split("/").first().replace("_", " ")
+    }
 
     val contentColor = MaterialTheme.colors.surface
     val modifier = Modifier

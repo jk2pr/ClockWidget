@@ -11,7 +11,7 @@ val colors = listOf(
     ColorScheme(primaryColor = Color(0xFFFFAB91), secondaryColor = Color(0xFF91E5FF)),
     ColorScheme(primaryColor = Color(0xFFFFC107), secondaryColor = Color(0xFF0745FF)),
     ColorScheme(primaryColor = Color(0xFFC8111C), secondaryColor = Color(0xFF11C8BC)),
-    ColorScheme(primaryColor = Color(0xFFB39DDB), secondaryColor = Color(0xFFC5DB9D)),
+    ColorScheme(primaryColor = Color(0xFFB39DDB), secondaryColor = Color(0xFFC5DB9D))
 )
 
 data class ColorScheme(val primaryColor: Color, val secondaryColor: Color) {

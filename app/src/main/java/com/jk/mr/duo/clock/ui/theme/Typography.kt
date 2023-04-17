@@ -23,5 +23,5 @@ val Typography =
             fontFamily = bebasneue,
             fontWeight = FontWeight.Normal,
             fontSize = 12.sp
-        ),
+        )
     )

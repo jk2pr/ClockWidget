@@ -112,12 +112,12 @@ class AppWidget : GlanceAppWidget() {
                                 setCharSequence(
                                     R.id.c_clock,
                                     Constants.SET_FORMAT24HOUR,
-                                    Utils.get24HoursFormat(),
+                                    Utils.get24HoursFormat()
                                 )
                                 setCharSequence(
                                     R.id.c_clock,
                                     Constants.SET_FORMAT12HOUR,
-                                    Utils.get12HoursFormat(),
+                                    Utils.get12HoursFormat()
                                 )
                                 setString(
                                     R.id.c_clock,
@@ -129,7 +129,7 @@ class AppWidget : GlanceAppWidget() {
                     )
                     Text(
                         style = TextStyle(color = colorProvider),
-                        text = calData.displayTimeZoneCityById().toString(),
+                        text = calData.displayTimeZoneCityById().toString()
                     )
                 }
                 // Separator
@@ -177,7 +177,7 @@ class AppWidget : GlanceAppWidget() {
     private fun GlanceModifier.cornerRadiusCompat(
         cornerRadius: Int,
         @ColorInt color: Int,
-        @FloatRange(from = 0.0, to = 1.0) backgroundAlpha: Float = 1f,
+        @FloatRange(from = 0.0, to = 1.0) backgroundAlpha: Float = 1f
     ): GlanceModifier {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             this.background(Color(color).copy(alpha = backgroundAlpha))
@@ -208,7 +208,7 @@ class GlanceWidgetReceiver : GlanceAppWidgetReceiver() {
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray,
+        appWidgetIds: IntArray
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
         Log.d("AppWidget", "onUpdate: Called")

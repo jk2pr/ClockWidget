@@ -22,7 +22,7 @@ import com.jk.mr.duo.clock.navigation.AppScreens
 fun Page(
     menuItems: List<DropdownMenuItemContent> = emptyList(),
     floatingActionButton: @Composable () -> Unit = {},
-    content: @Composable (PaddingValues) -> Unit,
+    content: @Composable (PaddingValues) -> Unit
 ) {
     Surface {
         Scaffold(
@@ -41,7 +41,7 @@ fun Page(
                     hostState = LocalScaffold.current.snackbarHostState,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight(Alignment.Bottom),
+                        .wrapContentHeight(Alignment.Bottom)
                 )
             }
         )
@@ -56,13 +56,15 @@ private fun AppBar(menuItems: List<DropdownMenuItemContent>) {
         elevation = 0.dp,
         title = { },
         navigationIcon = {
-            if (navController.previousBackStackEntry?.destination?.route == AppScreens.DashBoard.route)
+            if (navController.previousBackStackEntry?.destination?.route == AppScreens.DashBoard.route) {
                 NavigationIcon(navController = navController)
+            }
         },
 
         actions = {
-            if (menuItems.isNotEmpty())
+            if (menuItems.isNotEmpty()) {
                 menuItems.forEach { it.menu() }
+            }
         }
     )
 }
@@ -74,7 +76,7 @@ private fun NavigationIcon(navController: NavController) {
     ) {
         Icon(
             Icons.Default.ArrowBack,
-            contentDescription = "",
+            contentDescription = ""
         )
     }
 }

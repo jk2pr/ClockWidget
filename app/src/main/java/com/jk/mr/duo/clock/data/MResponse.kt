@@ -6,7 +6,7 @@ data class ConvertedTime(
     val localTime: String,
     val utcOffsetWithDst: String,
     val timeZoneDisplayName: String,
-    val timeZoneDisplayAbbr: String,
+    val timeZoneDisplayAbbr: String
 )
 
 @kotlinx.serialization.Serializable
@@ -18,7 +18,7 @@ data class MResponse(
     val resourceSets: List<ResourceSets>,
     val statusCode: Int,
     val statusDescription: String,
-    val traceId: String,
+    val traceId: String
 )
 
 @kotlinx.serialization.Serializable
@@ -26,21 +26,21 @@ data class Resources(
 
     val __type: String,
     val timeZoneAtLocation: List<TimeZoneAtLocation>? = null,
-    val timeZone: TimeZone, // sometime timezone comes
+    val timeZone: TimeZone // sometime timezone comes
 )
 
 @kotlinx.serialization.Serializable
 data class TimeZoneAtLocation(
 
     val placeName: String,
-    val timeZone: TimeZone,
+    val timeZone: TimeZone
 )
 
 @kotlinx.serialization.Serializable
 data class ResourceSets(
 
     val estimatedTotal: Int,
-    val resources: List<Resources>,
+    val resources: List<Resources>
 )
 
 @kotlinx.serialization.Serializable
@@ -52,5 +52,5 @@ data class TimeZone(
     val ianaTimeZoneId: String? = null,
     val windowsTimeZoneId: String,
     val utcOffset: String,
-    val convertedTime: ConvertedTime,
+    val convertedTime: ConvertedTime
 )

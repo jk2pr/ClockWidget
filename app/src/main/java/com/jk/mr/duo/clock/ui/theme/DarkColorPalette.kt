@@ -16,26 +16,30 @@ import androidx.core.view.WindowCompat
 class ColorScheme(
     var isDark: Boolean = false,
     primaryColor: Color,
-    secondaryColor: Color,
+    secondaryColor: Color
 ) {
     val colors: Colors =
-        if (isDark) darkColors(
-            primary = primaryColor, // Primary
-            // primaryVariant = primaryColor.copy(alpha = 1.0f), // Status BAR AND NAVIGATION BAR
-            secondary = secondaryColor
-            // Color(0xFFBE2D34),
-        ) else lightColors(
-            primary = primaryColor.copy(alpha = 0.5f), // Primary
-            secondary = secondaryColor
-            // Color(0xFFBA6269),
-        )
+        if (isDark) {
+            darkColors(
+                primary = primaryColor, // Primary
+                // primaryVariant = primaryColor.copy(alpha = 1.0f), // Status BAR AND NAVIGATION BAR
+                secondary = secondaryColor
+                // Color(0xFFBE2D34),
+            )
+        } else {
+            lightColors(
+                primary = primaryColor.copy(alpha = 0.5f), // Primary
+                secondary = secondaryColor
+                // Color(0xFFBA6269),
+            )
+        }
 }
 
 @Composable
 fun ClockTheme(
     primaryColor: Color,
     secondaryColor: Color,
-    content: @Composable() () -> Unit,
+    content: @Composable () -> Unit
 ) {
     val isDark = isSystemInDarkTheme()
     val lightPrimary = primaryColor.copy(alpha = 0.5f).toArgb()

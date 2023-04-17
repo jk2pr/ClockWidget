@@ -59,7 +59,6 @@ private var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
 @Composable
 fun DashBoardScreen() {
-
     val context = LocalContext.current as AppWidgetConfigureActivity
     val viewModel: CalDataViewModel by context.viewModels()
     var isEditActivated: Boolean by remember { mutableStateOf(false) }
@@ -81,19 +80,20 @@ fun DashBoardScreen() {
                 }) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.baseline_color_lens_24),
-                        contentDescription = "Theme Icon",
+                        contentDescription = "Theme Icon"
                     )
                 }
-                if (dataList.size > 1)
+                if (dataList.size > 1) {
                     IconButton(onClick = {
                         isEditActivated = !isEditActivated
                     }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.baseline_edit_24),
-                            contentDescription = "Theme Icon",
+                            contentDescription = "Theme Icon"
                         )
                     }
-                if (!dataList.none { it.isSelected })
+                }
+                if (!dataList.none { it.isSelected }) {
                     IconButton(onClick = {
                         if (dataList.size > 1 && !dataList.first().isSelected) {
                             dataList.removeAll { it.isSelected }
@@ -102,18 +102,20 @@ fun DashBoardScreen() {
                             scope.launch {
                                 snackBarHostState.showSnackbar("Deleted successfully")
                             }
-                        } else
+                        } else {
                             scope.launch {
                                 snackBarHostState.showSnackbar("Can't delete secondary clock")
                             }
+                        }
                     }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.baseline_delete_outline_24),
-                            contentDescription = "Theme Icon",
+                            contentDescription = "Theme Icon"
                         )
                     }
+                }
                 val filtered = dataList.filter { it.isSelected }
-                if (filtered.size == 1 && !dataList.first().isSelected)
+                if (filtered.size == 1 && !dataList.first().isSelected) {
                     IconButton(onClick = {
                         Collections.swap(dataList, 0, dataList.indexOf(filtered.first()))
                         dataList.reset(context = context)
@@ -121,19 +123,21 @@ fun DashBoardScreen() {
                     }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.baseline_vertical_align_top_24),
-                            contentDescription = "Theme Icon",
+                            contentDescription = "Theme Icon"
                         )
                     }
-                if (isEditActivated)
+                }
+                if (isEditActivated) {
                     IconButton(onClick = {
                         isEditActivated = false
                         dataList.reset(context = context)
                     }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.twotone_done_24),
-                            contentDescription = "Theme Icon",
+                            contentDescription = "Theme Icon"
                         )
                     }
+                }
             }
         ),
         floatingActionButton = {
@@ -146,18 +150,20 @@ fun DashBoardScreen() {
         content = {
             mAppWidgetId = context.mAppWidgetId
             val app = ((context.application) as MrDuoClockApplication)
-            if (showThemeDialog) ColorDialog(
-                colorList = colors,
-                onColorSelected = { newColor ->
-                    app.changeColorScheme(newColor)
-                    preferenceHandler.saveAppColorScheme(newColor.toJSON())
-                    updateWidget(context = context, dataList = dataList)
-                },
-                currentlySelected = colors.firstOrNull { it == app.defaultScheme } ?: colors[0],
-                onDismiss = {
-                    showThemeDialog = false
-                }
-            )
+            if (showThemeDialog) {
+                ColorDialog(
+                    colorList = colors,
+                    onColorSelected = { newColor ->
+                        app.changeColorScheme(newColor)
+                        preferenceHandler.saveAppColorScheme(newColor.toJSON())
+                        updateWidget(context = context, dataList = dataList)
+                    },
+                    currentlySelected = colors.firstOrNull { it == app.defaultScheme } ?: colors[0],
+                    onDismiss = {
+                        showThemeDialog = false
+                    }
+                )
+            }
             navController.currentBackStackEntry
                 ?.savedStateHandle?.let {
                     it.apply {
@@ -167,7 +173,7 @@ fun DashBoardScreen() {
                                 viewModel.getData(
                                     searchResult = result,
                                     lat = result.coordinate.latitude().toString(),
-                                    long = result.coordinate.longitude().toString(),
+                                    long = result.coordinate.longitude().toString()
                                 )
                                 remove<SearchResult>("ADDRESS")
                             }
@@ -190,7 +196,7 @@ fun DashBoardScreen() {
                     dataList = dataList,
                     onEditActivated = {
                         isEditActivated = it
-                    },
+                    }
                 )
             }
             when (val result = viewModel.uiState.collectAsState().value) {
@@ -236,7 +242,7 @@ fun MutableList<CalData>.reset(context: AppWidgetConfigureActivity) {
 private fun ManageLifeCycle(
     dataList: MutableList<CalData>,
     lifCycleOwner: LifecycleOwner,
-    preferenceHandler: PreferenceHandler,
+    preferenceHandler: PreferenceHandler
 ) {
     DisposableEffect(key1 = lifCycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -253,8 +259,9 @@ private fun ManageLifeCycle(
                     }
                 }
             }
-            if (event == Lifecycle.Event.ON_STOP)
+            if (event == Lifecycle.Event.ON_STOP) {
                 preferenceHandler.saveDateData(dataList)
+            }
         }
         lifCycleOwner.lifecycle.addObserver(observer)
         onDispose {
@@ -266,7 +273,7 @@ private fun ManageLifeCycle(
 private fun addItems(
     dataList: MutableList<CalData>,
     newItemAll: List<CalData>? = null,
-    newItem: CalData? = null,
+    newItem: CalData? = null
 ) {
     newItemAll?.let { dataList.addAll(it) }
     newItem?.let { dataList.add(0, it) }
@@ -274,15 +281,16 @@ private fun addItems(
 
 private fun updateWidget(
     context: AppWidgetConfigureActivity,
-    dataList: MutableList<CalData>,
+    dataList: MutableList<CalData>
 ) {
     try {
         MainScope().launch {
             val glanceAppWidgetManager = GlanceAppWidgetManager(context)
             val glanceIds = glanceAppWidgetManager.getGlanceIds(AppWidget::class.java)
             Log.d(TAG, "updateClock: glanceIds : $glanceIds")
-            if (glanceIds.isEmpty())
+            if (glanceIds.isEmpty()) {
                 return@launch
+            }
             val glanceId = glanceIds.last()
             val application = context.applicationContext as MrDuoClockApplication
             updateAppWidgetState(context = context, glanceId = glanceId) {

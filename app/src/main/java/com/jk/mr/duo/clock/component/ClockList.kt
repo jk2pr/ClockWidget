@@ -43,12 +43,12 @@ import java.util.*
 fun ClockList(
     isEditActivated: Boolean = false,
     dataList: MutableList<CalData>,
-    onEditActivated: (Boolean) -> Unit,
+    onEditActivated: (Boolean) -> Unit
 ) {
     CreateAdapter(
         dataList = dataList,
         onEditActivated = onEditActivated,
-        isEditActivated = isEditActivated,
+        isEditActivated = isEditActivated
     )
 }
 
@@ -57,30 +57,30 @@ fun ClockList(
 private fun CreateAdapter(
     onEditActivated: (Boolean) -> Unit,
     dataList: MutableList<CalData>,
-    isEditActivated: Boolean,
+    isEditActivated: Boolean
 ) {
-
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        if (dataList.isEmpty())
+        if (dataList.isEmpty()) {
             ShowEmpty()
-        else
+        } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy((1).dp, Alignment.Top),
                 modifier = Modifier
-                    .fillMaxHeight(),
+                    .fillMaxHeight()
             ) {
-
                 itemsIndexed(
                     items = dataList,
                     key = { _, data -> data.toString() }
                 ) { index, item ->
 
                     val backgroundColor =
-                        if (item.isSelected) MaterialTheme.colors.primary.copy(alpha = 0.9f)
-                        else if (index == 0)
+                        if (item.isSelected) {
+                            MaterialTheme.colors.primary.copy(alpha = 0.9f)
+                        } else if (index == 0) {
                             MaterialTheme.colors.primary.copy(alpha = 0.6f)
-                        else
+                        } else {
                             MaterialTheme.colors.onPrimary
+                        }
                     val modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
@@ -92,16 +92,19 @@ private fun CreateAdapter(
                                 onEditActivated(true)
                             }
                         ) {
-                            if (isEditActivated)
-                                if (item.isSelected)
+                            if (isEditActivated) {
+                                if (item.isSelected) {
                                     dataList[index] = item.copy(isSelected = false)
-                                else
+                                } else {
                                     dataList[index] = item.copy(isSelected = true)
+                                }
+                            }
                         }
                     ListItem(item, isEditActivated, modifier = modifier)
                 }
                 //  itemContent = { ListItem(item, isEditActivated) }
             }
+        }
     }
 }
 
@@ -139,21 +142,21 @@ private fun ListItem(calData: CalData, isEditableActivated: Boolean, modifier: M
                 .constrainAs(column) {
                     start.linkTo(svg.end, margin = 16.dp)
                     centerVerticallyTo(parent)
-                    if (isEditableActivated)
+                    if (isEditableActivated) {
                         end.linkTo(dragIcon.start)
-                    else
+                    } else {
                         end.linkTo(parent.end, margin = 16.dp)
+                    }
                     width = Dimension.fillToConstraints
                 }
         ) {
-
             Text(
                 text = calData.name,
-                style = typography.subtitle2,
+                style = typography.subtitle2
             )
             Text(
                 text = calData.address,
-                style = typography.subtitle1,
+                style = typography.subtitle1
             )
             AndroidView(
                 factory = { context ->
@@ -163,7 +166,7 @@ private fun ListItem(calData: CalData, isEditableActivated: Boolean, modifier: M
                         timeZone = calData.currentCityTimeZoneId
                         setTextColor(contentColor.toArgb())
                     }
-                },
+                }
             )
         }
         AnimatedVisibility(
@@ -173,17 +176,18 @@ private fun ListItem(calData: CalData, isEditableActivated: Boolean, modifier: M
             modifier = Modifier.constrainAs(dragIcon) {
                 end.linkTo(parent.end)
                 centerVerticallyTo(parent)
-            },
+            }
         ) {
             Image(
                 painter = painterResource(
-                    if (calData.isSelected)
+                    if (calData.isSelected) {
                         R.drawable.baseline_check_circle_24
-                    else
+                    } else {
                         R.drawable.twotone_radio_button_unchecked_24
+                    }
                 ),
                 contentDescription = "Drag Icon",
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.FillBounds
             )
         }
     }
@@ -197,8 +201,8 @@ class CalDataPreviewParameterProvider : PreviewParameterProvider<CalData> {
             address = "Address",
             currentCityTimeZoneId = null,
             abbreviation = "Abb",
-            flag = "",
-        ),
+            flag = ""
+        )
 
     )
 }
@@ -208,6 +212,6 @@ class CalDataPreviewParameterProvider : PreviewParameterProvider<CalData> {
 fun ComposablePreview(@PreviewParameter(CalDataPreviewParameterProvider::class) calData: CalData) {
     ClockList(
         dataList = mutableListOf(),
-        onEditActivated = {},
+        onEditActivated = {}
     )
 }

@@ -7,5 +7,5 @@ import java.io.Serializable
 data class AddressSearchResult(
     val searchAddress: SearchAddress?,
     val name: String,
-    val coordinate: Point,
+    val coordinate: Point
 ) : Serializable

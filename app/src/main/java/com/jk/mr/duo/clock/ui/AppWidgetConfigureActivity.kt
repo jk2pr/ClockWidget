@@ -37,7 +37,6 @@ class AppWidgetConfigureActivity : ComponentActivity() {
                 LocalNavController provides rememberNavController(),
                 LocalScaffold provides scaffold
             ) {
-
                 val application = applicationContext as MrDuoClockApplication
                 val defaultScheme = application.defaultScheme
 

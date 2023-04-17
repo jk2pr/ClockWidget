@@ -25,7 +25,7 @@ fun ColorDialog(
     colorList: List<ColorScheme>,
     onDismiss: (() -> Unit),
     currentlySelected: ColorScheme,
-    onColorSelected: ((ColorScheme) -> Unit), // when a colour is picked
+    onColorSelected: ((ColorScheme) -> Unit) // when a colour is picked
 ) {
     val gridState = rememberLazyGridState()
     AlertDialog(
@@ -37,7 +37,6 @@ fun ColorDialog(
                 columns = GridCells.Fixed(3),
                 state = gridState
             ) {
-
                 items(colorList) { color ->
                     // Add a border around the selected colour only
                     var borderWidth = 0.dp

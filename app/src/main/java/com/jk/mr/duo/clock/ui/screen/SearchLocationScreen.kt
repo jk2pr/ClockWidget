@@ -37,7 +37,6 @@ import com.mapbox.search.ui.view.SearchResultsView
 
 @Composable
 fun SearchLocationScreen() {
-
     var searchEngineUiAdapter: SearchEngineUiAdapter? = null
     val localNavController = LocalNavController.current
     val searchResultsView = remember { mutableStateOf<SearchResultsView?>(null) }
@@ -58,7 +57,7 @@ fun SearchLocationScreen() {
         searchEngineUiAdapter = SearchEngineUiAdapter(
             view = searchResultsView.value!!,
             searchEngine = searchEngine,
-            offlineSearchEngine = offlineSearchEngine,
+            offlineSearchEngine = offlineSearchEngine
         )
         searchEngineUiAdapter?.let {
             it.searchMode = SearchMode.AUTO
@@ -66,29 +65,28 @@ fun SearchLocationScreen() {
                 listener = object : SearchEngineUiAdapter.SearchListener {
                     override fun onSuggestionsShown(
                         suggestions: List<SearchSuggestion>,
-                        responseInfo: ResponseInfo,
+                        responseInfo: ResponseInfo
                     ) = print(suggestions)
 
                     override fun onCategoryResultsShown(
                         suggestion: SearchSuggestion,
                         results: List<SearchResult>,
-                        responseInfo: ResponseInfo,
+                        responseInfo: ResponseInfo
                     ) = Unit
 
                     override fun onError(e: Exception) = Unit
 
                     override fun onOfflineSearchResultsShown(
                         results: List<OfflineSearchResult>,
-                        responseInfo: OfflineResponseInfo,
+                        responseInfo: OfflineResponseInfo
                     ) = Unit
 
                     override fun onSuggestionSelected(searchSuggestion: SearchSuggestion) = false
 
                     override fun onSearchResultSelected(
                         searchResult: SearchResult,
-                        responseInfo: ResponseInfo,
+                        responseInfo: ResponseInfo
                     ) {
-
                         sendBack(
                             localNavController = localNavController,
                             addressSearchResult = AddressSearchResult(
@@ -101,11 +99,10 @@ fun SearchLocationScreen() {
 
                     override fun onOfflineSearchResultSelected(
                         searchResult: OfflineSearchResult,
-                        responseInfo: OfflineResponseInfo,
+                        responseInfo: OfflineResponseInfo
                     ) = Unit
 
                     override fun onHistoryItemClick(historyRecord: HistoryRecord) {
-
                         sendBack(
                             localNavController = localNavController,
                             addressSearchResult = AddressSearchResult(
@@ -118,7 +115,7 @@ fun SearchLocationScreen() {
 
                     override fun onPopulateQueryClick(
                         suggestion: SearchSuggestion,
-                        responseInfo: ResponseInfo,
+                        responseInfo: ResponseInfo
                     ) {
                     }
 
@@ -141,7 +138,7 @@ fun SearchLocationScreen() {
                     }
                 }
             })
-        ),
+        )
     ) {
         Box(
             modifier = Modifier

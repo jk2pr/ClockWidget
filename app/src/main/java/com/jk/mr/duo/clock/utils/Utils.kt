@@ -10,7 +10,6 @@ import android.text.style.RelativeSizeSpan
 object Utils {
 
     fun get12HoursFormat(): CharSequence {
-
         val span1 = SpannableString("hh:mm")
         //  val span2 = SpannableString("ss")
         val span3 = SpannableString(" a\n")
@@ -24,7 +23,6 @@ object Utils {
     }
 
     fun get24HoursFormat(): CharSequence {
-
         val span1 = SpannableString("HH:mm \n")
         val span4 = SpannableString("E, dd MMM")
         span1.setSpan(RelativeSizeSpan(1.00f), 0, 4, 0)
@@ -34,7 +32,6 @@ object Utils {
     }
 
     fun getDashBoard12HoursFormat(): CharSequence {
-
         val span1 = SpannableString("hh:mm")
         val span2 = SpannableString(":ss ")
         val span3 = SpannableString("a\n")
@@ -48,7 +45,6 @@ object Utils {
     }
 
     fun getItem12HoursFormat(): CharSequence {
-
         val span1 = SpannableString("hh:mm")
         // val span2 = SpannableString(" : ss ")
         val span3 = SpannableString(" a ")
@@ -61,7 +57,6 @@ object Utils {
     }
 
     fun getItem24HoursFormat(): CharSequence {
-
         val span1 = SpannableString("HH:mm")
         val span4 = SpannableString("E, dd MMMM yyyy")
         //  span4.setSpan(RelativeSizeSpan(0.50f), 0, span4.length, 0)
@@ -76,7 +71,6 @@ object Utils {
     }
 
     fun getDashBoard24HoursFormat(): CharSequence {
-
         val span1 = SpannableString("HH:mm")
         val span2 = SpannableString(":ss\n ")
         val span4 = SpannableString("E, dd MMMM yyyy")

@@ -33,9 +33,12 @@ class MrDuoClockApplication : Application() {
 
         val savedScheme =
             Gson().fromJson(preferenceHandler.getAppColorScheme(), ColorScheme::class.java)
-        if (savedScheme == null) // First Launch
+        if (savedScheme == null) {
+            // First Launch
             preferenceHandler.saveAppColorScheme(defaultScheme.toJSON())
-        else defaultScheme = savedScheme
+        } else {
+            defaultScheme = savedScheme
+        }
 
         val it =
             Intent(this, AppWidgetConfigureActivity::class.java).apply { action = ACTION_ADD_CLOCK }

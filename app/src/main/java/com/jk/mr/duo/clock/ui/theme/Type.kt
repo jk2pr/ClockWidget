@@ -7,5 +7,5 @@ import com.jk.mr.duo.clock.R
 
 val bebasneue = FontFamily(
     Font(R.font.bebasneue_regular),
-    Font(R.font.bebasnue_bold, FontWeight.Bold),
+    Font(R.font.bebasnue_bold, FontWeight.Bold)
 )

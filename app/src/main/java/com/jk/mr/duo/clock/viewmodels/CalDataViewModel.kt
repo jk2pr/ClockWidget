@@ -23,7 +23,7 @@ interface ComplexViewModelInterface
 class CalDataViewModel @Inject constructor(
     private val calRepository: CalRepository,
     var preferenceHandler: PreferenceHandler,
-    private val flags: FlagResponse,
+    private val flags: FlagResponse
 ) : ViewModel(), ComplexViewModelInterface {
 
     val uiState = MutableStateFlow<UiState>(UiState.Empty)
@@ -37,7 +37,6 @@ class CalDataViewModel @Inject constructor(
 
     fun getData(searchResult: AddressSearchResult, lat: String, long: String) =
         viewModelScope.launch {
-
             flow {
                 emit(UiState.Loading)
                 var mResponse: MResponse? = null
@@ -68,7 +67,7 @@ class CalDataViewModel @Inject constructor(
                             address = country,
                             currentCityTimeZoneId = timeZoneId,
                             flag = flag?.flag,
-                            isSelected = false,
+                            isSelected = false
                         )
                         emit(UiState.Content(calData))
                     } ?: emit(UiState.Error("Error"))
