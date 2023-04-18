@@ -22,6 +22,12 @@ android {
             keyPassword = keystoreProperties["keyPassword"] as String
             storePassword = keystoreProperties["storePassword"] as String
         }
+        create("release") {
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storePassword = keystoreProperties["storePassword"] as String
+        }
     }
     compileSdkVersion(33)
     defaultConfig {
@@ -64,9 +70,12 @@ android {
     }*/
 
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
         release {
             isMinifyEnabled = false
-            // proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             //   buildConfigField 'String', 'GoogleSecAPIKEY', mapkey
 
             signingConfig = signingConfigs.getByName("debug")
@@ -105,7 +114,7 @@ dependencies {
     /* implementation('com.mapbox.mapboxsdk:mapbox-android-sdk:7.0.0@aar') {
          transitive = true
      }*/
-    implementation("com.mapbox.search:mapbox-search-android-ui:1.0.0-beta.45")
+    implementation("com.mapbox.search:mapbox-search-android-ui:1.0.0-rc.3")
 
     implementation("androidx.compose.ui:ui-viewbinding:1.4.1")
     // implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
@@ -125,13 +134,13 @@ dependencies {
     // (Recommended) Add Analytics
 
     // compose
-    implementation("androidx.compose.ui:ui:1.4.0")
-    implementation("androidx.compose.material:material:1.4.0")
+    implementation("androidx.compose.ui:ui:1.4.1")
+    implementation("androidx.compose.material:material:1.4.1")
     implementation("androidx.activity:activity-compose:1.7.0")
     implementation("androidx.navigation:navigation-compose:2.5.3")
     // Preview
-    debugImplementation("androidx.compose.ui:ui-tooling:1.4.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.4.0")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.4.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.4.1")
 
     // Constraint Layout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
