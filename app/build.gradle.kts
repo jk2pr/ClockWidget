@@ -146,8 +146,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling:1.4.1")
     implementation("androidx.compose.ui:ui-tooling-preview:1.4.1")
 
-    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
-
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     // Constraint Layout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")

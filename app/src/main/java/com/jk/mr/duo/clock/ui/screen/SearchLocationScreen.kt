@@ -1,13 +1,10 @@
 package com.jk.mr.duo.clock.ui.screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.isVisible
 import androidx.core.view.setPadding
@@ -65,27 +62,27 @@ fun SearchLocationScreen() {
                 listener = object : SearchEngineUiAdapter.SearchListener {
                     override fun onSuggestionsShown(
                         suggestions: List<SearchSuggestion>,
-                        responseInfo: ResponseInfo,
+                        responseInfo: ResponseInfo
                     ) = print(suggestions)
 
                     override fun onCategoryResultsShown(
                         suggestion: SearchSuggestion,
                         results: List<SearchResult>,
-                        responseInfo: ResponseInfo,
+                        responseInfo: ResponseInfo
                     ) = Unit
 
                     override fun onError(e: Exception) = Unit
 
                     override fun onOfflineSearchResultsShown(
                         results: List<OfflineSearchResult>,
-                        responseInfo: OfflineResponseInfo,
+                        responseInfo: OfflineResponseInfo
                     ) = Unit
 
                     override fun onSuggestionSelected(searchSuggestion: SearchSuggestion) = false
 
                     override fun onSearchResultSelected(
                         searchResult: SearchResult,
-                        responseInfo: ResponseInfo,
+                        responseInfo: ResponseInfo
                     ) {
                         sendBack(
                             localNavController = localNavController,
@@ -99,7 +96,7 @@ fun SearchLocationScreen() {
 
                     override fun onOfflineSearchResultSelected(
                         searchResult: OfflineSearchResult,
-                        responseInfo: OfflineResponseInfo,
+                        responseInfo: OfflineResponseInfo
                     ) = Unit
 
                     override fun onHistoryItemClick(historyRecord: HistoryRecord) {
@@ -115,7 +112,7 @@ fun SearchLocationScreen() {
 
                     override fun onPopulateQueryClick(
                         suggestion: SearchSuggestion,
-                        responseInfo: ResponseInfo,
+                        responseInfo: ResponseInfo
                     ) {
                     }
 
@@ -127,11 +124,10 @@ fun SearchLocationScreen() {
     Page(
         menuItems = mutableListOf(
             DropdownMenuItemContent(menu = {
-                    SearchView {
-                        searchEngineUiAdapter?.search(it)
-                        searchResultsView.value?.isVisible = true
-                    }
-
+                SearchView {
+                    searchEngineUiAdapter?.search(it)
+                    searchResultsView.value?.isVisible = true
+                }
             })
         )
     ) {

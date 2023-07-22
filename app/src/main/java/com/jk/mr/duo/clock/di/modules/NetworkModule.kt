@@ -10,7 +10,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 
 @Module
@@ -25,9 +24,7 @@ class NetworkModule {
     @Singleton
     fun getHttpClient() = ktorHttpClient
 
-
-
     @Provides
     @Singleton
-    fun getDispatcher() : DispatcherProvider = DefaultDispatchers()
+    fun getDispatcher(): DispatcherProvider = DefaultDispatchers()
 }

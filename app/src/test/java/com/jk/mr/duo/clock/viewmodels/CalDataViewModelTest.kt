@@ -1,58 +1,48 @@
 package com.jk.mr.duo.clock.viewmodels
 
 import app.cash.turbine.test
-import com.jk.mr.duo.clock.MainDispatcherRule
 import com.jk.mr.duo.clock.TestDispatchers
 import com.jk.mr.duo.clock.data.AddressSearchResult
 import com.jk.mr.duo.clock.data.FlagResponse
 import com.jk.mr.duo.clock.data.MResponse
 import com.jk.mr.duo.clock.data.ResourceSets
 import com.jk.mr.duo.clock.data.UiState
+import com.jk.mr.duo.clock.data.caldata.CalData
 import com.jk.mr.duo.clock.repositories.CalRepository
 import com.jk.mr.duo.clock.utils.PreferenceHandler
 import com.mapbox.geojson.Point
 import com.mapbox.search.result.SearchAddress
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class CalDataViewModelTest {
-
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
-
-    private lateinit var viewModel: CalDataViewModel
+class CalDataViewModelTest {
 
     private val calRepository = mockk<CalRepository>()
 
     private var preferenceHandler = mockk<PreferenceHandler>()
-    private lateinit var testDispatchers: TestDispatchers
-    var flags = mockk<FlagResponse>()
+    private var testDispatchers = TestDispatchers()
+    private var flags = mockk<FlagResponse>()
+    private val lat = "0.0"
+    private val long = "0.0"
+    private val viewModel = CalDataViewModel(testDispatchers, calRepository, preferenceHandler, flags)
 
     @Before
     fun setUp() {
-        testDispatchers = TestDispatchers()
-        viewModel = CalDataViewModel(testDispatchers, calRepository, preferenceHandler, flags)
-
+        Dispatchers.setMain(testDispatchers.main)
     }
 
-    private val lat = "0.0"
-    private val long = "0.0"
-
     @Test
-    fun getData_emits_Content_with_valid_AddressSearchResult() {
-        runBlocking {
-
+    fun getData_emits_Content_with_valid_AddressSearchResult() =
+        runTest {
             // Create a fake AddressSearchResult to use in the test
             val addressSearchResult = AddressSearchResult(
                 name = "Fake Name",
@@ -70,19 +60,27 @@ internal class CalDataViewModelTest {
             )
             coEvery { calRepository.getTimeZone(any(), any()) } returns mResponse
             coEvery { flags.data } returns mutableListOf()
-            viewModel.getData(addressSearchResult, lat, long)
-            coVerify { calRepository.getTimeZone(lat, long) }
 
-            val totalFlow = mutableListOf<UiState>()
+            assertTrue(viewModel.uiState.value == UiState.Empty)
+
+            // coVerify { calRepository.getTimeZone(lat, long) }
+
             viewModel.uiState.test {
+                viewModel.getData(addressSearchResult, lat, long)
+                assertEquals(UiState.Empty, awaitItem())
                 assertEquals(UiState.Loading, awaitItem())
-                viewModel.uiState.emit(UiState.Content(""))
-                assertTrue(awaitItem() is UiState.Content)
-                //   awaitComplete()
+                assertEquals(
+                    UiState.Content(
+                        CalData(
+                            name = "Fake Name",
+                            abbreviation = "",
+                            address = "Unknown",
+                            currentCityTimeZoneId = null,
+                            flag = null
+                        )
+                    ),
+                    awaitItem()
+                )
             }
-
-            //assertEquals(UiState.Content(addressSearchResult), flowCollector[1])
         }
-        // Create a fake MResponse to be returned by the repository
-    }
 }

@@ -19,7 +19,7 @@ import com.jk.mr.duo.clock.navigation.AppScreens
 fun Page(
     menuItems: List<DropdownMenuItemContent> = emptyList(),
     floatingActionButton: @Composable () -> Unit = {},
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     Surface {
         Scaffold(

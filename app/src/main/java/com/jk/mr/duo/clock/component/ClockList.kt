@@ -102,7 +102,7 @@ private fun CreateAdapter(
                                 }
                             }
                         }
-                    ListItem(calData = item, isEditableActivated = isEditActivated,   contentColor = contentColor, modifier = modifier)
+                    ListItem(calData = item, isEditableActivated = isEditActivated, contentColor = contentColor, modifier = modifier)
                 }
                 //  itemContent = { ListItem(item, isEditActivated) }
             }
@@ -111,7 +111,7 @@ private fun CreateAdapter(
 }
 
 @Composable
-private fun ListItem(calData: CalData, contentColor : Color,isEditableActivated: Boolean, modifier: Modifier) {
+private fun ListItem(calData: CalData, contentColor: Color, isEditableActivated: Boolean, modifier: Modifier) {
     ConstraintLayout(modifier = modifier.padding(8.dp)) {
         val (svg, column, dragIcon) = createRefs()
         val painter =

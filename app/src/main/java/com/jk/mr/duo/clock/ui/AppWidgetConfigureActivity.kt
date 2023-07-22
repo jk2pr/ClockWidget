@@ -8,15 +8,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
-import androidx.core.view.WindowCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.jk.mr.duo.clock.AppWidget
-import com.jk.mr.duo.clock.MrDuoClockApplication
 import com.jk.mr.duo.clock.common.localproviders.LocalNavController
 import com.jk.mr.duo.clock.common.localproviders.LocalSnackBarHostState
 import com.jk.mr.duo.clock.ui.theme.ClockTheme
-import com.jk.mr.duo.clock.viewmodels.CalDataViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -41,7 +37,7 @@ class AppWidgetConfigureActivity : ComponentActivity() {
                 LocalSnackBarHostState provides remember { SnackbarHostState() }
             ) {
                 ClockTheme(
-                    content = { Start(this) },
+                    content = { Start(this) }
                 )
             }
         }

@@ -2,12 +2,11 @@ package com.jk.mr.duo.clock
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.StandardTestDispatcher
 
 @ExperimentalCoroutinesApi
-class TestDispatchers: DispatcherProvider {
-    private val testDispatcher = UnconfinedTestDispatcher()
+class TestDispatchers : DispatcherProvider {
+    private val testDispatcher = StandardTestDispatcher()
     override val main: CoroutineDispatcher
         get() = testDispatcher
     override val io: CoroutineDispatcher

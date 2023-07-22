@@ -4,9 +4,7 @@ import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.util.Log
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -54,22 +52,20 @@ import com.jk.mr.duo.clock.common.localproviders.LocalNavController
 import com.jk.mr.duo.clock.common.localproviders.LocalSnackBarHostState
 import com.jk.mr.duo.clock.component.ClockDashBoard
 import com.jk.mr.duo.clock.component.ClockList
-import com.jk.mr.duo.clock.component.ColorDialog
 import com.jk.mr.duo.clock.component.DropdownMenuItemContent
 import com.jk.mr.duo.clock.component.Page
 import com.jk.mr.duo.clock.data.AddressSearchResult
 import com.jk.mr.duo.clock.data.UiState
 import com.jk.mr.duo.clock.data.caldata.CalData
-import com.jk.mr.duo.clock.data.colors
 import com.jk.mr.duo.clock.extenstions.toast
 import com.jk.mr.duo.clock.navigation.AppScreens
 import com.jk.mr.duo.clock.ui.AppWidgetConfigureActivity
 import com.jk.mr.duo.clock.utils.Constants.TAG
 import com.jk.mr.duo.clock.utils.PreferenceHandler
-import com.jk.mr.duo.clock.viewmodels.CalDataViewModel
 import com.mapbox.search.result.SearchResult
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.Collections
 
@@ -77,13 +73,12 @@ private var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
 @Composable
 fun DashBoardScreen(
-    state: MutableStateFlow<UiState>,
+    state: StateFlow<UiState>,
     preferenceHandler: PreferenceHandler?,
     onEvent: (AddressSearchResult, String, String) -> (Unit),
     context: Context = LocalContext.current,
-    appWidgetId: Int,
+    appWidgetId: Int
 ) {
-
     var isEditActivated: Boolean by remember { mutableStateOf(false) }
 
     val dataList = remember { mutableStateListOf<CalData>() }
@@ -92,7 +87,6 @@ fun DashBoardScreen(
 
     val scope = rememberCoroutineScope()
     val lifCycleOwner = LocalLifecycleOwner.current
-
 
     Page(
         menuItems = mutableListOf(
@@ -187,7 +181,7 @@ fun DashBoardScreen(
         )
         Column(
             modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ClockDashBoard()
             ClockList(
@@ -239,7 +233,7 @@ fun MutableList<CalData>.reset(context: Context) {
 private fun ManageLifeCycle(
     dataList: MutableList<CalData>,
     lifCycleOwner: LifecycleOwner,
-    preferenceHandler: PreferenceHandler?,
+    preferenceHandler: PreferenceHandler?
 ) {
     DisposableEffect(key1 = lifCycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -270,7 +264,7 @@ private fun ManageLifeCycle(
 private fun addItems(
     dataList: MutableList<CalData>,
     newItemAll: List<CalData>? = null,
-    newItem: CalData? = null,
+    newItem: CalData? = null
 ) {
     newItemAll?.let { dataList.addAll(it) }
     newItem?.let { dataList.add(0, it) }
@@ -278,7 +272,7 @@ private fun addItems(
 
 private fun updateWidget(
     context: Context,
-    dataList: MutableList<CalData>,
+    dataList: MutableList<CalData>
 ) {
     try {
         MainScope().launch {
@@ -315,5 +309,6 @@ fun DashboardPreview() {
         state = MutableStateFlow(UiState.Empty),
         preferenceHandler = null,
         appWidgetId = 0,
-        onEvent = { _, _, _ -> })
+        onEvent = { _, _, _ -> }
+    )
 }

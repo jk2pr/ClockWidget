@@ -1,5 +1,4 @@
 import androidx.compose.runtime.Composable
-import androidx.glance.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,7 +15,6 @@ fun Start(context: AppWidgetConfigureActivity) {
         navController = LocalNavController.current,
         startDestination = AppScreens.DashBoard.route
     ) {
-
         composable(route = AppScreens.DashBoard.route) {
             val viewModel = hiltViewModel<CalDataViewModel>()
 

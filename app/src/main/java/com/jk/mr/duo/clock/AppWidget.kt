@@ -33,7 +33,6 @@ import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.google.gson.Gson
-import com.jk.mr.duo.clock.data.ColorScheme
 import com.jk.mr.duo.clock.data.caldata.CalData
 import com.jk.mr.duo.clock.ui.AppWidgetConfigureActivity
 import com.jk.mr.duo.clock.utils.Constants
@@ -67,7 +66,6 @@ class AppWidget : GlanceAppWidget() {
              LocalContext.current.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
          val isNight = currentNightMode == UI_MODE_NIGHT_YES
        */
-
 
         if (calDataString != null) {
             val calData = Gson().fromJson(calDataString, CalData::class.java)

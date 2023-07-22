@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun SearchView(
-    onSearch: (String) -> Unit,
+    onSearch: (String) -> Unit
 ) {
     var state by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
