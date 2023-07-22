@@ -1,149 +1,12 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
 
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorPrimaryLight">@color/colorPrimary</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
+    <style name="NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="AppThemeLight" parent="Theme.AppCompat.Light">
-        <!-- Customize your theme here. -->
-        <item name="windowActionBar">false</item>
-        <item name="android:windowBackground">@drawable/dashboard_bg</item>
-        <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowDisablePreview">true</item>
-        <item name="windowNoTitle">true</item>
-        <item name="selectedRowBackgroundColor">#333333</item>
-
-        <item name="rowTextColor">?attr/selectedRowBackgroundColor</item>
-        <item name="rowBackGroundColor">@android:color/transparent</item>
-        <item name="colorBlack">@android:color/black</item>
-
-    </style>
-    <!--Dark Theme-->
-    <style name="AppThemeDark" parent="ThemeOverlay.AppCompat.Dark">
-        <!-- Customize your theme here. -->
-        <item name="android:windowBackground">@drawable/dashboard_bg</item>
-        <item name="windowActionBar">false</item>
-        <!-- <item name="tint">@android:color/white</item>-->
-        <item name="windowNoTitle">true</item>
-        <item name="selectedRowBackgroundColor">@android:color/black</item>
-
-        <item name="rowTextColor">@android:color/white</item>
-        <item name="rowBackGroundColor">@android:color/transparent</item>
-        <item name="colorBlack">@android:color/black</item>
-    </style>
-
-    <style name="AppThemeRed" parent="AppThemeDark">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/red</item>
-        <item name="colorPrimaryDark">@color/red_dark</item>
-        <item name="colorPrimaryLight">@color/red_light</item>
-        <item name="colorAccent">@color/red_light</item>
-
-        <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
-
-        <item name="selectedRowBackgroundColor">?attr/colorPrimaryDark</item>
-
-        <item name="rowTextColor">@color/light_black</item>
-        <item name="rowBackGroundColor">@android:color/transparent</item>
-
-
-    </style>
-
-    <style name="AppThemeOrange" parent="AppThemeDark">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/dark_orange</item>
-        <item name="colorPrimaryDark">@color/dark_orange</item>
-        <item name="colorPrimaryLight">@color/light_orange</item>
-        <item name="colorAccent">@color/light_orange</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
-
-
-
-        <item name="selectedRowBackgroundColor">?attr/colorPrimaryDark</item>
-
-
-        <item name="rowTextColor">?attr/colorAccent</item>
-        <item name="rowBackGroundColor">@android:color/transparent</item>
-
-    </style>
-
-    <style name="AppThemeYellow" parent="AppThemeDark">
-        <!-- Customize your theme here. -->
-
-        <item name="colorPrimary">@color/yellow_dark</item>
-        <item name="colorPrimaryDark">@color/yellow_dark</item>
-        <item name="colorPrimaryLight">@color/yellow_light</item>
-        <item name="colorAccent">@color/yellow_light</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
-        <item name="selectedRowBackgroundColor">?attr/colorPrimaryDark</item>
-        <item name="rowTextColor">?attr/colorAccent</item>
-
-    </style>
-
-    <style name="AppThemeIndigo" parent="AppThemeDark">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/indigo_dark</item>
-        <item name="colorPrimaryDark">@color/indigo_dark</item>
-        <item name="colorPrimaryLight">@color/indigo_light</item>
-        <item name="colorAccent">@color/indigo_light</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
-
-        <item name="selectedRowBackgroundColor">?attr/colorPrimaryDark</item>
-        <item name="rowTextColor">?attr/colorAccent</item>
-
-    </style>
-
-    <style name="AppThemeGreen" parent="AppThemeDark">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/green_light</item>
-        <item name="colorPrimaryDark">@color/green_dark</item>
-        <item name="colorPrimaryLight">@color/green_light</item>
-        <item name="colorAccent">@color/green_light</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
-
-        <item name="selectedRowBackgroundColor">?attr/colorPrimaryDark</item>
-        <item name="rowTextColor">?attr/colorAccent</item>
-
-    </style>
-
-    <style name="AppThemeBlue" parent="AppThemeDark">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/light_blue</item>
-        <item name="colorPrimaryDark">@color/dark_blue</item>
-        <item name="colorPrimaryLight">@color/light_blue</item>
-        <item name="colorAccent">@color/light_blue</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
-
-        <item name="selectedRowBackgroundColor">?attr/colorPrimaryDark</item>
-        <item name="rowTextColor">?attr/colorAccent</item>
-
-    </style>
-
-
-    <style name="myDialog" parent="@android:style/Theme.Dialog">
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/white</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowTitleStyle">@null</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
-        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
-        <item name="android:gravity">center</item>
-    </style>
 
     <style name="city_style">
         <item name="android:layout_width">wrap_content</item>
@@ -160,6 +23,5 @@
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/sp14</item>
     </style>
-
 
 </resources>
