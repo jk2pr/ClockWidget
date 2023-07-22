@@ -80,7 +80,8 @@ class CalDataViewModelTest {
                     awaitItem()
                 )
             }
-            coVerify { calRepository.getTimeZone(lat, long)
+            coVerify {
+                calRepository.getTimeZone(lat, long)
             }
         }
 }
