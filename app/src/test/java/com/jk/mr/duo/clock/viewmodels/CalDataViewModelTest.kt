@@ -5,7 +5,6 @@ import com.jk.mr.duo.clock.TestDispatchers
 import com.jk.mr.duo.clock.data.AddressSearchResult
 import com.jk.mr.duo.clock.data.FlagResponse
 import com.jk.mr.duo.clock.data.MResponse
-import com.jk.mr.duo.clock.data.ResourceSets
 import com.jk.mr.duo.clock.data.UiState
 import com.jk.mr.duo.clock.data.caldata.CalData
 import com.jk.mr.duo.clock.repositories.CalRepository
@@ -13,6 +12,7 @@ import com.jk.mr.duo.clock.utils.PreferenceHandler
 import com.mapbox.geojson.Point
 import com.mapbox.search.result.SearchAddress
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
@@ -53,7 +53,7 @@ class CalDataViewModelTest {
                 authenticationResultCode = "101",
                 brandLogoUri = "brandLogoUri",
                 copyright = "copyright",
-                resourceSets = mutableListOf<ResourceSets>(),
+                resourceSets = mutableListOf(),
                 statusCode = 500,
                 statusDescription = " Desc",
                 traceId = "traceId"
@@ -62,8 +62,6 @@ class CalDataViewModelTest {
             coEvery { flags.data } returns mutableListOf()
 
             assertTrue(viewModel.uiState.value == UiState.Empty)
-
-            // coVerify { calRepository.getTimeZone(lat, long) }
 
             viewModel.uiState.test {
                 viewModel.getData(addressSearchResult, lat, long)
@@ -81,6 +79,8 @@ class CalDataViewModelTest {
                     ),
                     awaitItem()
                 )
+            }
+            coVerify { calRepository.getTimeZone(lat, long)
             }
         }
 }
