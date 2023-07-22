@@ -2,7 +2,7 @@ package com.jk.mr.duo.clock.component
 
 import android.view.Gravity
 import android.widget.TextClock
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,7 +15,7 @@ import com.jk.mr.duo.clock.utils.Utils
 fun TextClock(
     modifier: Modifier = Modifier,
     timeZone: String = java.util.TimeZone.getDefault().id,
-    textColor: Color = MaterialTheme.colors.secondary
+    textColor: Color = MaterialTheme.colorScheme.secondary
 ) {
     AndroidView(
         factory = { context ->

@@ -5,14 +5,18 @@ import android.appwidget.AppWidgetManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.jk.mr.duo.clock.AppWidget
 import com.jk.mr.duo.clock.MrDuoClockApplication
 import com.jk.mr.duo.clock.common.localproviders.LocalNavController
-import com.jk.mr.duo.clock.common.localproviders.LocalScaffold
+import com.jk.mr.duo.clock.common.localproviders.LocalSnackBarHostState
 import com.jk.mr.duo.clock.ui.theme.ClockTheme
+import com.jk.mr.duo.clock.viewmodels.CalDataViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -32,18 +36,12 @@ class AppWidgetConfigureActivity : ComponentActivity() {
             )
         }
         setContent {
-            val scaffold = rememberScaffoldState()
             CompositionLocalProvider(
                 LocalNavController provides rememberNavController(),
-                LocalScaffold provides scaffold
+                LocalSnackBarHostState provides remember { SnackbarHostState() }
             ) {
-                val application = applicationContext as MrDuoClockApplication
-                val defaultScheme = application.defaultScheme
-
                 ClockTheme(
-                    content = { Start() },
-                    primaryColor = defaultScheme.primaryColor,
-                    secondaryColor = defaultScheme.secondaryColor
+                    content = { Start(this) },
                 )
             }
         }

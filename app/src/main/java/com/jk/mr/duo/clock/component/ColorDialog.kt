@@ -10,9 +10,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,7 +50,7 @@ fun ColorDialog(
                             .clip(RoundedCornerShape(20.dp))
                             .border(
                                 borderWidth,
-                                MaterialTheme.colors.onBackground.copy(alpha = 0.75f),
+                                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f),
                                 RoundedCornerShape(20.dp)
                             )
                             .requiredSize(70.dp)

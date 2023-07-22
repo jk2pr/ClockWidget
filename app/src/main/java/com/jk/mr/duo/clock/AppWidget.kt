@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -57,26 +58,16 @@ class AppWidget : GlanceAppWidget() {
     @Composable
     override fun Content() {
         val packageName = LocalContext.current.packageName
-        val application = LocalContext.current.applicationContext as MrDuoClockApplication
         val remoteViews0 = RemoteViews(packageName, R.layout.text_clock_widget)
         val remoteViews1 = RemoteViews(packageName, R.layout.text_clock_widget)
         val prefs = currentState<Preferences>()
         val calDataString = prefs[stringPreferencesKey("calData")]
-        val savedSchemeString = prefs[stringPreferencesKey("theme")]
-        var primaryColor = application.defaultScheme.primaryColor
 
         /* val currentNightMode =
              LocalContext.current.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
          val isNight = currentNightMode == UI_MODE_NIGHT_YES
        */
 
-        savedSchemeString?.let {
-            val savedScheme =
-                Gson().fromJson(savedSchemeString, ColorScheme::class.java)
-            savedScheme?.let {
-                primaryColor = it.primaryColor
-            }
-        }
 
         if (calDataString != null) {
             val calData = Gson().fromJson(calDataString, CalData::class.java)
@@ -93,7 +84,7 @@ class AppWidget : GlanceAppWidget() {
                         )
                     ).appWidgetBackground().cornerRadiusCompat(
                         cornerRadius = cornerRadius,
-                        color = primaryColor.toArgb(),
+                        color = MaterialTheme.colorScheme.primary.toArgb(),
                         backgroundAlpha = backgroundAlpha
                     )
                     .fillMaxSize()

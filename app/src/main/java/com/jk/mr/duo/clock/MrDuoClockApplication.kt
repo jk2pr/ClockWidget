@@ -20,26 +20,12 @@ import javax.inject.Inject
 @HiltAndroidApp
 class MrDuoClockApplication : Application() {
 
-    var defaultScheme: ColorScheme by mutableStateOf(colors[0])
 
     @Inject
     lateinit var preferenceHandler: PreferenceHandler
-    fun changeColorScheme(newPair: ColorScheme) {
-        defaultScheme = newPair
-    }
 
     override fun onCreate() {
         super.onCreate()
-
-        val savedScheme =
-            Gson().fromJson(preferenceHandler.getAppColorScheme(), ColorScheme::class.java)
-        if (savedScheme == null) {
-            // First Launch
-            preferenceHandler.saveAppColorScheme(defaultScheme.toJSON())
-        } else {
-            defaultScheme = savedScheme
-        }
-
         val it =
             Intent(this, AppWidgetConfigureActivity::class.java).apply { action = ACTION_ADD_CLOCK }
         val shortcut = ShortcutInfoCompat.Builder(this, "id1")

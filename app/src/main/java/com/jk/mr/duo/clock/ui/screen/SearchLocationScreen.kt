@@ -65,27 +65,27 @@ fun SearchLocationScreen() {
                 listener = object : SearchEngineUiAdapter.SearchListener {
                     override fun onSuggestionsShown(
                         suggestions: List<SearchSuggestion>,
-                        responseInfo: ResponseInfo
+                        responseInfo: ResponseInfo,
                     ) = print(suggestions)
 
                     override fun onCategoryResultsShown(
                         suggestion: SearchSuggestion,
                         results: List<SearchResult>,
-                        responseInfo: ResponseInfo
+                        responseInfo: ResponseInfo,
                     ) = Unit
 
                     override fun onError(e: Exception) = Unit
 
                     override fun onOfflineSearchResultsShown(
                         results: List<OfflineSearchResult>,
-                        responseInfo: OfflineResponseInfo
+                        responseInfo: OfflineResponseInfo,
                     ) = Unit
 
                     override fun onSuggestionSelected(searchSuggestion: SearchSuggestion) = false
 
                     override fun onSearchResultSelected(
                         searchResult: SearchResult,
-                        responseInfo: ResponseInfo
+                        responseInfo: ResponseInfo,
                     ) {
                         sendBack(
                             localNavController = localNavController,
@@ -99,7 +99,7 @@ fun SearchLocationScreen() {
 
                     override fun onOfflineSearchResultSelected(
                         searchResult: OfflineSearchResult,
-                        responseInfo: OfflineResponseInfo
+                        responseInfo: OfflineResponseInfo,
                     ) = Unit
 
                     override fun onHistoryItemClick(historyRecord: HistoryRecord) {
@@ -115,7 +115,7 @@ fun SearchLocationScreen() {
 
                     override fun onPopulateQueryClick(
                         suggestion: SearchSuggestion,
-                        responseInfo: ResponseInfo
+                        responseInfo: ResponseInfo,
                     ) {
                     }
 
@@ -127,25 +127,14 @@ fun SearchLocationScreen() {
     Page(
         menuItems = mutableListOf(
             DropdownMenuItemContent(menu = {
-                Box(
-                    modifier = Modifier
-                        .offset(x = (-16).dp)
-                        .fillMaxWidth()
-                ) {
                     SearchView {
                         searchEngineUiAdapter?.search(it)
                         searchResultsView.value?.isVisible = true
                     }
-                }
+
             })
         )
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Red)
-                .padding(it)
-        )
         AndroidView(
             factory = { context ->
                 searchResultsView.value =
@@ -155,9 +144,6 @@ fun SearchLocationScreen() {
             },
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Green),
-            update = {
-            }
         )
     }
 }

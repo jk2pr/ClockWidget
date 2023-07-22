@@ -1,4 +1,4 @@
-package com.jk.widget
+package com.jk.mr.duo.clock.widget
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

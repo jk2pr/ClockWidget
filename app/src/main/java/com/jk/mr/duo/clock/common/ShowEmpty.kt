@@ -1,6 +1,6 @@
 package com.jk.mr.duo.clock.common
 
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable

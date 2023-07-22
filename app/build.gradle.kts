@@ -121,6 +121,10 @@ dependencies {
     //  implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     // implementation 'androidx.vectordrawable:vectordrawable:1.1.0-alpha01'
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+    testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation("app.cash.turbine:turbine:0.12.3")
+
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
@@ -135,12 +139,15 @@ dependencies {
 
     // compose
     implementation("androidx.compose.ui:ui:1.4.1")
-    implementation("androidx.compose.material:material:1.4.1")
+    implementation("androidx.compose.material3:material3-android:1.1.0-beta02")
     implementation("androidx.activity:activity-compose:1.7.0")
     implementation("androidx.navigation:navigation-compose:2.5.3")
     // Preview
     debugImplementation("androidx.compose.ui:ui-tooling:1.4.1")
     implementation("androidx.compose.ui:ui-tooling-preview:1.4.1")
+
+    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
+
 
     // Constraint Layout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")

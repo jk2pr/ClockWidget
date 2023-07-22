@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.material.DismissValue.*
-import androidx.compose.material.MaterialTheme.typography
+import androidx.compose.material3.*
+import androidx.compose.material3.DismissValue.*
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -75,12 +76,13 @@ private fun CreateAdapter(
 
                     val backgroundColor =
                         if (item.isSelected) {
-                            MaterialTheme.colors.primary.copy(alpha = 0.9f)
+                            MaterialTheme.colorScheme.primaryContainer
                         } else if (index == 0) {
-                            MaterialTheme.colors.primary.copy(alpha = 0.6f)
+                            MaterialTheme.colorScheme.tertiary
                         } else {
-                            MaterialTheme.colors.onPrimary
+                            MaterialTheme.colorScheme.onPrimary
                         }
+                    val contentColor = contentColorFor(backgroundColor = backgroundColor)
                     val modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
@@ -100,7 +102,7 @@ private fun CreateAdapter(
                                 }
                             }
                         }
-                    ListItem(item, isEditActivated, modifier = modifier)
+                    ListItem(calData = item, isEditableActivated = isEditActivated,   contentColor = contentColor, modifier = modifier)
                 }
                 //  itemContent = { ListItem(item, isEditActivated) }
             }
@@ -109,8 +111,7 @@ private fun CreateAdapter(
 }
 
 @Composable
-private fun ListItem(calData: CalData, isEditableActivated: Boolean, modifier: Modifier) {
-    val contentColor = LocalContentColor.current
+private fun ListItem(calData: CalData, contentColor : Color,isEditableActivated: Boolean, modifier: Modifier) {
     ConstraintLayout(modifier = modifier.padding(8.dp)) {
         val (svg, column, dragIcon) = createRefs()
         val painter =
@@ -152,11 +153,11 @@ private fun ListItem(calData: CalData, isEditableActivated: Boolean, modifier: M
         ) {
             Text(
                 text = calData.name,
-                style = typography.subtitle2
+                style = typography.bodyMedium.merge(TextStyle(contentColor))
             )
             Text(
                 text = calData.address,
-                style = typography.subtitle1
+                style = typography.bodyMedium.merge(TextStyle(contentColor))
             )
             AndroidView(
                 factory = { context ->
@@ -186,6 +187,7 @@ private fun ListItem(calData: CalData, isEditableActivated: Boolean, modifier: M
                         R.drawable.twotone_radio_button_unchecked_24
                     }
                 ),
+                colorFilter = ColorFilter.tint(contentColor),
                 contentDescription = "Drag Icon",
                 contentScale = ContentScale.FillBounds
             )

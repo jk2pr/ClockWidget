@@ -6,7 +6,7 @@ data class ConvertedTime(
     val localTime: String,
     val utcOffsetWithDst: String,
     val timeZoneDisplayName: String,
-    val timeZoneDisplayAbbr: String
+    val timeZoneDisplayAbbr: String? = null
 )
 
 @kotlinx.serialization.Serializable

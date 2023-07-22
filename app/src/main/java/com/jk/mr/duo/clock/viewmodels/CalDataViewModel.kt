@@ -2,6 +2,7 @@ package com.jk.mr.duo.clock.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jk.mr.duo.clock.DispatcherProvider
 import com.jk.mr.duo.clock.data.AddressSearchResult
 import com.jk.mr.duo.clock.data.FlagResponse
 import com.jk.mr.duo.clock.data.MResponse
@@ -21,9 +22,10 @@ interface ComplexViewModelInterface
 
 @HiltViewModel
 class CalDataViewModel @Inject constructor(
+    private val dispatchers: DispatcherProvider,
     private val calRepository: CalRepository,
     var preferenceHandler: PreferenceHandler,
-    private val flags: FlagResponse
+    private val flags: FlagResponse,
 ) : ViewModel(), ComplexViewModelInterface {
 
     val uiState = MutableStateFlow<UiState>(UiState.Empty)
@@ -41,7 +43,7 @@ class CalDataViewModel @Inject constructor(
                 emit(UiState.Loading)
                 var mResponse: MResponse? = null
                 // var flagResponse: FlagResponse? = null
-                val country = searchResult.searchAddress?.country ?: "Malaysia"
+                val country = searchResult.searchAddress?.country ?: "Unknown"
                 try {
                     mResponse = calRepository.getTimeZone(lat, long)
                     // flagResponse = calRepository.getFlag(countryString = country)
@@ -49,21 +51,22 @@ class CalDataViewModel @Inject constructor(
                     e.printStackTrace()
                 } finally {
                     mResponse?.let {
-                        val localResource = it.resourceSets[0].resources[0]
+                        val localResource = it.resourceSets.getOrNull(0)?.resources?.getOrNull(0)
                         val timeZoneId =
-                            localResource.timeZoneAtLocation?.first()?.timeZone?.ianaTimeZoneId
-                                ?: localResource.timeZone.ianaTimeZoneId
+                            localResource?.timeZoneAtLocation?.first()?.timeZone?.ianaTimeZoneId
+                                ?: localResource?.timeZone?.ianaTimeZoneId
                         val traceId = it.traceId // [0].resources[0].trimeZone.tra
                         val abbreviation =
-                            localResource.timeZoneAtLocation?.first()?.timeZone?.abbreviation
-                                ?: localResource.timeZone.abbreviation
+                            localResource?.timeZoneAtLocation?.first()?.timeZone?.abbreviation
+                                ?: localResource?.timeZone?.abbreviation
 
                         val flag = flags.data.firstOrNull { response ->
-                            response.name == searchResult.searchAddress?.country
+                            response.name == (searchResult.searchAddress?.country
+                                ?: searchResult.name)
                         }
                         val calData = CalData(
                             name = searchResult.name,
-                            abbreviation = abbreviation ?: "",
+                            abbreviation = abbreviation.orEmpty(),
                             address = country,
                             currentCityTimeZoneId = timeZoneId,
                             flag = flag?.flag,
@@ -72,7 +75,7 @@ class CalDataViewModel @Inject constructor(
                         emit(UiState.Content(calData))
                     } ?: emit(UiState.Error("Error"))
                 }
-            }.flowOn(Dispatchers.IO).collect {
+            }.flowOn(dispatchers.main).collect {
                 uiState.value = it
             }
         }
