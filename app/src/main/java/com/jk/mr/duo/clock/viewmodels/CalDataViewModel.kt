@@ -23,7 +23,7 @@ import javax.inject.Inject
 class CalDataViewModel @Inject constructor(
     private val dispatchers: DispatcherProvider,
     private val calRepository: CalRepository,
-    var preferenceHandler: PreferenceHandler,
+    private var preferenceHandler: PreferenceHandler,
     private val flags: FlagResponse
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Empty)
@@ -79,7 +79,6 @@ class CalDataViewModel @Inject constructor(
         if (jsonString.isNullOrEmpty()) {
             return emptyList()
         }
-
         val listType = object : TypeToken<List<CalData>>() {}.type
         return Gson().fromJson(jsonString, listType)
     }

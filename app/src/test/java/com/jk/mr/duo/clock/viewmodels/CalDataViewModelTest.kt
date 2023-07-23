@@ -1,6 +1,7 @@
 package com.jk.mr.duo.clock.viewmodels
 
 import app.cash.turbine.test
+import com.google.gson.JsonSyntaxException
 import com.jk.mr.duo.clock.TestDispatchers
 import com.jk.mr.duo.clock.data.AddressSearchResult
 import com.jk.mr.duo.clock.data.FlagResponse
@@ -15,11 +16,13 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 
@@ -33,7 +36,8 @@ class CalDataViewModelTest {
     private var flags = mockk<FlagResponse>()
     private val lat = "0.0"
     private val long = "0.0"
-    private val viewModel = CalDataViewModel(testDispatchers, calRepository, preferenceHandler, flags)
+    private val viewModel =
+        CalDataViewModel(testDispatchers, calRepository, preferenceHandler, flags)
 
     @Before
     fun setUp() {
@@ -64,7 +68,7 @@ class CalDataViewModelTest {
             assertTrue(viewModel.uiState.value == UiState.Empty)
 
             viewModel.uiState.test {
-                viewModel.getData(addressSearchResult, lat, long)
+                viewModel.getData(addressSearchResult)
                 assertEquals(UiState.Empty, awaitItem())
                 assertEquals(UiState.Loading, awaitItem())
                 assertEquals(
@@ -84,4 +88,33 @@ class CalDataViewModelTest {
                 calRepository.getTimeZone(lat, long)
             }
         }
+
+    @Test
+    fun `When given string should return a object`() {
+        coEvery { preferenceHandler.getDateData() } returns "[{\"abbreviation\":\"\",\"address\":\"Argentina\",\"currentCityTimeZoneId\":\"America/Argentina/Buenos_Aires\",\"flag\":\"https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg\",\"isSelected\":false,\"name\":\"Goa / La France\"}]"
+        val calData = viewModel.doOnStart()
+        coVerify { preferenceHandler.getDateData() }
+        assertTrue(calData.isNotEmpty())
+        val b = calData.first {
+            it.address == "Argentina"
+        }
+        assertNotNull(b)
+    }
+
+    @Test
+    fun `When given empty string should return a null`() {
+        coEvery { preferenceHandler.getDateData() } returns ""
+        val calData = viewModel.doOnStart()
+        coVerify { preferenceHandler.getDateData() }
+        assertTrue(calData.isEmpty())
+    }
+
+    @Test
+    fun `When given wrong string should throw Exception`() {
+        coEvery { preferenceHandler.getDateData() } returns "Wrong string"
+        assertThrows(JsonSyntaxException::class.java) {
+            viewModel.doOnStart()
+        }
+        coVerify { preferenceHandler.getDateData() }
+    }
 }
