@@ -42,10 +42,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.jk.mr.duo.clock.AppWidget
-import com.jk.mr.duo.clock.MrDuoClockApplication
 import com.jk.mr.duo.clock.R
 import com.jk.mr.duo.clock.common.Loading
 import com.jk.mr.duo.clock.common.localproviders.LocalNavController
@@ -61,7 +58,6 @@ import com.jk.mr.duo.clock.extenstions.toast
 import com.jk.mr.duo.clock.navigation.AppScreens
 import com.jk.mr.duo.clock.ui.AppWidgetConfigureActivity
 import com.jk.mr.duo.clock.utils.Constants.TAG
-import com.jk.mr.duo.clock.utils.PreferenceHandler
 import com.mapbox.search.result.SearchResult
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,8 +70,9 @@ private var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 @Composable
 fun DashBoardScreen(
     state: StateFlow<UiState>,
-    preferenceHandler: PreferenceHandler?,
-    onEvent: (AddressSearchResult, String, String) -> (Unit),
+    doOnStart: () -> List<CalData> = { emptyList() },
+    doOnStop: (dataList: List<CalData>) -> Unit = {},
+    onEvent: (AddressSearchResult) -> (Unit) = {},
     context: Context = LocalContext.current,
     appWidgetId: Int
 ) {
@@ -158,26 +155,22 @@ fun DashBoardScreen(
         }
     ) {
         mAppWidgetId = appWidgetId
-        navController.currentBackStackEntry
-            ?.savedStateHandle?.let {
-                it.apply {
-                    LaunchedEffect(key1 = it) {
-                        getLiveData<AddressSearchResult>("ADDRESS").observe(lifCycleOwner) { result ->
-                            Log.d("this.toString()", "GetData called:   -- ${result.name}")
-                            onEvent(
-                                result,
-                                result.coordinate.latitude().toString(),
-                                result.coordinate.longitude().toString()
-                            )
-                            remove<SearchResult>("ADDRESS")
+        navController.currentBackStackEntry?.savedStateHandle
+            ?.let {
+                LaunchedEffect(key1 = it) {
+                    it.getLiveData<AddressSearchResult>("ADDRESS")
+                        .observe(lifCycleOwner) { result ->
+                            onEvent(result)
+                            it.remove<SearchResult>("ADDRESS")
                         }
-                    }
                 }
             }
+
         ManageLifeCycle(
             dataList = dataList,
             lifCycleOwner = lifCycleOwner,
-            preferenceHandler = preferenceHandler
+            doOnStart = doOnStart,
+            doOnStop = doOnStop
         )
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -199,7 +192,7 @@ fun DashBoardScreen(
                         if (dataList.contains(it)) {
                             context.toast("Already added location, Please try with different location")
                         } else {
-                            addItems(dataList = dataList, newItem = it)
+                            addItems(dataList = dataList, newItemAll = listOf(it))
                             updateWidget(
                                 context = context,
                                 dataList = dataList
@@ -223,7 +216,6 @@ fun DashBoardScreen(
         }
     }
 }
-
 fun MutableList<CalData>.reset(context: Context) {
     forEach { it.isSelected = false }
     updateWidget(context = context, dataList = this)
@@ -233,25 +225,20 @@ fun MutableList<CalData>.reset(context: Context) {
 private fun ManageLifeCycle(
     dataList: MutableList<CalData>,
     lifCycleOwner: LifecycleOwner,
-    preferenceHandler: PreferenceHandler?
+    doOnStart: () -> List<CalData>,
+    doOnStop: (dataList: List<CalData>) -> Unit
 ) {
     DisposableEffect(key1 = lifCycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_START) {
-                val jsonString = preferenceHandler?.getDateData()
-                jsonString?.let {
-                    if (it.isEmpty()) return@LifecycleEventObserver
-                    val listType = object : TypeToken<List<CalData>>() {}.type
-                    val storedData =
-                        Gson().fromJson<List<CalData>>(it, listType)
-                    if (storedData.isNotEmpty()) {
-                        dataList.clear()
-                        addItems(dataList = dataList, newItemAll = storedData) // get from stored
-                    }
+                val storedData = doOnStart()
+                if (storedData.isNotEmpty()) {
+                    dataList.clear()
+                    addItems(dataList = dataList, newItemAll = storedData) // get from stored
                 }
             }
             if (event == Lifecycle.Event.ON_STOP) {
-                preferenceHandler?.saveDateData(dataList)
+                doOnStop(dataList)
             }
         }
         lifCycleOwner.lifecycle.addObserver(observer)
@@ -263,11 +250,9 @@ private fun ManageLifeCycle(
 
 private fun addItems(
     dataList: MutableList<CalData>,
-    newItemAll: List<CalData>? = null,
-    newItem: CalData? = null
+    newItemAll: List<CalData>
 ) {
-    newItemAll?.let { dataList.addAll(it) }
-    newItem?.let { dataList.add(0, it) }
+    newItemAll.let { dataList.addAll(0, it) }
 }
 
 private fun updateWidget(
@@ -283,7 +268,6 @@ private fun updateWidget(
                 return@launch
             }
             val glanceId = glanceIds.last()
-            val application = context.applicationContext as MrDuoClockApplication
             updateAppWidgetState(context = context, glanceId = glanceId) {
                 dataList.first().let { data ->
                     it[stringPreferencesKey("calData")] = data.toJSON()
@@ -301,14 +285,8 @@ private fun updateWidget(
     }
 }
 
-@Preview
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun DashboardPreview() {
-    DashBoardScreen(
-        context = LocalContext.current,
-        state = MutableStateFlow(UiState.Empty),
-        preferenceHandler = null,
-        appWidgetId = 0,
-        onEvent = { _, _, _ -> }
-    )
+    DashBoardScreen(state = MutableStateFlow(UiState.Loading), appWidgetId = 0)
 }

@@ -1,7 +1,7 @@
 object AppPath {
     object Versions {
-        const val gradle_version = "7.4.2"
-        const val kotlin_version = "1.8.10"
+        const val gradle_version = "8.0.2"
+        const val kotlin_version = "1.8.22"
         const val support_version = "27.1.1"
         const val klint_version = "10.2.0"
         const val kotlin_serialization_version = "1.8.10"
@@ -29,7 +29,7 @@ object PluginsId {
 
 }
 
-//Repace anddroid Parts
+//Repace android Parts
 object App {
     const val compileSdk = 29
     const val buildToolVersion = "29.0.2"

@@ -1,5 +1,5 @@
 import java.io.FileInputStream
-import java.util.*
+import java.util.Properties
 
 plugins {
     id(BuildPlugins.kotlinSerializationPlugin)
@@ -29,11 +29,11 @@ android {
             storePassword = keystoreProperties["storePassword"] as String
         }
     }
-    compileSdkVersion(33)
+    compileSdk = 33
     defaultConfig {
         applicationId = "com.jk.mr.duo.clock"
-        minSdkVersion(21)
-        targetSdkVersion(33)
+        minSdk = 21
+        targetSdk = 33
         versionCode = 31
         versionName = "2.0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -48,14 +48,20 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.4.8"
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     /* flavorDimensions "mode"
 
     productFlavors {

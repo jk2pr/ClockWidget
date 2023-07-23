@@ -21,28 +21,26 @@ fun Page(
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable () -> Unit
 ) {
-    Surface {
-        Scaffold(
-            topBar = { AppBar(menuItems = menuItems) },
-            floatingActionButton = floatingActionButton,
-            content = { paddingValues ->
-                Box(
-                    modifier = Modifier.padding(paddingValues),
-                    contentAlignment = Alignment.Center
-                ) {
-                    content()
-                }
-            },
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = LocalSnackBarHostState.current,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(Alignment.Bottom)
-                )
+    Scaffold(
+        topBar = { AppBar(menuItems = menuItems) },
+        floatingActionButton = floatingActionButton,
+        content = { paddingValues ->
+            Box(
+                modifier = Modifier.padding(top = paddingValues.calculateTopPadding()),
+                contentAlignment = Alignment.Center
+            ) {
+                content()
             }
-        )
-    }
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = LocalSnackBarHostState.current,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(Alignment.Bottom)
+            )
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

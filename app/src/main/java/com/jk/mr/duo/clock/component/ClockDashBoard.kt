@@ -64,6 +64,6 @@ fun ClockDashBoard() {
 
 @Preview
 @Composable
-fun Preview0() {
+fun ClockDashBoardPreview() {
     ClockDashBoard()
 }

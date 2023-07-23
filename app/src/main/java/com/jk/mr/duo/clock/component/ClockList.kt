@@ -211,9 +211,9 @@ class CalDataPreviewParameterProvider : PreviewParameterProvider<CalData> {
 
 @Preview(showSystemUi = false)
 @Composable
-fun ComposablePreview(@PreviewParameter(CalDataPreviewParameterProvider::class) calData: CalData) {
+fun ClockListPreview(@PreviewParameter(CalDataPreviewParameterProvider::class) calData: CalData) {
     ClockList(
-        dataList = mutableListOf(),
+        dataList = mutableListOf(calData),
         onEditActivated = {}
     )
 }
