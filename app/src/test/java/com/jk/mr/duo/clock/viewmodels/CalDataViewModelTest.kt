@@ -117,4 +117,20 @@ class CalDataViewModelTest {
         }
         coVerify { preferenceHandler.getDateData() }
     }
+
+    @Test
+    fun `doOnStop should call saveDateData with correct parameter`() {
+        // Arrange: Prepare the test data
+        val dataList = listOf(
+            CalData(abbreviation = "", currentCityTimeZoneId = "", flag = "", name = "abc", address = ""),
+            CalData(abbreviation = "", currentCityTimeZoneId = "", flag = "", name = "xyz", address = "")
+            // Add more CalData items as needed
+        )
+        coEvery { preferenceHandler.saveDateData(dataList) } returns Unit
+        // Act: Call the function being tested
+        viewModel.doOnStop(dataList)
+
+        // Assert: Verify that saveDateData was called with the correct parameter
+        coVerify { preferenceHandler.saveDateData(dataList) }
+    }
 }
