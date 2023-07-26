@@ -17,14 +17,12 @@ fun Start(context: AppWidgetConfigureActivity) {
     ) {
         composable(route = AppScreens.DashBoard.route) {
             val viewModel = hiltViewModel<CalDataViewModel>()
-
-            val state = viewModel.uiState
             DashBoardScreen(
-                state,
+                state = viewModel.uiState,
                 onEvent = viewModel::getData,
-                preferenceHandler = viewModel.preferenceHandler,
                 appWidgetId = context.mAppWidgetId,
-                context = context
+                doOnStart = viewModel::doOnStart,
+                doOnStop = viewModel::doOnStop
             )
         }
         composable(route = AppScreens.SearchLocation.route) {

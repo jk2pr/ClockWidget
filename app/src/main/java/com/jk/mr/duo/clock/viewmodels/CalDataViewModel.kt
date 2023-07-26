@@ -2,6 +2,8 @@ package com.jk.mr.duo.clock.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.jk.mr.duo.clock.DispatcherProvider
 import com.jk.mr.duo.clock.data.AddressSearchResult
 import com.jk.mr.duo.clock.data.FlagResponse
@@ -17,35 +19,28 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-interface ComplexViewModelInterface
-
 @HiltViewModel
 class CalDataViewModel @Inject constructor(
     private val dispatchers: DispatcherProvider,
     private val calRepository: CalRepository,
-    var preferenceHandler: PreferenceHandler,
+    private var preferenceHandler: PreferenceHandler,
     private val flags: FlagResponse
-) : ViewModel(), ComplexViewModelInterface {
-
+) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Empty)
     val uiState = _uiState.asStateFlow()
 
-    companion object {
-        val calDataViewModel by lazy {
-            object : ComplexViewModelInterface {
-            }
-        }
-    }
-
-    fun getData(searchResult: AddressSearchResult, lat: String, long: String) =
+    fun getData(searchResult: AddressSearchResult) =
         viewModelScope.launch(dispatchers.main) {
             flow {
                 emit(UiState.Loading)
                 val country = searchResult.searchAddress?.country ?: "Unknown"
                 try {
+                    val lat = searchResult.coordinate.latitude().toString()
+                    val long = searchResult.coordinate.longitude().toString()
                     calRepository.getTimeZone(lat, long)
                         .let {
-                            val localResource = it.resourceSets.getOrNull(0)?.resources?.getOrNull(0)
+                            val localResource =
+                                it.resourceSets.getOrNull(0)?.resources?.getOrNull(0)
                             val timeZoneId =
                                 localResource?.timeZoneAtLocation?.first()?.timeZone?.ianaTimeZoneId
                                     ?: localResource?.timeZone?.ianaTimeZoneId
@@ -78,4 +73,17 @@ class CalDataViewModel @Inject constructor(
                 _uiState.value = it
             }
         }
+
+    fun doOnStart(): List<CalData> {
+        val jsonString = preferenceHandler.getDateData()
+        if (jsonString.isNullOrEmpty()) {
+            return emptyList()
+        }
+        val listType = object : TypeToken<List<CalData>>() {}.type
+        return Gson().fromJson(jsonString, listType)
+    }
+
+    fun doOnStop(dataList: List<CalData>) {
+        preferenceHandler.saveDateData(dataList)
+    }
 }

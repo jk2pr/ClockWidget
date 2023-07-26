@@ -147,9 +147,6 @@ fun SearchLocationScreen() {
 private fun sendBack(localNavController: NavController, addressSearchResult: AddressSearchResult) {
     localNavController.previousBackStackEntry
         ?.savedStateHandle
-        ?.set(
-            "ADDRESS",
-            addressSearchResult
-        )
+        ?.set("ADDRESS", addressSearchResult)
     localNavController.popBackStack()
 }
