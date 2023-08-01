@@ -40,25 +40,13 @@ import com.jk.mr.duo.clock.data.caldata.CalData
 import com.jk.mr.duo.clock.utils.Utils
 import java.util.*
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ClockList(
     isEditActivated: Boolean = false,
-    dataList: MutableList<CalData>,
+    dataList: List<CalData>,
+    setSelected: (CalData) -> Unit,
     onEditActivated: (Boolean) -> Unit
-) {
-    CreateAdapter(
-        dataList = dataList,
-        onEditActivated = onEditActivated,
-        isEditActivated = isEditActivated
-    )
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun CreateAdapter(
-    onEditActivated: (Boolean) -> Unit,
-    dataList: MutableList<CalData>,
-    isEditActivated: Boolean
 ) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         if (dataList.isEmpty()) {
@@ -75,12 +63,10 @@ private fun CreateAdapter(
                 ) { index, item ->
 
                     val backgroundColor =
-                        if (item.isSelected) {
-                            MaterialTheme.colorScheme.primaryContainer
-                        } else if (index == 0) {
-                            MaterialTheme.colorScheme.tertiary
-                        } else {
-                            MaterialTheme.colorScheme.onPrimary
+                        when {
+                            item.isSelected -> MaterialTheme.colorScheme.primaryContainer
+                            index == 0 -> MaterialTheme.colorScheme.tertiary
+                            else -> MaterialTheme.colorScheme.onPrimary
                         }
                     val contentColor = contentColorFor(backgroundColor = backgroundColor)
                     val modifier = Modifier
@@ -94,13 +80,7 @@ private fun CreateAdapter(
                                 onEditActivated(true)
                             }
                         ) {
-                            if (isEditActivated) {
-                                if (item.isSelected) {
-                                    dataList[index] = item.copy(isSelected = false)
-                                } else {
-                                    dataList[index] = item.copy(isSelected = true)
-                                }
-                            }
+                            setSelected(item)
                         }
                     ListItem(calData = item, isEditableActivated = isEditActivated, contentColor = contentColor, modifier = modifier)
                 }
@@ -214,6 +194,7 @@ class CalDataPreviewParameterProvider : PreviewParameterProvider<CalData> {
 fun ClockListPreview(@PreviewParameter(CalDataPreviewParameterProvider::class) calData: CalData) {
     ClockList(
         dataList = mutableListOf(calData),
-        onEditActivated = {}
+        onEditActivated = {},
+        setSelected = {}
     )
 }

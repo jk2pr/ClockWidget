@@ -128,7 +128,7 @@ dependencies {
     // implementation 'androidx.vectordrawable:vectordrawable:1.1.0-alpha01'
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
-    testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation("io.mockk:mockk:1.13.4")
     testImplementation("app.cash.turbine:turbine:0.12.3")
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
