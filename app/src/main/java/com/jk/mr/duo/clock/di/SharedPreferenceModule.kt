@@ -1,4 +1,4 @@
-package com.jk.mr.duo.clock.di.modules
+package com.jk.mr.duo.clock.di
 
 import android.content.Context
 import android.content.SharedPreferences

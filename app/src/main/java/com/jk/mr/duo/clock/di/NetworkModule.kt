@@ -1,4 +1,4 @@
-package com.jk.mr.duo.clock.di.modules
+package com.jk.mr.duo.clock.di
 
 import com.jk.mr.duo.clock.DefaultDispatchers
 import com.jk.mr.duo.clock.DispatcherProvider

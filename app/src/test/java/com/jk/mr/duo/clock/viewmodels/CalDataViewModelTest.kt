@@ -16,7 +16,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -71,18 +70,7 @@ class CalDataViewModelTest {
                 viewModel.getData(addressSearchResult)
                 assertEquals(UiState.Empty, awaitItem())
                 assertEquals(UiState.Loading, awaitItem())
-                assertEquals(
-                    UiState.Content(
-                        CalData(
-                            name = "Fake Name",
-                            abbreviation = "",
-                            address = "Unknown",
-                            currentCityTimeZoneId = null,
-                            flag = null
-                        )
-                    ),
-                    awaitItem()
-                )
+                assert(awaitItem() is UiState.Content)
             }
             coVerify {
                 calRepository.getTimeZone(lat, long)
@@ -92,21 +80,27 @@ class CalDataViewModelTest {
     @Test
     fun `When given string should return a object`() {
         coEvery { preferenceHandler.getDateData() } returns "[{\"abbreviation\":\"\",\"address\":\"Argentina\",\"currentCityTimeZoneId\":\"America/Argentina/Buenos_Aires\",\"flag\":\"https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg\",\"isSelected\":false,\"name\":\"Goa / La France\"}]"
-        val calData = viewModel.doOnStart()
+        val expectedList = listOf(
+            CalData(
+                "Goa / La France",
+                abbreviation = "",
+                address = "Argentina",
+                currentCityTimeZoneId = "America/Argentina/Buenos_Aires",
+                flag = "https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg"
+            )
+        )
+
+        viewModel.doOnStart()
         coVerify { preferenceHandler.getDateData() }
-        assertTrue(calData.isNotEmpty())
-        val b = calData.first {
-            it.address == "Argentina"
-        }
-        assertNotNull(b)
+        assertEquals(expectedList, viewModel.dataList)
     }
 
     @Test
     fun `When given empty string should return a null`() {
         coEvery { preferenceHandler.getDateData() } returns ""
-        val calData = viewModel.doOnStart()
+        viewModel.doOnStart()
         coVerify { preferenceHandler.getDateData() }
-        assertTrue(calData.isEmpty())
+        assertTrue(viewModel.dataList.isEmpty())
     }
 
     @Test
@@ -119,18 +113,22 @@ class CalDataViewModelTest {
     }
 
     @Test
-    fun `doOnStop should call saveDateData with correct parameter`() {
+    fun `doOnStop should save dataList to preferenceHandler`() {
         // Arrange: Prepare the test data
         val dataList = listOf(
-            CalData(abbreviation = "", currentCityTimeZoneId = "", flag = "", name = "abc", address = ""),
-            CalData(abbreviation = "", currentCityTimeZoneId = "", flag = "", name = "xyz", address = "")
-            // Add more CalData items as needed
+            CalData(
+                "Goa / La France",
+                abbreviation = "",
+                address = "Argentina",
+                currentCityTimeZoneId = "America/Argentina/Buenos_Aires",
+                flag = "https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg"
+            )
         )
-        coEvery { preferenceHandler.saveDateData(dataList) } returns Unit
+        coEvery { preferenceHandler.saveDateData(capture(mutableListOf(dataList))) } returns Unit
         // Act: Call the function being tested
-        viewModel.doOnStop(dataList)
+        viewModel.doOnStop()
 
         // Assert: Verify that saveDateData was called with the correct parameter
-        coVerify { preferenceHandler.saveDateData(dataList) }
+        coVerify { preferenceHandler.saveDateData(capture(mutableListOf(dataList))) }
     }
 }

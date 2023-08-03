@@ -1,4 +1,4 @@
-package com.jk.mr.duo.clock.di.modules
+package com.jk.mr.duo.clock.di
 
 import android.content.Context
 import com.google.gson.Gson
@@ -17,7 +17,7 @@ import java.io.IOException
 class RepositoryModule {
 
     @Provides
-    fun getCalRepository(iApi: IApi) = CalRepository(iApi)
+    fun getCalRepository(iApi: IApi): CalRepository = CalRepository(iApi)
 
     @Provides
     fun provideFlagData(@ApplicationContext context: Context): FlagResponse {

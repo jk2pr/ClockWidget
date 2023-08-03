@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,10 +21,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +54,8 @@ import com.jk.mr.duo.clock.component.Page
 import com.jk.mr.duo.clock.data.AddressSearchResult
 import com.jk.mr.duo.clock.data.UiState
 import com.jk.mr.duo.clock.data.caldata.CalData
+import com.jk.mr.duo.clock.data.caldata.DashBoardScreenArgs
+import com.jk.mr.duo.clock.extenstions.hasSwappableItem
 import com.jk.mr.duo.clock.extenstions.toast
 import com.jk.mr.duo.clock.navigation.AppScreens
 import com.jk.mr.duo.clock.ui.AppWidgetConfigureActivity
@@ -61,89 +63,33 @@ import com.jk.mr.duo.clock.utils.Constants.TAG
 import com.mapbox.search.result.SearchResult
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.util.Collections
 
 private var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
 @Composable
-fun DashBoardScreen(
-    state: StateFlow<UiState>,
-    doOnStart: () -> List<CalData> = { emptyList() },
-    doOnStop: (dataList: List<CalData>) -> Unit = {},
-    onEvent: (AddressSearchResult) -> (Unit) = {},
-    context: Context = LocalContext.current,
-    appWidgetId: Int
-) {
-    var isEditActivated: Boolean by remember { mutableStateOf(false) }
-
-    val dataList = remember { mutableStateListOf<CalData>() }
+fun DashBoardScreen(args: DashBoardScreenArgs) {
+    var isEditActivated: Boolean by rememberSaveable { mutableStateOf(false) }
+    val context: Context = LocalContext.current
     val navController: NavController = LocalNavController.current
     val snackBarHostState = LocalSnackBarHostState.current
 
     val scope = rememberCoroutineScope()
     val lifCycleOwner = LocalLifecycleOwner.current
 
+    val dataList = args.dataList
     Page(
         menuItems = mutableListOf(
-            DropdownMenuItemContent {
-                if (dataList.size > 1) {
-                    IconButton(onClick = {
-                        isEditActivated = !isEditActivated
-                    }) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.baseline_edit_24),
-                            contentDescription = "Theme Icon"
-                        )
-                    }
+            createMenus(
+                dataList = dataList,
+                isEditActivated = isEditActivated,
+                onRemove = args.onRemove,
+                arrange = args.arrange,
+                onEditChange = {
+                    isEditActivated = it
+                    // if (!isEditActivated) args.onDone
                 }
-                if (!dataList.none { it.isSelected }) {
-                    IconButton(onClick = {
-                        if (dataList.size > 1 && !dataList.first().isSelected) {
-                            dataList.removeAll { it.isSelected }
-                            dataList.reset(context = context)
-                            isEditActivated = false
-                            scope.launch {
-                                snackBarHostState.showSnackbar("Deleted successfully")
-                            }
-                        } else {
-                            scope.launch {
-                                snackBarHostState.showSnackbar("Can't delete secondary clock")
-                            }
-                        }
-                    }) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.baseline_delete_outline_24),
-                            contentDescription = "Theme Icon"
-                        )
-                    }
-                }
-                val filtered = dataList.filter { it.isSelected }
-                if (filtered.size == 1 && !dataList.first().isSelected) {
-                    IconButton(onClick = {
-                        Collections.swap(dataList, 0, dataList.indexOf(filtered.first()))
-                        dataList.reset(context = context)
-                        isEditActivated = false
-                    }) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.baseline_vertical_align_top_24),
-                            contentDescription = "Theme Icon"
-                        )
-                    }
-                }
-                if (isEditActivated) {
-                    IconButton(onClick = {
-                        isEditActivated = false
-                        dataList.reset(context = context)
-                    }) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.twotone_done_24),
-                            contentDescription = "Theme Icon"
-                        )
-                    }
-                }
-            }
+            )
         ),
         floatingActionButton = {
             FloatingActionButton(
@@ -154,23 +100,16 @@ fun DashBoardScreen(
             )
         }
     ) {
-        mAppWidgetId = appWidgetId
-        navController.currentBackStackEntry?.savedStateHandle
-            ?.let {
-                LaunchedEffect(key1 = it) {
-                    it.getLiveData<AddressSearchResult>("ADDRESS")
-                        .observe(lifCycleOwner) { result ->
-                            onEvent(result)
-                            it.remove<SearchResult>("ADDRESS")
-                        }
-                }
-            }
-
-        ManageLifeCycle(
-            dataList = dataList,
+        mAppWidgetId = args.appWidgetId
+        HandleOnResult(
+            navController = navController,
             lifCycleOwner = lifCycleOwner,
-            doOnStart = doOnStart,
-            doOnStop = doOnStop
+            args = args.onEvent
+        )
+        ManageLifeCycle(
+            lifCycleOwner = lifCycleOwner,
+            onStart = args.onStart,
+            onStop = args.onStop
         )
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -182,27 +121,26 @@ fun DashBoardScreen(
                 dataList = dataList,
                 onEditActivated = {
                     isEditActivated = it
+                },
+                setSelected = {
+                    if (isEditActivated) {
+                        args.onSelect(it)
+                    }
                 }
             )
         }
-        when (val result = state.collectAsState().value) {
+        when (val result = args.state.collectAsState().value) {
             is UiState.Content ->
-                (result.data as CalData).let {
-                    LaunchedEffect(key1 = it) {
-                        if (dataList.contains(it)) {
-                            context.toast("Already added location, Please try with different location")
-                        } else {
-                            addItems(dataList = dataList, newItemAll = listOf(it))
-                            updateWidget(
-                                context = context,
-                                dataList = dataList
-                            )
-                        }
+                (result.data as String).let {
+                    LaunchedEffect(key1 = result.tag) {
+                        context.toast(it)
+                        isEditActivated = false
+                        updateWidget(context = context, calData = dataList.first())
                     }
                 }
 
             is UiState.Error ->
-                LaunchedEffect(key1 = Unit) {
+                LaunchedEffect(key1 = result.tag) {
                     scope.launch {
                         snackBarHostState.showSnackbar(
                             message = result.message,
@@ -216,29 +154,83 @@ fun DashBoardScreen(
         }
     }
 }
-fun MutableList<CalData>.reset(context: Context) {
-    forEach { it.isSelected = false }
-    updateWidget(context = context, dataList = this)
+
+@Composable
+fun createMenus(
+    dataList: List<CalData>,
+    isEditActivated: Boolean,
+    onRemove: () -> Unit,
+    arrange: (CalData) -> Unit,
+    onEditChange: (Boolean) -> Unit
+): DropdownMenuItemContent {
+    return DropdownMenuItemContent {
+        val icon = if (isEditActivated) R.drawable.twotone_done_24 else R.drawable.baseline_edit_24
+        IconButton(
+            onClick = { onEditChange(!isEditActivated) },
+            content = {
+                Icon(
+                    contentDescription = "Edit icon",
+                    imageVector = ImageVector.vectorResource(id = icon)
+                )
+            }
+        )
+
+        AnimatedVisibility(visible = !dataList.none { it.isSelected } && isEditActivated) {
+            IconButton(
+                onClick = { onRemove() },
+                content = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.baseline_delete_outline_24),
+                        contentDescription = "Delete Icon"
+                    )
+                }
+            )
+        }
+        val swappableItem = dataList.hasSwappableItem()
+        AnimatedVisibility(visible = swappableItem != null && isEditActivated) {
+            IconButton(
+                onClick = { swappableItem?.let { arrange(it) } },
+                content = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.baseline_vertical_align_top_24),
+                        contentDescription = "Theme Icon"
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun HandleOnResult(
+    navController: NavController,
+    lifCycleOwner: LifecycleOwner,
+    args: (AddressSearchResult) -> Unit
+) {
+    navController.currentBackStackEntry?.savedStateHandle
+        ?.let {
+            LaunchedEffect(key1 = it) {
+                it.getLiveData<AddressSearchResult>("ADDRESS")
+                    .observe(lifCycleOwner) { result ->
+                        args(result)
+                        it.remove<SearchResult>("ADDRESS")
+                    }
+            }
+        }
 }
 
 @Composable
 private fun ManageLifeCycle(
-    dataList: MutableList<CalData>,
     lifCycleOwner: LifecycleOwner,
-    doOnStart: () -> List<CalData>,
-    doOnStop: (dataList: List<CalData>) -> Unit
+    onStart: () -> Unit,
+    onStop: () -> Unit
 ) {
     DisposableEffect(key1 = lifCycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_START) {
-                val storedData = doOnStart()
-                if (storedData.isNotEmpty()) {
-                    dataList.clear()
-                    addItems(dataList = dataList, newItemAll = storedData) // get from stored
-                }
-            }
-            if (event == Lifecycle.Event.ON_STOP) {
-                doOnStop(dataList)
+            when (event) {
+                Lifecycle.Event.ON_START -> onStart()
+                Lifecycle.Event.ON_STOP -> onStop()
+                else -> {}
             }
         }
         lifCycleOwner.lifecycle.addObserver(observer)
@@ -248,37 +240,24 @@ private fun ManageLifeCycle(
     }
 }
 
-private fun addItems(
-    dataList: MutableList<CalData>,
-    newItemAll: List<CalData>
-) {
-    newItemAll.let { dataList.addAll(0, it) }
-}
-
-private fun updateWidget(
-    context: Context,
-    dataList: MutableList<CalData>
-) {
+private fun updateWidget(context: Context, calData: CalData) {
     try {
         MainScope().launch {
             val glanceAppWidgetManager = GlanceAppWidgetManager(context)
             val glanceIds = glanceAppWidgetManager.getGlanceIds(AppWidget::class.java)
             Log.d(TAG, "updateClock: glanceIds : $glanceIds")
-            if (glanceIds.isEmpty()) {
-                return@launch
-            }
-            val glanceId = glanceIds.last()
-            updateAppWidgetState(context = context, glanceId = glanceId) {
-                dataList.first().let { data ->
-                    it[stringPreferencesKey("calData")] = data.toJSON()
+            if (glanceIds.isNotEmpty()) {
+                val glanceId = glanceIds.last()
+                updateAppWidgetState(context = context, glanceId = glanceId) {
+                    it[stringPreferencesKey("calData")] = calData.toJSON()
                 }
-            }
-            val glanceAppWidget: GlanceAppWidget = AppWidget()
+                val glanceAppWidget: GlanceAppWidget = AppWidget()
 
-            val resultValue =
-                Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, glanceId.toString())
-            (context as? AppWidgetConfigureActivity)?.setResult(Activity.RESULT_OK, resultValue)
-            glanceAppWidget.updateAll(context)
+                val resultValue =
+                    Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, glanceId.toString())
+                (context as? AppWidgetConfigureActivity)?.setResult(Activity.RESULT_OK, resultValue)
+                glanceAppWidget.updateAll(context)
+            }
         }
     } catch (e: IllegalArgumentException) {
         Log.d(TAG, "No GlanceId found for this appWidgetId.")
@@ -288,5 +267,10 @@ private fun updateWidget(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun DashboardPreview() {
-    DashBoardScreen(state = MutableStateFlow(UiState.Loading), appWidgetId = 0)
+    DashBoardScreen(
+        args = DashBoardScreenArgs(
+            state = MutableStateFlow(UiState.Loading),
+            dataList = listOf()
+        )
+    )
 }
