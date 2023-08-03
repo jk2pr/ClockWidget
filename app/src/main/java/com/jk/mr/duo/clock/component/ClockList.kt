@@ -64,8 +64,8 @@ fun ClockList(
 
                     val backgroundColor =
                         when {
-                            item.isSelected -> MaterialTheme.colorScheme.primaryContainer
-                            index == 0 -> MaterialTheme.colorScheme.tertiary
+                            item.isSelected -> MaterialTheme.colorScheme.tertiary
+                            index == 0 -> MaterialTheme.colorScheme.primaryContainer
                             else -> MaterialTheme.colorScheme.onPrimary
                         }
                     val contentColor = contentColorFor(backgroundColor = backgroundColor)
