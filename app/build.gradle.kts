@@ -38,12 +38,12 @@ android {
         versionName = "2.0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        val MAPBOX_ACCESS_TOKEN: String by project
-        val BING_MAP_KEY: String by project
-        val MICROSOFT_TIMEZONE_BASE_URL: String by project
-        buildConfigField("String", "MAPBOX_ACCESS_TOKEN", MAPBOX_ACCESS_TOKEN)
-        buildConfigField("String", "BING_MAP_KEY", BING_MAP_KEY)
-        buildConfigField("String", "MICROSOFT_TIMEZONE_BASE_URL", MICROSOFT_TIMEZONE_BASE_URL)
+        val mapboxAccessToken: String by project
+        val bingApiKey: String by project
+        val microsoftTimeZoneBaseURL: String by project
+        buildConfigField("String", "MAPBOX_ACCESS_TOKEN", mapboxAccessToken)
+        buildConfigField("String", "BING_MAP_KEY", bingApiKey)
+        buildConfigField("String", "MICROSOFT_TIMEZONE_BASE_URL", microsoftTimeZoneBaseURL)
     }
     buildFeatures {
         compose = true
@@ -122,7 +122,7 @@ dependencies {
      }*/
     implementation("com.mapbox.search:mapbox-search-android-ui:1.0.0-rc.3")
 
-    implementation("androidx.compose.ui:ui-viewbinding:1.4.1")
+    implementation("androidx.compose.ui:ui-viewbinding:1.4.3")
     // implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
     //  implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     // implementation 'androidx.vectordrawable:vectordrawable:1.1.0-alpha01'
@@ -135,22 +135,22 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     implementation("androidx.cardview:cardview:1.0.0")
-    implementation("com.google.android.material:material:1.8.0")
+    implementation("com.google.android.material:material:1.9.0")
 
     // SVG
-    implementation("io.coil-kt:coil-compose:2.2.1")
+    implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("io.coil-kt:coil-svg:2.2.1")
 
     // (Recommended) Add Analytics
 
     // compose
-    implementation("androidx.compose.ui:ui:1.4.1")
-    implementation("androidx.compose.material3:material3-android:1.1.0-beta02")
-    implementation("androidx.activity:activity-compose:1.7.0")
-    implementation("androidx.navigation:navigation-compose:2.5.3")
+    implementation("androidx.compose.ui:ui:1.4.3")
+    implementation("androidx.compose.material3:material3:1.1.1")
+    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.navigation:navigation-compose:2.6.0")
     // Preview
-    debugImplementation("androidx.compose.ui:ui-tooling:1.4.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.4.1")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.4.3")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
 
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 

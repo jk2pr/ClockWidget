@@ -11,12 +11,12 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://jitpack.io")
-        val MAPBOX_DOWNLOADS_TOKEN: String by settings
+        val mapBoxDownloadToken: String by settings
         maven {
             url = uri("https://api.mapbox.com/downloads/v2/releases/maven")
             credentials {
                 username = "mapbox"
-                password = MAPBOX_DOWNLOADS_TOKEN
+                password = mapBoxDownloadToken
             }
             authentication {
                 create<BasicAuthentication>("basic")
