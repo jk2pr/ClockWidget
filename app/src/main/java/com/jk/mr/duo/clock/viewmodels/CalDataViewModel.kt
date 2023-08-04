@@ -10,7 +10,6 @@ import com.jk.mr.duo.clock.data.AddressSearchResult
 import com.jk.mr.duo.clock.data.FlagResponse
 import com.jk.mr.duo.clock.data.UiState
 import com.jk.mr.duo.clock.data.caldata.CalData
-import com.jk.mr.duo.clock.extenstions.reset
 import com.jk.mr.duo.clock.repositories.CalRepository
 import com.jk.mr.duo.clock.utils.PreferenceHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -115,7 +114,7 @@ class CalDataViewModel @Inject constructor(
                 } else {
                     emit(UiState.Error("Can't delete secondary clock"))
                 }
-                onDone()
+                resetDataList()
             }.flowOn(dispatchers.main).collect {
                 _uiState.value = it
             }
@@ -129,11 +128,34 @@ class CalDataViewModel @Inject constructor(
     fun doOnStop() =
         preferenceHandler.saveDateData(_dataList)
 
-    fun arrange(calData: CalData) =
-        Collections.swap(_dataList, 0, _dataList.indexOf(calData))
+    fun arrange(calData: CalData) = viewModelScope.launch(dispatchers.main) {
+        flow {
+            emit(UiState.Loading)
+            if (_dataList.isNotEmpty()) {
+                Collections.swap(_dataList, 0, _dataList.indexOf(calData))
+            }
+            emit(UiState.Content("Moved to top"))
+            resetDataList()
+        }.flowOn(dispatchers.main).collect {
+            _uiState.value = it
+        }
+    }
 
-    fun onDone() =
-        _dataList.reset()
+    fun onDone() = viewModelScope.launch {
+        flow {
+            emit(UiState.Loading)
+            resetDataList()
+            emit(UiState.Content("Done"))
+        }.flowOn(dispatchers.main).collect {
+            _uiState.value = it
+        }
+    }
+
+    private fun resetDataList() {
+        for (index in 0 until _dataList.size) {
+            _dataList[index] = _dataList[index].copy(isSelected = false)
+        }
+    }
 
     fun resetState() {
         _uiState.value = UiState.Empty

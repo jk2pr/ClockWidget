@@ -131,4 +131,52 @@ class CalDataViewModelTest {
         // Assert: Verify that saveDateData was called with the correct parameter
         coVerify { preferenceHandler.saveDateData(capture(mutableListOf(dataList))) }
     }
+
+    @Test
+    fun `arrange function moves CalData to top`() = runTest { // Given
+        val dataList = listOf(
+            CalData(
+                "Goa / La France",
+                abbreviation = "",
+                address = "Argentina",
+                currentCityTimeZoneId = "America/Argentina/Buenos_Aires",
+                flag = "https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg"
+            ),
+            CalData(
+                "cal 3",
+                abbreviation = "",
+                address = "bhar",
+                currentCityTimeZoneId = "America/Argentina/Buenos_Aires",
+                flag = "https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_India.svg"
+            )
+        )
+        val itemMoveToTop = dataList.last()
+
+        // coEvery { viewModel.swap(calData = itemMoveToTop) } returns Unit
+
+        viewModel.arrange(itemMoveToTop) // Replace this with an appropriate function call to mock
+
+        assertTrue(viewModel.uiState.value == UiState.Empty)
+
+        viewModel.uiState.test {
+            assertEquals(UiState.Empty, awaitItem())
+            assertEquals(UiState.Loading, awaitItem())
+            assert(awaitItem() is UiState.Content)
+        }
+
+        // Make any additional assertions based on the expected behavior of your function
+    }
+
+    @Test
+    fun `onDone function should reset all data`() = runTest {
+        viewModel.onDone() // Replace this with an appropriate function call to mock
+
+        assertTrue(viewModel.uiState.value == UiState.Empty)
+
+        viewModel.uiState.test {
+            assertEquals(UiState.Empty, awaitItem())
+            assertEquals(UiState.Loading, awaitItem())
+            assert(awaitItem() is UiState.Content)
+        }
+    }
 }
