@@ -4,7 +4,7 @@ plugins{
     `kotlin-dsl`
 }
 repositories{
-    jcenter()
+    mavenCentral()
 }
 
 //Let mddify Dependency.kt file and project level build gradel file  with kts extension
