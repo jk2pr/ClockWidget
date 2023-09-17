@@ -93,5 +93,7 @@ object BuildPlugins {
     const val kotlinAndroidPlugin = "kotlin-android"
     const val kotlinKaptPlugin = "kotlin-kapt"
     const val ktlintPlugin = "org.jlleitschuh.gradle.ktlint"
+    const val firebasePerformancePlugin = "com.google.firebase.firebase-perf"
+    const val googleServicesPlugin = "com.google.gms.google-services"
 
 }
