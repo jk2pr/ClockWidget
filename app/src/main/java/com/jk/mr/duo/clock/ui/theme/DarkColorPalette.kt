@@ -53,7 +53,6 @@ fun ClockTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
-    val surfaceColor = MaterialTheme.colorScheme.surface
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {

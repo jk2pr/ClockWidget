@@ -8,6 +8,8 @@ plugins {
     id(BuildPlugins.kotlinAndroidPlugin)
     id(BuildPlugins.kotlinKaptPlugin)
     id(BuildPlugins.ktlintPlugin)
+    id(BuildPlugins.firebasePerformancePlugin)
+    id(BuildPlugins.googleServicesPlugin)
 }
 
 val keystoreProperties = Properties().apply {
@@ -29,11 +31,11 @@ android {
             storePassword = keystoreProperties["storePassword"] as String
         }
     }
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId = "com.jk.mr.duo.clock"
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 31
         versionName = "2.0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -122,7 +124,7 @@ dependencies {
      }*/
     implementation("com.mapbox.search:mapbox-search-android-ui:1.0.0-rc.3")
 
-    implementation("androidx.compose.ui:ui-viewbinding:1.4.3")
+    implementation("androidx.compose.ui:ui-viewbinding:1.5.1")
     // implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
     //  implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     // implementation 'androidx.vectordrawable:vectordrawable:1.1.0-alpha01'
@@ -144,15 +146,19 @@ dependencies {
     // (Recommended) Add Analytics
 
     // compose
-    implementation("androidx.compose.ui:ui:1.4.3")
+    implementation("androidx.compose.ui:ui:1.5.1")
     implementation("androidx.compose.material3:material3:1.1.1")
     implementation("androidx.activity:activity-compose:1.7.2")
-    implementation("androidx.navigation:navigation-compose:2.6.0")
+    implementation("androidx.navigation:navigation-compose:2.7.2")
     // Preview
-    debugImplementation("androidx.compose.ui:ui-tooling:1.4.3")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.5.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.1")
 
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    // Firebase  Performance metric
+    implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
+    implementation("com.google.firebase:firebase-perf-ktx")
 
     // Constraint Layout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
