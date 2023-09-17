@@ -156,10 +156,9 @@ dependencies {
 
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
-    //Firebase  Performance metric
+    // Firebase  Performance metric
     implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
     implementation("com.google.firebase:firebase-perf-ktx")
-
 
     // Constraint Layout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
