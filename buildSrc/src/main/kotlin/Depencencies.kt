@@ -46,7 +46,7 @@ object Libraries {
     object Versions {
 
         const val hilt_version = "2.43.2"
-        const val glance_version = "1.0.0-alpha03"
+        const val glance_version = "1.0.0"
         const val compose_version = "1.4.0"
         const val appcompat_version = "1.6.1"
         const val ktx_version = "2.5.3"
