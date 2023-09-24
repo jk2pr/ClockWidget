@@ -12,7 +12,6 @@ import android.widget.RemoteViews
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
@@ -20,14 +19,31 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.glance.*
+import androidx.glance.BitmapImageProvider
+import androidx.glance.GlanceId
+import androidx.glance.GlanceModifier
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionParametersOf
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
-import androidx.glance.appwidget.*
-import androidx.glance.appwidget.unit.ColorProvider
-import androidx.glance.layout.*
+import androidx.glance.appwidget.AndroidRemoteViews
+import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.glance.appwidget.appWidgetBackground
+import androidx.glance.appwidget.cornerRadius
+import androidx.glance.appwidget.provideContent
+import androidx.glance.appwidget.updateAll
+import androidx.glance.background
+import androidx.glance.color.ColorProvider
+import androidx.glance.currentState
+import androidx.glance.layout.Alignment
+import androidx.glance.layout.Column
+import androidx.glance.layout.Row
+import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxHeight
+import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.padding
+import androidx.glance.layout.width
 import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.glance.text.Text
@@ -39,12 +55,8 @@ import com.jk.mr.duo.clock.utils.Constants
 import com.jk.mr.duo.clock.utils.Utils
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.TimeZone
 
-/**
- * Implementation of App Widget functionality.
- * App Widget Configuration implemented in [AppWidgetConfigureActivity]
- */
 class AppWidget : GlanceAppWidget() {
 
     override val stateDefinition: GlanceStateDefinition<*> = PreferencesGlanceStateDefinition
@@ -53,51 +65,84 @@ class AppWidget : GlanceAppWidget() {
     private val currentTimeZoneId: String = TimeZone.getDefault().id
     private val cornerRadius = 8
     private val backgroundAlpha = 0.5f
-
-    @Composable
-    override fun Content() {
-        val packageName = LocalContext.current.packageName
+    private val currentQuoteKey = stringPreferencesKey("calData")
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        val packageName = context.packageName
         val remoteViews0 = RemoteViews(packageName, R.layout.text_clock_widget)
         val remoteViews1 = RemoteViews(packageName, R.layout.text_clock_widget)
-        val prefs = currentState<Preferences>()
-        val calDataString = prefs[stringPreferencesKey("calData")]
 
-        /* val currentNightMode =
-             LocalContext.current.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-         val isNight = currentNightMode == UI_MODE_NIGHT_YES
-       */
-
-        if (calDataString != null) {
-            val calData = Gson().fromJson(calDataString, CalData::class.java)
-            val selectedTimeZone = calData.currentCityTimeZoneId ?: TimeZone.getDefault().id
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = GlanceModifier
-                    .clickable(
-                        actionStartActivity<AppWidgetConfigureActivity>(
-                            parameters = actionParametersOf(
-                                // Fake parameter
-                                ActionParameters.Key<Double>("") to 2.0
+        provideContent {
+            val preferences = currentState<Preferences>()
+            val calDataString = preferences[currentQuoteKey]
+            if (calDataString != null) {
+                val calData = Gson().fromJson(calDataString, CalData::class.java)
+                val selectedTimeZone = calData.currentCityTimeZoneId ?: TimeZone.getDefault().id
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = GlanceModifier
+                        .clickable(
+                            actionStartActivity<AppWidgetConfigureActivity>(
+                                parameters = actionParametersOf(
+                                    // Fake parameter
+                                    ActionParameters.Key<Double>("") to 2.0
+                                )
                             )
+                        ).appWidgetBackground().cornerRadiusCompat(
+                            cornerRadius = cornerRadius,
+                            color = MaterialTheme.colorScheme.primary.toArgb(),
+                            backgroundAlpha = backgroundAlpha
                         )
-                    ).appWidgetBackground().cornerRadiusCompat(
-                        cornerRadius = cornerRadius,
-                        color = MaterialTheme.colorScheme.primary.toArgb(),
-                        backgroundAlpha = backgroundAlpha
-                    )
-                    .fillMaxSize()
-                    .padding(8.dp)
-            ) {
-                Column(
-                    modifier = GlanceModifier.defaultWeight(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalAlignment = Alignment.CenterVertically
+                        .fillMaxSize()
+                        .padding(8.dp)
                 ) {
-                    AndroidRemoteViews(
-                        remoteViews = remoteViews0,
-                        containerViewId = View.NO_ID,
-                        content = {
-                            remoteViews0.apply {
+                    Column(
+                        modifier = GlanceModifier.defaultWeight(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AndroidRemoteViews(
+                            remoteViews = remoteViews0,
+                            containerViewId = View.NO_ID,
+                            content = {
+                                remoteViews0.apply {
+                                    setCharSequence(
+                                        R.id.c_clock,
+                                        Constants.SET_FORMAT24HOUR,
+                                        Utils.get24HoursFormat()
+                                    )
+                                    setCharSequence(
+                                        R.id.c_clock,
+                                        Constants.SET_FORMAT12HOUR,
+                                        Utils.get12HoursFormat()
+                                    )
+                                    setString(
+                                        R.id.c_clock,
+                                        Constants.SET_TIME_ZONE,
+                                        currentTimeZoneId
+                                    )
+                                }
+                            }
+                        )
+                        Text(
+                            style = TextStyle(color = colorProvider),
+                            text = calData.displayTimeZoneCityById().toString()
+                        )
+                    }
+                    // Separator
+                    Spacer(
+                        modifier = GlanceModifier.width(2.dp).fillMaxHeight()
+                            .background(colorProvider)
+                    )
+                    Column(
+                        modifier = GlanceModifier.defaultWeight(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AndroidRemoteViews(
+                            remoteViews = remoteViews1,
+                            containerViewId = View.NO_ID
+                        ) {
+                            remoteViews1.apply {
                                 setCharSequence(
                                     R.id.c_clock,
                                     Constants.SET_FORMAT24HOUR,
@@ -111,53 +156,17 @@ class AppWidget : GlanceAppWidget() {
                                 setString(
                                     R.id.c_clock,
                                     Constants.SET_TIME_ZONE,
-                                    currentTimeZoneId
+                                    TimeZone.getTimeZone(selectedTimeZone).id
                                 )
                             }
                         }
-                    )
-                    Text(
-                        style = TextStyle(color = colorProvider),
-                        text = calData.displayTimeZoneCityById().toString()
-                    )
-                }
-                // Separator
-                Spacer(
-                    modifier = GlanceModifier.width(2.dp).fillMaxHeight().background(colorProvider)
-                )
-                Column(
-                    modifier = GlanceModifier.defaultWeight(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AndroidRemoteViews(
-                        remoteViews = remoteViews1,
-                        containerViewId = View.NO_ID
-                    ) {
-                        remoteViews1.apply {
-                            setCharSequence(
-                                R.id.c_clock,
-                                Constants.SET_FORMAT24HOUR,
-                                Utils.get24HoursFormat()
-                            )
-                            setCharSequence(
-                                R.id.c_clock,
-                                Constants.SET_FORMAT12HOUR,
-                                Utils.get12HoursFormat()
-                            )
-                            setString(
-                                R.id.c_clock,
-                                Constants.SET_TIME_ZONE,
-                                TimeZone.getTimeZone(selectedTimeZone).id
-                            )
-                        }
+                        Text(
+                            style = TextStyle(color = colorProvider),
+                            text = calData.displayTimeZoneCityById(
+                                calData.currentCityTimeZoneId ?: currentTimeZoneId
+                            ).toString()
+                        )
                     }
-                    Text(
-                        style = TextStyle(color = colorProvider),
-                        text = calData.displayTimeZoneCityById(
-                            calData.currentCityTimeZoneId ?: currentTimeZoneId
-                        ).toString()
-                    )
                 }
             }
         }
