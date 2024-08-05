@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.ktlin)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.firebase.crashlytics)
-    //  alias(libs.plugins.ksp)
 
 }
 
