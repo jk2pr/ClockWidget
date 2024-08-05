@@ -69,13 +69,6 @@ fun ClockList(
                     items = dataList,
                     key = { _, data -> data.toString() }
                 ) { index, item ->
-
-                    val backgroundColor =
-                        when {
-                            //  item.isSelected -> MaterialTheme.colorScheme.tertiary
-                            index == 0 -> MaterialTheme.colorScheme.surfaceVariant
-                            else -> MaterialTheme.colorScheme.surface
-                        }
                     val modifier = Modifier
                         .fillMaxWidth()
                         .animateItemPlacement()
