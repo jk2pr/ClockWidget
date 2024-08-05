@@ -1,4 +1,4 @@
-package com.jk.mr.duo.clock
+package com.hoppers.duoclock
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi

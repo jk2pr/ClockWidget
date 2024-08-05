@@ -2,14 +2,15 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    id(BuildPlugins.kotlinSerializationPlugin)
-    id(BuildPlugins.hiltPlugin)
-    id(BuildPlugins.androidApplicationPlugin)
-    id(BuildPlugins.kotlinAndroidPlugin)
-    id(BuildPlugins.kotlinKaptPlugin)
-    id(BuildPlugins.ktlintPlugin)
-    id(BuildPlugins.firebasePerformancePlugin)
-    id(BuildPlugins.googleServicesPlugin)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.kotlinx.serializtion)
+    alias(libs.plugins.ktlin)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.firebase.crashlytics)
+    //  alias(libs.plugins.ksp)
+
 }
 
 val keystoreProperties = Properties().apply {
@@ -34,7 +35,7 @@ android {
     compileSdk = 34
     defaultConfig {
         applicationId = "com.jk.mr.duo.clock"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 34
         versionCode = 31
         versionName = "2.0.1"
@@ -43,39 +44,32 @@ android {
         val mapboxAccessToken: String by project
         val bingApiKey: String by project
         val microsoftTimeZoneBaseURL: String by project
+        val openStreetMap: String by project
         buildConfigField("String", "MAPBOX_ACCESS_TOKEN", mapboxAccessToken)
         buildConfigField("String", "BING_MAP_KEY", bingApiKey)
         buildConfigField("String", "MICROSOFT_TIMEZONE_BASE_URL", microsoftTimeZoneBaseURL)
+        buildConfigField("String", "OPENSTREETMAP", openStreetMap)
     }
     buildFeatures {
         compose = true
         viewBinding = true
         buildConfig = true
     }
+    packaging {
+        resources {
+            excludes += listOf(
+                "/META-INF/{AL2.0,LGPL2.1}",
+            )
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.8"
     }
 
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
-    /* flavorDimensions "mode"
-
-    productFlavors {
-        free {
-            applicationIdSuffix ".free"
-            dimension "mode"
-        }
-        paid {
-            applicationIdSuffix ".paid"
-            dimension "mode"
-        }
-    }*/
 
     buildTypes {
         debug {
@@ -93,76 +87,53 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.crashlytics)
 
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-
-    // hilt
-    implementation(Libraries.Lib.hilt)
-    implementation(Libraries.Lib.glance)
-    implementation(Libraries.Lib.hilt_lint_aar)
-    kapt(Libraries.Lib.hilt_compiler)
-
-    implementation(Libraries.Lib.appcompat)
-    implementation(Libraries.Lib.fragmentKtx)
-    implementation(Libraries.Lib.navigationUiKtx)
-    //   implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-
-    // Json Converter
-    implementation(Libraries.Lib.retrofitGsonConvertor)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.constraintlayout.compose)
 
     // Ktor Client
-    implementation(Libraries.Lib.ktorClientAndroid)
-    implementation(Libraries.Lib.ktorContentNegotioation)
-    implementation(Libraries.Lib.ktorKotlinxJson)
-    implementation(Libraries.Lib.kotlinxSerialization)
-    implementation(Libraries.Lib.ktorClientLoggging)
+    implementation(libs.ktor.clientloggging)
+    implementation(libs.ktor.content.negotioation)
+    implementation(libs.ktor.kotlinx.json)
+    //implementation(libs.kotlinx.serialization)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.auth)
 
-    // implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v7:0.7.0'
-    // implementation "com.mapbox.search:autofill:1.0.0-beta.45"
-    /* implementation('com.mapbox.mapboxsdk:mapbox-android-sdk:7.0.0@aar') {
-         transitive = true
-     }*/
-    implementation("com.mapbox.search:mapbox-search-android-ui:1.0.0-rc.3")
+    //Koin
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.navigation)
+    implementation(libs.koin.androidx.compose)
 
-    implementation("androidx.compose.ui:ui-viewbinding:1.5.1")
-    // implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
-    //  implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    // implementation 'androidx.vectordrawable:vectordrawable:1.1.0-alpha01'
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
-    testImplementation("io.mockk:mockk:1.13.4")
-    testImplementation("app.cash.turbine:turbine:0.12.3")
+    //implementation("androidx.datastore:datastore-preferences:1.1.1")
 
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
 
-    implementation("androidx.cardview:cardview:1.0.0")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation(libs.coil)
+    implementation(libs.coil.svg)
 
-    // SVG
-    implementation("io.coil-kt:coil-compose:2.2.2")
-    implementation("io.coil-kt:coil-svg:2.2.1")
+    //implementation(libs.mapbox.search.android.ui)
 
-    // (Recommended) Add Analytics
-
-    // compose
-    implementation("androidx.compose.ui:ui:1.5.1")
-    implementation("androidx.compose.material3:material3:1.1.1")
-    implementation("androidx.activity:activity-compose:1.7.2")
-    implementation("androidx.navigation:navigation-compose:2.7.2")
-    // Preview
-    debugImplementation("androidx.compose.ui:ui-tooling:1.5.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.5.1")
-
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-
-    // Firebase  Performance metric
-    implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
-    implementation("com.google.firebase:firebase-perf-ktx")
-
-    // Constraint Layout
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
     /* configurations{
          all*.exclude group: 'com.google.guava', module: 'listenablefuture'
      }*/
