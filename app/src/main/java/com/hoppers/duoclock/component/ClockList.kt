@@ -22,7 +22,6 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,9 +56,9 @@ fun ClockList(
     onEditActivated: (Boolean) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        if (dataList.isEmpty())
+        if (dataList.isEmpty()) {
             ShowEmpty()
-        else {
+        } else {
             LazyColumn(
                 verticalArrangement = Arrangement.Top,
                 modifier = Modifier
@@ -77,7 +76,6 @@ fun ClockList(
                             index == 0 -> MaterialTheme.colorScheme.surfaceVariant
                             else -> MaterialTheme.colorScheme.surface
                         }
-                    val contentColor = contentColorFor(backgroundColor = backgroundColor)
                     val modifier = Modifier
                         .fillMaxWidth()
                         .animateItemPlacement()
@@ -89,11 +87,11 @@ fun ClockList(
                         ) {
                             setSelected(item)
                         }
-                   if (index == 0) HorizontalDivider()
+                    if (index == 0) HorizontalDivider()
                     ListItem(
                         modifier = modifier,
                         calData = item,
-                        isEditableActivated = isEditActivated,
+                        isEditableActivated = isEditActivated
                     )
 
                     HorizontalDivider()
@@ -113,7 +111,7 @@ private fun ListItem(
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
-            //.height(102.dp)
+            // .height(102.dp)
             .padding(horizontal = 8.dp, vertical = 8.dp)
     ) {
         val (svg, column, dragIcon) = createRefs()

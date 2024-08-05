@@ -19,4 +19,4 @@ data class Place(
     @SerialName("name") val name: String,
     @SerialName("display_name") val displayName: String,
     @SerialName("boundingbox") val boundingBox: List<String>
-): java.io.Serializable
+) : java.io.Serializable

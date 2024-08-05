@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 fun SearchComponent(
     modifier: Modifier = Modifier,
     onSearch: (String) -> Unit,
-    content: @Composable (ColumnScope.() -> Unit) = {},
+    content: @Composable (ColumnScope.() -> Unit) = {}
 ) {
     var searchJob by remember { mutableStateOf<Job?>(null) }
     val coroutineScope = rememberCoroutineScope()
@@ -43,23 +43,23 @@ fun SearchComponent(
     }
     val localNavController = LocalNavController.current
 
-
     SearchBar(
         modifier = modifier,
         leadingIcon = {
             Icon(
                 modifier = Modifier.clickable {
-                    if (!isSearchActivated)
+                    if (!isSearchActivated) {
                         localNavController.popBackStack()
-                    else
+                    } else {
                         isSearchActivated = false
+                    }
                 },
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Search"
             )
         },
         trailingIcon = {
-            if (isSearchActivated)
+            if (isSearchActivated) {
                 Icon(
                     modifier = Modifier.clickable {
                         searchText = ""
@@ -69,6 +69,7 @@ fun SearchComponent(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Close"
                 )
+            }
         },
         query = searchText,
         onQueryChange = onQueryChange,
@@ -79,6 +80,4 @@ fun SearchComponent(
         content = content
 
     )
-
-
 }

@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.ktlin)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.firebase.crashlytics)
-
 }
 
 val keystoreProperties = Properties().apply {
@@ -57,7 +56,7 @@ android {
     packaging {
         resources {
             excludes += listOf(
-                "/META-INF/{AL2.0,LGPL2.1}",
+                "/META-INF/{AL2.0,LGPL2.1}"
             )
         }
     }
@@ -107,18 +106,18 @@ dependencies {
     implementation(libs.ktor.clientloggging)
     implementation(libs.ktor.content.negotioation)
     implementation(libs.ktor.kotlinx.json)
-    //implementation(libs.kotlinx.serialization)
+    // implementation(libs.kotlinx.serialization)
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.auth)
 
-    //Koin
+    // Koin
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.navigation)
     implementation(libs.koin.androidx.compose)
 
-    //implementation("androidx.datastore:datastore-preferences:1.1.1")
+    // implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.glance.material3)
@@ -126,7 +125,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.svg)
 
-    //implementation(libs.mapbox.search.android.ui)
+    // implementation(libs.mapbox.search.android.ui)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

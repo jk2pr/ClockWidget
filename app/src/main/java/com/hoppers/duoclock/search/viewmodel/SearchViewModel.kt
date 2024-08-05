@@ -11,26 +11,22 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
-
 class SearchViewModel(
     private val dispatcherProvider: DispatcherProvider,
-    private val searchRepository: SearchRepository,
-    ) : ViewModel() {
+    private val searchRepository: SearchRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Empty)
     val uiState = _uiState.asStateFlow()
-
 
     fun doSearch(query: String) {
         viewModelScope.launch(dispatcherProvider.io) {
             flow {
                 emit(UiState.Loading)
-                val response =searchRepository.doSearch(query)
+                val response = searchRepository.doSearch(query)
                 emit(UiState.Content(response))
             }.flowOn(dispatcherProvider.main).collect {
                 _uiState.value = it
             }
         }
     }
-
 }
-

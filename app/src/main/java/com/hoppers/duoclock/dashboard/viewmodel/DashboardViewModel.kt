@@ -115,9 +115,15 @@ class DashboardViewModel @Inject constructor(
 
     fun onSelect(locationItem: LocationItem) {
         _dataList[_dataList.indexOf(locationItem)] =
-            (if (locationItem.isSelected) locationItem.copy(isSelected = false) else locationItem.copy(
-                isSelected = true
-            ))
+            (
+                if (locationItem.isSelected) {
+                    locationItem.copy(isSelected = false)
+                } else {
+                    locationItem.copy(
+                        isSelected = true
+                    )
+                }
+                )
     }
 
     fun doOnStop() =

@@ -36,10 +36,9 @@ fun Start(context: AppWidgetConfigureActivity) {
             DashBoardScreen(args)
         }
         composable(route = AppScreens.SearchLocation.route) {
-
             val searchViewModel = koinViewModel<SearchViewModel>()
-             val result = searchViewModel.uiState.collectAsState().value
-            SearchLocationScreen(result, searchViewModel::doSearch,)
+            val result = searchViewModel.uiState.collectAsState().value
+            SearchLocationScreen(result, searchViewModel::doSearch)
         }
     }
 }

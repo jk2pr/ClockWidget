@@ -12,12 +12,10 @@ import com.hoppers.duoclock.theme.ClockTheme
 import org.koin.androidx.compose.KoinAndroidContext
 import org.koin.core.annotation.KoinExperimentalAPI
 
-/**
- * The configuration screen for the [AppWidget] AppWidget.
- */
 class AppWidgetConfigureActivity : ComponentActivity() {
 
     var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+
     @OptIn(KoinExperimentalAPI::class)
     public override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -32,8 +30,9 @@ class AppWidgetConfigureActivity : ComponentActivity() {
         setContent {
             ComposeLocalWrapper {
                 KoinAndroidContext() {
-                ClockTheme { Start(this) }
+                    ClockTheme { Start(this) }
+                }
             }
         }
-    }}
+    }
 }
