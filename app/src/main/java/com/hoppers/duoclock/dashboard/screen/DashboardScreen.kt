@@ -4,9 +4,7 @@ import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,7 +59,6 @@ import com.hoppers.duoclock.dashboard.data.DashBoardScreenArgs
 import com.hoppers.duoclock.dashboard.data.LocationItem
 import com.hoppers.duoclock.dashboard.data.UiState
 import com.hoppers.duoclock.extenstions.hasSwappableItem
-import com.hoppers.duoclock.extenstions.toast
 import com.hoppers.duoclock.navigation.AppScreens
 import com.hoppers.duoclock.search.Place
 import com.hoppers.duoclock.utils.Constants.TAG
@@ -135,12 +132,10 @@ fun DashBoardScreen(args: DashBoardScreenArgs) {
         }
         when (val result = args.state.collectAsState().value) {
             is UiState.Content ->
-                (result.data as String).let {
-                    LaunchedEffect(key1 = result.tag) {
-                        context.toast(it)
-                        isEditActivated = false
-                        updateWidget(context = context, calData = dataList.first())
-                    }
+                LaunchedEffect(key1 = result.tag) {
+                  //  context.toast(it)
+                    isEditActivated = false
+                    updateWidget(context = context, calData = dataList.first())
                 }
 
             is UiState.Error ->
@@ -250,7 +245,6 @@ private fun ManageLifeCycle(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 private fun updateWidget(context: Context, calData: LocationItem) {
     try {
         MainScope().launch {

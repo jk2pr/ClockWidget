@@ -13,6 +13,7 @@
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
         <activity
+            android:screenOrientation="portrait"
             android:theme="@style/AppSplashScreen"
             android:noHistory="true"
             android:exported="true"
