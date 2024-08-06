@@ -30,8 +30,6 @@ jobs:
         env:
           KEYSTORE_JKS_STRING: ${{ secrets.KEYSTORE_JKS_STRING }}
         run: echo "$KEYSTORE_JKS_STRING" | base64 -d -i > ./app/Keystore
-      - name: Install NDK
-        run: echo "y" | sudo /usr/local/lib/android/sdk/tools/bin/sdkmanager --install "ndk;21.0.6113669" --sdk_root=${ANDROID_SDK_ROOT}
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
       - name: Clean

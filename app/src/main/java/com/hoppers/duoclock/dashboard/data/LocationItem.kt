@@ -13,7 +13,7 @@ data class LocationItem(
     var abbreviation: String,
     var isSelected: Boolean = false,
     val flag: String?
-)  {
+) {
     fun toJSON(): String {
         return Json.encodeToString(this)
     }

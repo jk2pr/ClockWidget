@@ -1,6 +1,5 @@
 package com.hoppers.duoclock.search.screen
 
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,13 +21,11 @@ import com.hoppers.duoclock.component.SearchComponent
 import com.hoppers.duoclock.dashboard.data.UiState
 import com.hoppers.duoclock.search.Place
 
-
 @Composable
 fun SearchLocationScreen(
     result: UiState,
-    onSearch: (String) -> Unit,
+    onSearch: (String) -> Unit
 ) {
-
     val localNavController = LocalNavController.current
     Scaffold(
         topBar = {
@@ -48,18 +45,19 @@ fun SearchLocationScreen(
                     )
                 }
             )
-        }, content = { paddingValues ->
+        },
+        content = { paddingValues ->
             Box(modifier = Modifier.padding(top = paddingValues.calculateTopPadding())) {
-
             }
         }
     )
-
 }
 
 @Composable
 fun SearchContent(
-    modifier: Modifier = Modifier, resp: UiState, onItemClick: (url: Place) -> Unit
+    modifier: Modifier = Modifier,
+    resp: UiState,
+    onItemClick: (url: Place) -> Unit
 ) {
     LazyColumn(modifier = modifier.padding(8.dp)) {
         when (resp) {
@@ -67,7 +65,8 @@ fun SearchContent(
                 FooterItem(
                     modifier = Modifier
                         .padding(8.dp)
-                        .fillMaxWidth(), text = "Something wrong, try again"
+                        .fillMaxWidth(),
+                    text = "Something wrong, try again"
                 )
             }
 
@@ -77,29 +76,32 @@ fun SearchContent(
 
             is UiState.Content -> {
                 val places = resp.data as List<*>
-                if (places.isEmpty())
+                if (places.isEmpty()) {
                     item {
                         FooterItem(
                             modifier = Modifier
                                 .padding(8.dp)
                                 .fillMaxWidth(),
-                            text = "No User Found"
+                            text = "No Address Found"
                         )
-                    } else
+                    }
+                } else {
                     items(places) { place ->
-                        if (places.indexOf(place) > 0)
+                        if (places.indexOf(place) > 0) {
                             HorizontalDivider()
-                        if (place is Place)
+                        }
+                        if (place is Place) {
                             UserItem(
                                 place = place,
                                 onItemClick = onItemClick
                             )
+                        }
                     }
+                }
             }
 
             UiState.Empty -> {}
         }
-
     }
 }
 
@@ -107,16 +109,13 @@ fun SearchContent(
 fun FooterItem(modifier: Modifier = Modifier, text: String) {
     Text(
         textAlign = TextAlign.Center,
-        modifier = modifier, text = text
+        modifier = modifier,
+        text = text
     )
-
 }
-
 
 @Composable
 private fun UserItem(place: Place, onItemClick: (url: Place) -> Unit) {
-
-
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
