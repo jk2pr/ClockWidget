@@ -51,7 +51,10 @@ class DashboardViewModel @Inject constructor(
                                     ?: localResource?.timeZone?.abbreviation
 
                             val flag =
-                                flags.data.firstOrNull { response -> response.name == country }
+                                flags.data.firstOrNull { response ->
+                                    country.contains(response.name) or
+                                        response.name.contains(country)
+                                }
                             val calData = LocationItem(
                                 name = searchResult.name,
                                 abbreviation = abbreviation.orEmpty(),

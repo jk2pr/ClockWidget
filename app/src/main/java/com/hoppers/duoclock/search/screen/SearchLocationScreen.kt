@@ -82,7 +82,7 @@ fun SearchContent(
                             modifier = Modifier
                                 .padding(8.dp)
                                 .fillMaxWidth(),
-                            text = "No User Found"
+                            text = "No Address Found"
                         )
                     }
                 } else {
