@@ -133,7 +133,7 @@ fun DashBoardScreen(args: DashBoardScreenArgs) {
         when (val result = args.state.collectAsState().value) {
             is UiState.Content ->
                 LaunchedEffect(key1 = result.tag) {
-                  //  context.toast(it)
+                    //  context.toast(it)
                     isEditActivated = false
                     updateWidget(context = context, calData = dataList.first())
                 }

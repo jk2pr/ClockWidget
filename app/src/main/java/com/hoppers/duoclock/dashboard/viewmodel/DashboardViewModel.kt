@@ -53,7 +53,7 @@ class DashboardViewModel @Inject constructor(
                             val flag =
                                 flags.data.firstOrNull { response ->
                                     country.contains(response.name) or
-                                            response.name.contains(country)
+                                        response.name.contains(country)
                                 }
                             val calData = LocationItem(
                                 name = searchResult.name,
@@ -119,14 +119,14 @@ class DashboardViewModel @Inject constructor(
     fun onSelect(locationItem: LocationItem) {
         _dataList[_dataList.indexOf(locationItem)] =
             (
-                    if (locationItem.isSelected) {
-                        locationItem.copy(isSelected = false)
-                    } else {
-                        locationItem.copy(
-                            isSelected = true
-                        )
-                    }
+                if (locationItem.isSelected) {
+                    locationItem.copy(isSelected = false)
+                } else {
+                    locationItem.copy(
+                        isSelected = true
                     )
+                }
+                )
     }
 
     fun doOnStop() =
