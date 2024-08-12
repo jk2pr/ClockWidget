@@ -4,9 +4,11 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.TimeZone
+import java.util.UUID
 
 @Serializable
 data class LocationItem(
+    val id: String = UUID.randomUUID().toString(),
     val name: String,
     var address: String,
     var currentCityTimeZoneId: String?,

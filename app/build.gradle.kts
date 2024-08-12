@@ -35,7 +35,7 @@ android {
         applicationId = "com.jk.mr.duo.clock"
         minSdk = 26
         targetSdk = 34
-        versionCode = 32
+        versionCode = 35
         versionName = "2.0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

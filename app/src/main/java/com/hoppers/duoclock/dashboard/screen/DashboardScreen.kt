@@ -77,8 +77,18 @@ fun DashBoardScreen(args: DashBoardScreenArgs) {
 
     val scope = rememberCoroutineScope()
     val lifCycleOwner = LocalLifecycleOwner.current
-
     val dataList = args.dataList
+
+    HandleOnResult(
+        navController = navController,
+        lifCycleOwner = lifCycleOwner,
+        args = args.onEvent
+    )
+    ManageLifeCycle(
+        lifCycleOwner = lifCycleOwner,
+        onStart = args.onStart,
+        onStop = args.onStop
+    )
     Page(
         menuItems = mutableListOf(
             createMenus(
@@ -102,16 +112,7 @@ fun DashBoardScreen(args: DashBoardScreenArgs) {
         }
     ) {
         mAppWidgetId = args.appWidgetId
-        HandleOnResult(
-            navController = navController,
-            lifCycleOwner = lifCycleOwner,
-            args = args.onEvent
-        )
-        ManageLifeCycle(
-            lifCycleOwner = lifCycleOwner,
-            onStart = args.onStart,
-            onStop = args.onStop
-        )
+
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -135,7 +136,7 @@ fun DashBoardScreen(args: DashBoardScreenArgs) {
                 LaunchedEffect(key1 = result.tag) {
                     //  context.toast(it)
                     isEditActivated = false
-                    updateWidget(context = context, calData = dataList.first())
+                    dataList.firstOrNull()?.let { updateWidget(context = context, calData = it) }
                 }
 
             is UiState.Error ->

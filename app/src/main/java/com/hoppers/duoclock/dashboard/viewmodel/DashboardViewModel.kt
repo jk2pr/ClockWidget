@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hoppers.duoclock.DispatcherProvider
-import com.hoppers.duoclock.dashboard.data.FlagResponse
+import com.hoppers.duoclock.dashboard.data.Country
 import com.hoppers.duoclock.dashboard.data.LocationItem
 import com.hoppers.duoclock.dashboard.data.UiState
 import com.hoppers.duoclock.dashboard.repositories.DashboardRepository
@@ -23,7 +23,7 @@ class DashboardViewModel @Inject constructor(
     private val dispatchers: DispatcherProvider,
     private val dashboardRepository: DashboardRepository,
     private var preferenceHandler: PreferenceHandler,
-    private val flags: FlagResponse
+    private val countries: List<Country>
 ) : ViewModel() {
 
     private val _dataList = mutableStateListOf<LocationItem>()
@@ -51,9 +51,13 @@ class DashboardViewModel @Inject constructor(
                                     ?: localResource?.timeZone?.abbreviation
 
                             val flag =
-                                flags.data.firstOrNull { response ->
-                                    country.contains(response.name) or
-                                        response.name.contains(country)
+                                countries.firstOrNull { response ->
+                                    country.equals(response.name.common, true) or
+                                        country.contains(response.name.official) or
+                                        response.name.nativeName.values.any { nativeName ->
+                                            nativeName.common.equals(country, true) or
+                                                nativeName.official.equals(country, true)
+                                        }
                                 }
                             val calData = LocationItem(
                                 name = searchResult.name,

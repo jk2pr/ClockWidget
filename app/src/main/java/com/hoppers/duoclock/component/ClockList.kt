@@ -29,7 +29,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,9 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import coil.compose.rememberAsyncImagePainter
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
 import com.hoppers.duoclock.common.ShowEmpty
 import com.hoppers.duoclock.dashboard.data.LocationItem
 import com.hoppers.duoclock.utils.Utils
@@ -67,7 +63,7 @@ fun ClockList(
             ) {
                 itemsIndexed(
                     items = dataList,
-                    key = { _, data -> data.toString() }
+                    key = { _, data -> data.id }
                 ) { index, item ->
                     val modifier = Modifier
                         .fillMaxWidth()
@@ -109,28 +105,15 @@ private fun ListItem(
     ) {
         val (svg, column, dragIcon) = createRefs()
         val contentColor = LocalContentColor.current
-        val painter =
-            rememberAsyncImagePainter(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(calData.flag)
-                    .placeholder(R.drawable.ic_image_black_24dp)
-                    .error(R.drawable.ic_broken_image_black_24dp)
-                    .crossfade(enable = true)
-                    .decoderFactory(SvgDecoder.Factory())
-                    .build(),
-                contentScale = ContentScale.Inside
-            )
-        Image(
-            painter = painter,
-            contentDescription = "SVG Image",
+        Text(
+            text = calData.flag.orEmpty(),
             modifier = Modifier
                 .size(40.dp)
                 .clip(MaterialTheme.shapes.extraSmall)
                 .constrainAs(svg) {
                     start.linkTo(parent.start)
                     centerVerticallyTo(parent)
-                },
-            contentScale = ContentScale.FillBounds
+                }
         )
 
         Column(
@@ -198,6 +181,7 @@ class CalDataPreviewParameterProvider : PreviewParameterProvider<List<LocationIt
         get() = sequenceOf(
             listOf(
                 LocationItem(
+                    id = "1",
                     "Elise",
                     address = "Address",
                     currentCityTimeZoneId = null,
@@ -206,6 +190,7 @@ class CalDataPreviewParameterProvider : PreviewParameterProvider<List<LocationIt
                     isSelected = true
                 ),
                 LocationItem(
+                    id = "2",
                     "Elise 2",
                     address = "Address 2",
                     currentCityTimeZoneId = null,
