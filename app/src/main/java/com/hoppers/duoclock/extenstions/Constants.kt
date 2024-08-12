@@ -15,7 +15,7 @@ val currentTimeKey = stringPreferencesKey("currentTimeKey")
 val currentTimeZoneKey = stringPreferencesKey("currentTimeZoneKey")
 val remoteTimeKey = stringPreferencesKey("remoteTimeKey")
 val remoteTimeZoneKey = stringPreferencesKey("remoteTimeZoneKey")
-//val currentQuoteKey = stringPreferencesKey("calData")
+// val currentQuoteKey = stringPreferencesKey("calData")
 
 fun saveMapToDataStore(context: Context, key: Preferences.Key<String>, map: Map<String, String>) {
     val jsonString = Json.encodeToString(map)

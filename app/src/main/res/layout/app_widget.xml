@@ -1,67 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="120dp"
+    android:layout_height="120dp"
     android:orientation="horizontal"
-    android:background="@drawable/orange_widget_bg"
+    android:background="@android:color/holo_red_dark"
     android:baselineAligned="false">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:layout_margin="@dimen/widget_margin"
-        android:orientation="vertical">
 
-        <TextClock
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp8"
-            android:format12Hour="hh:mm:ss a\nE dd MMM"
-            android:gravity="center_horizontal"
-            android:textSize="@dimen/sp24"
-            android:textColor="@android:color/black"
-            android:text="@null"
-            tools:text="12:05 AM" />
-
-        <TextView
-            tools:text="Kuala lumpur"
-            style="@style/city_style">
-        </TextView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@android:color/black"
-        android:orientation="horizontal" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_margin="@dimen/widget_margin"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical"
-
-        >
-
-        <TextClock
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp8"
-            android:format12Hour="hh:mm:ss a\nE dd MMM"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/sp24"
-            tools:text="12:05 AM"
-
-            />
-
-        <TextView
-            style="@style/city_style"
-            tools:text="Malaysia">
-        </TextView>
-    </LinearLayout>
 </LinearLayout>

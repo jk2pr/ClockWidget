@@ -67,7 +67,7 @@ fun ClockList(
             ) {
                 itemsIndexed(
                     items = dataList,
-                    key = { _, data -> data.toString() }
+                    key = { _, data -> data.id }
                 ) { index, item ->
                     val modifier = Modifier
                         .fillMaxWidth()
@@ -120,17 +120,15 @@ private fun ListItem(
                     .build(),
                 contentScale = ContentScale.Inside
             )
-        Image(
-            painter = painter,
-            contentDescription = "SVG Image",
+        Text(
+            text = calData.flag.orEmpty(),
             modifier = Modifier
                 .size(40.dp)
                 .clip(MaterialTheme.shapes.extraSmall)
                 .constrainAs(svg) {
                     start.linkTo(parent.start)
                     centerVerticallyTo(parent)
-                },
-            contentScale = ContentScale.FillBounds
+                }
         )
 
         Column(
@@ -198,6 +196,7 @@ class CalDataPreviewParameterProvider : PreviewParameterProvider<List<LocationIt
         get() = sequenceOf(
             listOf(
                 LocationItem(
+                    id = "1",
                     "Elise",
                     address = "Address",
                     currentCityTimeZoneId = null,
@@ -206,6 +205,7 @@ class CalDataPreviewParameterProvider : PreviewParameterProvider<List<LocationIt
                     isSelected = true
                 ),
                 LocationItem(
+                    id = "2",
                     "Elise 2",
                     address = "Address 2",
                     currentCityTimeZoneId = null,
