@@ -109,17 +109,6 @@ private fun ListItem(
     ) {
         val (svg, column, dragIcon) = createRefs()
         val contentColor = LocalContentColor.current
-        val painter =
-            rememberAsyncImagePainter(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(calData.flag)
-                    .placeholder(R.drawable.ic_image_black_24dp)
-                    .error(R.drawable.ic_broken_image_black_24dp)
-                    .crossfade(enable = true)
-                    .decoderFactory(SvgDecoder.Factory())
-                    .build(),
-                contentScale = ContentScale.Inside
-            )
         Text(
             text = calData.flag.orEmpty(),
             modifier = Modifier
