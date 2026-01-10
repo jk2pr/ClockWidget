@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission
+        android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -28,7 +31,18 @@
             </intent-filter>
 
         </activity>
+        <receiver
+            android:name="com.hoppers.duoclock.appwidget.receivers.ClockAlarmReceiver"
+            android:exported="false">
 
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_ON" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+
+        </receiver>
         <receiver android:name="com.hoppers.duoclock.appwidget.receivers.GlanceWidgetReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

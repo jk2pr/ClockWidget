@@ -25,13 +25,13 @@ fun ClockDashBoard() {
     val currentTimeZone = TimeZone.getDefault().id
     var tz = currentTimeZone
     if (tz.contains("/")) {
-        tz = currentTimeZone.split("/").first().replace("_", " ")
+        tz = currentTimeZone.split("/").last().replace("_", " ")
     }
 
-    val contentColor = MaterialTheme.colorScheme.onBackground
+    val contentColor = MaterialTheme.colorScheme.primary
     val modifier = Modifier.padding(8.dp)
         // .clip(RectangleShape)
-        .size(180.dp)
+        .size(144.dp)
         /* .graphicsLayer {
              clip = true
              shape = CircleShape
@@ -43,19 +43,19 @@ fun ClockDashBoard() {
                 startAngle = 140f,
                 sweepAngle = 260f,
                 useCenter = false,
-                style = Stroke(10.dp.toPx(), cap = StrokeCap.Round),
+                style = Stroke(8.dp.toPx(), cap = StrokeCap.Square),
                 size = Size(size.width, size.height)
             )
         }
 
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+    Box(modifier = modifier, contentAlignment = Alignment.Center,) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             TextClock()
             Text(
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium.merge(color = MaterialTheme.colorScheme.primary),
                 text = tz
             )
         }

@@ -1,5 +1,6 @@
 package com.hoppers.duoclock.dashboard.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,7 +8,7 @@ import com.hoppers.duoclock.DispatcherProvider
 import com.hoppers.duoclock.dashboard.data.Country
 import com.hoppers.duoclock.dashboard.data.LocationItem
 import com.hoppers.duoclock.dashboard.data.UiState
-import com.hoppers.duoclock.dashboard.repositories.DashboardRepository
+import com.hoppers.duoclock.internal.TimezoneMapper
 import com.hoppers.duoclock.search.Place
 import com.hoppers.duoclock.utils.PreferenceHandler
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,6 @@ import javax.inject.Inject
 
 class DashboardViewModel @Inject constructor(
     private val dispatchers: DispatcherProvider,
-    private val dashboardRepository: DashboardRepository,
     private var preferenceHandler: PreferenceHandler,
     private val countries: List<Country>
 ) : ViewModel() {
@@ -31,7 +31,7 @@ class DashboardViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Empty)
     val uiState = _uiState.asStateFlow()
 
-    fun getData(searchResult: Place) =
+    fun addLocationFromPlace(searchResult: Place) =
         viewModelScope.launch(dispatchers.main) {
             flow {
                 emit(UiState.Loading)
@@ -39,37 +39,22 @@ class DashboardViewModel @Inject constructor(
                 try {
                     val lat = searchResult.latitude
                     val long = searchResult.longitude
-                    dashboardRepository.getTimeZone(lat, long)
-                        .let {
-                            val localResource =
-                                it.resourceSets.getOrNull(0)?.resources?.getOrNull(0)
-                            val timeZoneId =
-                                localResource?.timeZoneAtLocation?.first()?.timeZone?.ianaTimeZoneId
-                                    ?: localResource?.timeZone?.ianaTimeZoneId
-                            val abbreviation =
-                                localResource?.timeZoneAtLocation?.first()?.timeZone?.abbreviation
-                                    ?: localResource?.timeZone?.abbreviation
+                    Log.d("Lat, Long", "$lat,$long")
+                    val resultTimeZone =
+                        TimezoneMapper.latLngToTimezoneString(lat.toDouble(), long.toDouble())
+                    val flag = countries.firstOrNull { it.equals(country) }
 
-                            val flag =
-                                countries.firstOrNull { response ->
-                                    country.equals(response.name.common, true) or
-                                        country.contains(response.name.official) or
-                                        response.name.nativeName.values.any { nativeName ->
-                                            nativeName.common.equals(country, true) or
-                                                nativeName.official.equals(country, true)
-                                        }
-                                }
-                            val calData = LocationItem(
-                                name = searchResult.name,
-                                abbreviation = abbreviation.orEmpty(),
-                                address = country,
-                                currentCityTimeZoneId = timeZoneId,
-                                flag = flag?.flag,
-                                isSelected = false
-                            )
-                            val result = addItems(listOf(calData))
-                            emit(UiState.Content(result))
-                        }
+                    val calData = LocationItem(
+                        name = searchResult.name,
+                        abbreviation = "abbreviation.orEmpty()",
+                        address = country,
+                        currentCityTimeZoneId = resultTimeZone,
+                        flag = flag?.flag,
+                        isSelected = false
+                    )
+                    val result = addItems(listOf(calData))
+                    emit(UiState.Content(result))
+
                 } catch (e: Exception) {
                     e.printStackTrace()
                     emit(UiState.Error("Error"))
@@ -90,14 +75,14 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    private fun addItems(newItem: List<LocationItem>) =
-        if (_dataList.containsAll(newItem)) {
+    private fun addItems(newItem: List<LocationItem>): String {
+        return if (_dataList.containsAll(newItem)) {
             "Already added location, Please try with different location"
         } else {
-            _dataList.addAll(0, newItem).also {
-                return "Added new City"
-            }
+            _dataList.addAll(0, newItem)
+            "Added new City"
         }
+    }
 
     fun removeItems() =
         viewModelScope.launch(dispatchers.main) {
@@ -121,16 +106,11 @@ class DashboardViewModel @Inject constructor(
         }
 
     fun onSelect(locationItem: LocationItem) {
-        _dataList[_dataList.indexOf(locationItem)] =
-            (
-                if (locationItem.isSelected) {
-                    locationItem.copy(isSelected = false)
-                } else {
-                    locationItem.copy(
-                        isSelected = true
-                    )
-                }
-                )
+        val index = _dataList.indexOf(locationItem)
+        if (index != -1) {
+            val item = _dataList[index]
+            _dataList[index] = item.copy(isSelected = !item.isSelected)
+        }
     }
 
     fun doOnStop() =

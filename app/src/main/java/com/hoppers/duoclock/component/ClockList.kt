@@ -2,14 +2,20 @@ package com.hoppers.duoclock.component
 
 import android.widget.TextClock
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +41,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -65,27 +74,30 @@ fun ClockList(
                     items = dataList,
                     key = { _, data -> data.id }
                 ) { index, item ->
-                    val modifier = Modifier
-                        .fillMaxWidth()
-                        .animateItemPlacement()
-                        .combinedClickable(
-                            onLongClick = {
-                                // Activate Editable
-                                onEditActivated(true)
-                            }
-                        ) {
-                            setSelected(item)
-                        }
                     if (index == 0) HorizontalDivider()
                     ListItem(
-                        modifier = modifier,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateItem(
+                                placementSpec = spring(
+                                    stiffness = Spring.StiffnessMediumLow,
+                                    visibilityThreshold = IntOffset.VisibilityThreshold
+                                )
+                            )
+                            .combinedClickable(
+                                onLongClick = {
+                                    // Activate Editable
+                                    onEditActivated(true)
+                                }
+                            ) {
+                                setSelected(item)
+                            },
                         calData = item,
                         isEditableActivated = isEditActivated
                     )
 
                     HorizontalDivider()
                 }
-                //  itemContent = { ListItem(item, isEditActivated) }
             }
         }
     }
@@ -100,77 +112,97 @@ private fun ListItem(
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
-            // .height(102.dp)
-            .padding(horizontal = 8.dp, vertical = 8.dp)
+            .padding(horizontal = 8.dp, vertical = 12.dp)
     ) {
-        val (svg, column, dragIcon) = createRefs()
+        val (flag, content, checkbox) = createRefs()
         val contentColor = LocalContentColor.current
-        Text(
-            text = calData.flag.orEmpty(),
+
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
-                .size(40.dp)
-                .clip(MaterialTheme.shapes.extraSmall)
-                .constrainAs(svg) {
+                .size(48.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.onSecondary)
+                .constrainAs(flag) {
                     start.linkTo(parent.start)
                     centerVerticallyTo(parent)
                 }
-        )
-
-        Column(
-            modifier = Modifier
-                .constrainAs(column) {
-                    start.linkTo(svg.end, margin = 16.dp)
-                    centerVerticallyTo(parent)
-                    end.linkTo(parent.end, margin = 16.dp)
-                    width = Dimension.fillToConstraints
-                }
         ) {
             Text(
-                maxLines = 1,
-                text = calData.name,
-                overflow = TextOverflow.Ellipsis,
-                style = typography.bodyLarge
-            )
-            Text(
-                maxLines = 1,
-                text = calData.address,
-                style = typography.bodyMedium
-            )
-            AndroidView(
-                modifier = Modifier.align(Alignment.End),
-                factory = { context ->
-                    TextClock(context).apply {
-                        format12Hour = Utils.getItem12HoursFormat()
-                        format24Hour = Utils.get24HoursFormat()
-                        timeZone = calData.currentCityTimeZoneId
-                        setTextColor(contentColor.toArgb())
-                    }
-                }
+                text = calData.flag.orEmpty(),
+                fontSize = 28.sp
             )
         }
-        AnimatedVisibility(
-            visible = isEditableActivated,
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier = Modifier.constrainAs(dragIcon) {
-                start.linkTo(column.end, margin = 8.dp)
-                // start.linkTo(column.end)
+
+        Box(
+            modifier = Modifier.constrainAs(checkbox) {
+                end.linkTo(parent.end)
                 centerVerticallyTo(parent)
             }
         ) {
-            Image(
-                painter = painterResource(
-                    if (calData.isSelected) {
-                        R.drawable.check_box
-                    } else {
-                        R.drawable.check_double_solid
-                    }
+            AnimatedVisibility(
+                visible = isEditableActivated,
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
+                Image(
+                    painter = painterResource(
+                        if (calData.isSelected) {
+                            R.drawable.check_box
+                        } else {
+                            R.drawable.check_double_solid
+                        }
+                    ),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                    contentDescription = "Selection Checkbox",
+                    contentScale = ContentScale.FillBounds
+                )
+            }
+        }
 
-                ),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                contentDescription = "Drag Icon",
-                contentScale = ContentScale.FillBounds
-            )
+        Row(
+            modifier = Modifier
+                .constrainAs(content) {
+                    start.linkTo(flag.end, margin = 16.dp)
+                    end.linkTo(checkbox.start, margin = 8.dp)
+                    centerVerticallyTo(parent)
+                    width = Dimension.fillToConstraints
+                },
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f, fill = false)) {
+                Text(
+                    maxLines = 1,
+                    text = calData.name,
+                    overflow = TextOverflow.Ellipsis,
+                    style = typography.titleMedium
+                )
+                Text(
+                    maxLines = 1,
+                    text = calData.address,
+                    style = typography.bodyMedium.merge(color = MaterialTheme.colorScheme.tertiary)
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(0.1f))
+
+            Column(horizontalAlignment = Alignment.End) {
+                AndroidView(
+                    factory = { context ->
+                        TextClock(context).apply {
+                            format12Hour = Utils.getItem12HoursFormat()
+                            format24Hour = Utils.getItem24HoursFormat()
+                            timeZone = calData.currentCityTimeZoneId
+                            setTextColor(contentColor.toArgb())
+                        }
+                    }
+                )
+                Text(
+                    text = Utils.getTimeDifferenceString(calData.currentCityTimeZoneId),
+                    style = typography.labelSmall.merge(color = MaterialTheme.colorScheme.tertiary)
+                )
+            }
         }
     }
 }

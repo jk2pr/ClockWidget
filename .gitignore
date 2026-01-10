@@ -1,5 +1,6 @@
 /keystore.properties
 /gradle.properties
+app/Keystore
 /app/google-services.json
 /.idea/
 /app/build/

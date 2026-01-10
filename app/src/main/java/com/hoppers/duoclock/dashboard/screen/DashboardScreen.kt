@@ -1,6 +1,7 @@
 package com.hoppers.duoclock.dashboard.screen
 
 import android.app.Activity
+import android.app.AlarmManager
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
@@ -12,12 +13,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
@@ -34,20 +41,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
-import androidx.glance.appwidget.state.updateAppWidgetState
-import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.hoppers.duoclock.AppWidgetConfigureActivity
 import com.hoppers.duoclock.appwidget.AppWidget
+import com.hoppers.duoclock.appwidget.receivers.ClockAlarmReceiver
 import com.hoppers.duoclock.common.Loading
 import com.hoppers.duoclock.common.localproviders.LocalNavController
 import com.hoppers.duoclock.common.localproviders.LocalSnackBarHostState
@@ -66,7 +70,6 @@ import com.jk.mr.duo.clock.R
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-private var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
 @Composable
 fun DashBoardScreen(args: DashBoardScreenArgs) {
@@ -74,19 +77,31 @@ fun DashBoardScreen(args: DashBoardScreenArgs) {
     val context: Context = LocalContext.current
     val navController: NavController = LocalNavController.current
     val snackBarHostState = LocalSnackBarHostState.current
+    var showLiveUpdateDialog by rememberSaveable { mutableStateOf(false) }
+
+    val mAppWidgetId = (context as? AppWidgetConfigureActivity)?.intent?.extras?.getInt(
+        AppWidgetManager.EXTRA_APPWIDGET_ID,
+        AppWidgetManager.INVALID_APPWIDGET_ID
+    ) ?: AppWidgetManager.INVALID_APPWIDGET_ID
+
+    LaunchedEffect(Unit) {
+        // Only when opened via widget-add flow
+        // Alarm manager is off
+        val alarmManager =
+            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID && !alarmManager.canScheduleExactAlarms()) {
+            showLiveUpdateDialog = true
+        }
+    }
 
     val scope = rememberCoroutineScope()
     val lifCycleOwner = LocalLifecycleOwner.current
     val dataList = args.dataList
 
-    HandleOnResult(
-        navController = navController,
-        lifCycleOwner = lifCycleOwner,
-        args = args.onEvent
-    )
-    ManageLifeCycle(
-        lifCycleOwner = lifCycleOwner,
+    ObservePlaceResult(navController = navController, onPlaceSelected = args.onEvent)
+    ObserveStartStopLifecycle(
         onStart = args.onStart,
+        lifecycleOwner = lifCycleOwner,
         onStop = args.onStop
     )
     Page(
@@ -111,8 +126,6 @@ fun DashBoardScreen(args: DashBoardScreenArgs) {
             )
         }
     ) {
-        mAppWidgetId = args.appWidgetId
-
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -136,7 +149,11 @@ fun DashBoardScreen(args: DashBoardScreenArgs) {
                 LaunchedEffect(key1 = result.tag) {
                     //  context.toast(it)
                     isEditActivated = false
-                    dataList.firstOrNull()?.let { updateWidget(context = context, calData = it) }
+                    updateWidget(
+                        context = context,
+                        calDataList = dataList,
+                        mAppWidgetId = mAppWidgetId
+                    )
                 }
 
             is UiState.Error ->
@@ -152,6 +169,17 @@ fun DashBoardScreen(args: DashBoardScreenArgs) {
             is UiState.Loading -> Loading()
             is UiState.Empty -> {}
         }
+        if (showLiveUpdateDialog) {
+            LiveUpdateInfoDialog(
+                onDismiss = {
+                    showLiveUpdateDialog = false
+                },
+                onOpenAppSettings = {
+                    navController.navigate(AppScreens.Setting.route)
+                }
+            )
+        }
+
     }
 }
 
@@ -165,7 +193,8 @@ fun createMenus(
     onEditChange: (Boolean) -> Unit
 ): DropdownMenuItemContent {
     return DropdownMenuItemContent {
-        val icon = if (isEditActivated) R.drawable.twotone_done_24 else R.drawable.baseline_edit_24
+        val navController = LocalNavController.current
+        val icon = if (isEditActivated) Icons.Default.Done else Icons.Default.Edit
         TooltipBox(
             state = rememberTooltipState(),
             positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
@@ -176,7 +205,7 @@ fun createMenus(
                 content = {
                     Icon(
                         contentDescription = "Edit icon",
-                        imageVector = ImageVector.vectorResource(id = icon)
+                        imageVector = icon
                     )
                 }
             )
@@ -186,7 +215,7 @@ fun createMenus(
                 onClick = { onRemove() },
                 content = {
                     Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.baseline_delete_outline_24),
+                        imageVector = Icons.Default.Delete,
                         contentDescription = "Delete Icon"
                     )
                 }
@@ -204,34 +233,44 @@ fun createMenus(
                 }
             )
         }
+        IconButton(onClick = {
+            navController.navigate(AppScreens.Setting.route)
+        }) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = "Theme Icon"
+            )
+        }
     }
 }
 
 @Composable
-private fun HandleOnResult(
+private fun ObservePlaceResult(
     navController: NavController,
-    lifCycleOwner: LifecycleOwner,
-    args: (Place) -> Unit
+    onPlaceSelected: (Place) -> Unit
 ) {
-    navController.currentBackStackEntry?.savedStateHandle
-        ?.let {
-            LaunchedEffect(key1 = it) {
-                it.getLiveData<Place>("ADDRESS")
-                    .observe(lifCycleOwner) { result ->
-                        args(result)
-                        it.remove<Place>("ADDRESS")
-                    }
+    val savedStateHandle =
+        navController.currentBackStackEntry?.savedStateHandle ?: return
+
+    LaunchedEffect(savedStateHandle) {
+        savedStateHandle
+            .getStateFlow<Place?>("ADDRESS", null)
+            .collect { place ->
+                place?.let {
+                    onPlaceSelected(it)
+                    savedStateHandle["ADDRESS"] = null
+                }
             }
-        }
+    }
 }
 
 @Composable
-private fun ManageLifeCycle(
-    lifCycleOwner: LifecycleOwner,
+private fun ObserveStartStopLifecycle(
+    lifecycleOwner: LifecycleOwner,
     onStart: () -> Unit,
     onStop: () -> Unit
 ) {
-    DisposableEffect(key1 = lifCycleOwner) {
+    DisposableEffect(key1 = lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_START -> onStart()
@@ -239,44 +278,57 @@ private fun ManageLifeCycle(
                 else -> {}
             }
         }
-        lifCycleOwner.lifecycle.addObserver(observer)
+        lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
-            lifCycleOwner.lifecycle.removeObserver(observer)
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 }
 
-private fun updateWidget(context: Context, calData: LocationItem) {
-    try {
-        MainScope().launch {
-            val glanceAppWidgetManager = GlanceAppWidgetManager(context)
-            val glanceIds = glanceAppWidgetManager.getGlanceIds(AppWidget::class.java)
-            Log.d(TAG, "updateClock: glanceIds : $glanceIds")
-            if (glanceIds.isNotEmpty()) {
-                val glanceId = glanceIds.last()
-                updateAppWidgetState(context = context, glanceId = glanceId) {
-                    it[stringPreferencesKey("calData")] = calData.toJSON()
-                }
-                val glanceAppWidget: GlanceAppWidget = AppWidget()
+private fun updateWidget(context: Context, calDataList: List<LocationItem>, mAppWidgetId: Int) {
+    MainScope().launch {
 
+        ClockAlarmReceiver.updateNow(context, calDataList)
+        val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(AppWidget::class.java)
+        Log.d(TAG, "updateClock: glanceIds : $glanceIds")
+        if (glanceIds.isNotEmpty()) {
+            val glanceId = glanceIds.last()
+            if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) { // opens from widget only
                 val resultValue =
                     Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, glanceId.toString())
                 (context as? AppWidgetConfigureActivity)?.setResult(Activity.RESULT_OK, resultValue)
-                glanceAppWidget.updateAll(context)
             }
         }
-    } catch (e: IllegalArgumentException) {
-        Log.d(TAG, "No GlanceId found for this appWidgetId.")
     }
 }
-/*
-@Preview(showSystemUi = true, showBackground = true)
+
 @Composable
-fun DashboardPreview() {
-    DashBoardScreen(
-        args = DashBoardScreenArgs(
-            state = MutableStateFlow(UiState.Loading),
-            dataList = listOf()
-        )
+fun LiveUpdateInfoDialog(
+    onDismiss: () -> Unit,
+    onOpenAppSettings: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text("Live clock updates")
+        },
+        text = {
+            Text(
+                "DuoClock can update the widget every minute for precise time.\n\n" +
+                        "You can enable this later from:\n" +
+                        "App → Settings → Live updates\n\n" +
+                        "(This requires a system permission.)"
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Got it")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onOpenAppSettings) {
+                Text("Open app settings")
+            }
+        }
     )
-}*/
+}

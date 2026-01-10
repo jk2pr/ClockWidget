@@ -12,7 +12,6 @@ data class DashBoardScreenArgs(
     val arrange: (LocationItem) -> Unit = {},
     val onSelect: (LocationItem) -> Unit = {},
     val onEvent: (Place) -> Unit = {},
-    val appWidgetId: Int = 0,
     val onStart: () -> Unit = {},
     val onStop: () -> Unit = {}
 )

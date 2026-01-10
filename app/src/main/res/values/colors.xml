@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#101010</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#FF4081</color>
-
-    <color name="light_orange">#ff9100</color>
-    <color name="dark_orange">#c56200</color>
+    <color name="widget_text_color">#DE000000</color>
 </resources>

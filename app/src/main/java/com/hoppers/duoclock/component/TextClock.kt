@@ -3,6 +3,7 @@ package com.hoppers.duoclock.component
 import android.view.Gravity
 import android.widget.TextClock
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,7 +16,7 @@ import com.hoppers.duoclock.utils.Utils
 fun TextClock(
     modifier: Modifier = Modifier,
     timeZone: String = java.util.TimeZone.getDefault().id,
-    textColor: Color = LocalContentColor.current
+    textColor: Color = MaterialTheme.colorScheme.primary
 ) {
     AndroidView(
         factory = { context ->
@@ -23,8 +24,8 @@ fun TextClock(
                 format12Hour = Utils.getDashBoard12HoursFormat()
                 format24Hour = Utils.get24HoursFormat()
                 this.timeZone = timeZone
-                typeface = UiUtils.getBebasneueRegularTypeFace(context)
-                textSize = 40.0f
+                typeface = UiUtils.getAbelRegularTypeFace(context)
+                textSize = 24.0f
                 gravity = Gravity.CENTER
                 setTextColor(textColor.toArgb())
             }

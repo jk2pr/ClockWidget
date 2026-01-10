@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -86,16 +87,11 @@ fun SearchContent(
                         )
                     }
                 } else {
-                    items(places) { place ->
-                        if (places.indexOf(place) > 0) {
+                    itemsIndexed(places) { index, place ->
+                        if (index > 0)
                             HorizontalDivider()
-                        }
-                        if (place is Place) {
-                            UserItem(
-                                place = place,
-                                onItemClick = onItemClick
-                            )
-                        }
+                        if (place is Place)
+                            UserItem(place = place, onItemClick = onItemClick)
                     }
                 }
             }

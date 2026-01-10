@@ -30,22 +30,18 @@ android {
             storePassword = keystoreProperties["storePassword"] as String
         }
     }
-    compileSdk = 34
+    compileSdk = 36
     defaultConfig {
         applicationId = "com.jk.mr.duo.clock"
-        minSdk = 26
-        targetSdk = 34
+        minSdk = 31
+        targetSdk = 33
         versionCode = 35
         versionName = "2.0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        val mapboxAccessToken: String by project
-        val bingApiKey: String by project
-        val microsoftTimeZoneBaseURL: String by project
+        val geonamesUrl: String by project
         val openStreetMap: String by project
-        buildConfigField("String", "MAPBOX_ACCESS_TOKEN", mapboxAccessToken)
-        buildConfigField("String", "BING_MAP_KEY", bingApiKey)
-        buildConfigField("String", "MICROSOFT_TIMEZONE_BASE_URL", microsoftTimeZoneBaseURL)
+        buildConfigField("String", "GEONAME_URL", geonamesUrl)
         buildConfigField("String", "OPENSTREETMAP", openStreetMap)
     }
     buildFeatures {
@@ -75,7 +71,7 @@ android {
         }
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             //   buildConfigField 'String', 'GoogleSecAPIKEY', mapkey
 
             signingConfig = signingConfigs.getByName("debug")
@@ -97,6 +93,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
+   // implementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
@@ -124,6 +121,7 @@ dependencies {
 
     implementation(libs.coil)
     implementation(libs.coil.svg)
+    implementation(libs.androidx.ui.text.google.fonts)
 
     // implementation(libs.mapbox.search.android.ui)
 

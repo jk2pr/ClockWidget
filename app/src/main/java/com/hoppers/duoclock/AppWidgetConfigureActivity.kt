@@ -1,11 +1,18 @@
 package com.hoppers.duoclock
 
-import Start
+import android.app.Activity
+import android.app.AlarmManager
+import com.hoppers.duoclock.navigation.Start
 import android.appwidget.AppWidgetManager
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.hoppers.duoclock.component.ComposeLocalWrapper
 import com.hoppers.duoclock.theme.ClockTheme
@@ -14,22 +21,14 @@ import org.koin.core.annotation.KoinExperimentalAPI
 
 class AppWidgetConfigureActivity : ComponentActivity() {
 
-    var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
-
     @OptIn(KoinExperimentalAPI::class)
     public override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        intent.extras?.let {
-            mAppWidgetId = it.getInt(
-                AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID
-            )
-        }
         setContent {
             ComposeLocalWrapper {
-                KoinAndroidContext() {
+                KoinAndroidContext {
                     ClockTheme { Start(this) }
                 }
             }

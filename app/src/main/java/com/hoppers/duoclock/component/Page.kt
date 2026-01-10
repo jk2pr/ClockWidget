@@ -23,12 +23,13 @@ import com.hoppers.duoclock.navigation.AppScreens
 
 @Composable
 fun Page(
+    title :@Composable () -> Unit = {},
     menuItems: List<DropdownMenuItemContent> = emptyList(),
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     Scaffold(
-        topBar = { AppBar(menuItems = menuItems) },
+        topBar = { AppBar(menuItems = menuItems, title = title) },
         floatingActionButton = floatingActionButton,
         content = { paddingValues ->
             Box(
@@ -51,10 +52,10 @@ fun Page(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AppBar(menuItems: List<DropdownMenuItemContent>) {
+private fun AppBar(menuItems: List<DropdownMenuItemContent>, title: @Composable () -> Unit) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(),
-        title = {},
+        title = title,
         navigationIcon = {
             val navController = LocalNavController.current
             if (navController.previousBackStackEntry?.destination?.route == AppScreens.DashBoard.route) {

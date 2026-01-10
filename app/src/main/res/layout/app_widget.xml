@@ -1,9 +1,7 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="120dp"
-    android:layout_height="120dp"
-    android:orientation="horizontal"
-    android:background="@android:color/holo_red_dark"
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:contentDescription="@string/app_name"
+    android:src="@drawable/widget_preview"
     android:baselineAligned="false">
-
-
-</LinearLayout>
+</ImageView>
