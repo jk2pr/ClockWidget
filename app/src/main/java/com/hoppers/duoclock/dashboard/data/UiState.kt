@@ -7,3 +7,7 @@ sealed class UiState {
     object Loading : UiState()
     object Empty : UiState()
 }
+sealed class CitiesUiState {
+    object Loading : CitiesUiState()
+    data class Ready(val cities: List<LocationItem>) : CitiesUiState()
+}

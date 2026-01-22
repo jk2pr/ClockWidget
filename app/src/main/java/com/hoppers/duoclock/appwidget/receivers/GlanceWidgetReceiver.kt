@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import com.hoppers.duoclock.appwidget.AppWidget
+import com.hoppers.duoclock.appwidget.WidgetUpdater
 
 class GlanceWidgetReceiver : GlanceAppWidgetReceiver() {
 
@@ -16,8 +17,9 @@ class GlanceWidgetReceiver : GlanceAppWidgetReceiver() {
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
 
+        WidgetUpdater.updateNow(context)
         // Start minute ticking when widget is added / restored
-        ClockAlarmReceiver.scheduleNext(context)
+        WidgetUpdater.scheduleNext(context)
     }
 
     override fun onDeleted(
@@ -27,6 +29,6 @@ class GlanceWidgetReceiver : GlanceAppWidgetReceiver() {
         super.onDeleted(context, appWidgetIds)
 
         // Stop ticking when last widget is removed
-        ClockAlarmReceiver.cancel(context)
+        WidgetUpdater.cancel(context)
     }
 }

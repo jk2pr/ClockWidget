@@ -5,13 +5,13 @@ import kotlinx.coroutines.flow.StateFlow
 
 data class DashBoardScreenArgs(
     val state: StateFlow<UiState>,
-    val dataList: List<LocationItem>,
-    val onRemove: () -> Unit = {},
+    val cityUiState: StateFlow<CitiesUiState>,
+    val dialogState: StateFlow<DeleteDialogState>,
+    val requestDelete: (LocationItem) -> Unit = {},
+    val confirmDelete: () -> Unit = {},
+    val cancelRemove: () -> Unit = {},
     val reset: () -> Unit = {},
-    val onDone: () -> Unit = {},
-    val arrange: (LocationItem) -> Unit = {},
+    val onToggle: (LocationItem, onError: (String) -> Unit) -> Unit = { _, _ -> },
     val onSelect: (LocationItem) -> Unit = {},
     val onEvent: (Place) -> Unit = {},
-    val onStart: () -> Unit = {},
-    val onStop: () -> Unit = {}
 )

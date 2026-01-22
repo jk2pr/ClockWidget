@@ -6,8 +6,9 @@ import com.hoppers.duoclock.dashboard.viewmodel.DashboardViewModel
 import com.hoppers.duoclock.search.repositories.SearchRepository
 import com.hoppers.duoclock.search.viewmodel.SearchViewModel
 import kotlinx.serialization.json.Json.Default.decodeFromString
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -17,8 +18,9 @@ val repositoryModule = module {
     viewModel {
         DashboardViewModel(
             dispatchers = get(),
-            preferenceHandler = get(),
-            countries = get()
+            dataStore = get(),
+            countries = get(),
+            application = androidApplication()
         )
     }
 }

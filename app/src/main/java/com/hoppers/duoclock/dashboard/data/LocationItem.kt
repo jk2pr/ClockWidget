@@ -1,7 +1,6 @@
 package com.hoppers.duoclock.dashboard.data
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.TimeZone
 import java.util.UUID
@@ -10,11 +9,13 @@ import java.util.UUID
 data class LocationItem(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
-    var address: String,
-    var currentCityTimeZoneId: String?,
-    var abbreviation: String,
+    var country: String,
+    var remoteCityTimeZone: String?,
     var isSelected: Boolean = false,
-    val flag: String?
+    var isPinned: Boolean = false,
+    val pinnedOrder: Int = -1, // 0..4
+    val flag: String?,
+    val displayName: String
 ) {
     fun toJSON(): String {
         return Json.encodeToString(this)

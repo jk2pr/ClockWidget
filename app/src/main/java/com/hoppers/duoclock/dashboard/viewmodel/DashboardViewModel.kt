@@ -1,151 +1,186 @@
 package com.hoppers.duoclock.dashboard.viewmodel
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.hoppers.duoclock.DispatcherProvider
+import com.hoppers.duoclock.appwidget.WidgetUpdater
+import com.hoppers.duoclock.dashboard.components.WidgetPinner
+import com.hoppers.duoclock.dashboard.data.CitiesUiState
 import com.hoppers.duoclock.dashboard.data.Country
+import com.hoppers.duoclock.dashboard.data.DeleteDialogState
 import com.hoppers.duoclock.dashboard.data.LocationItem
 import com.hoppers.duoclock.dashboard.data.UiState
 import com.hoppers.duoclock.internal.TimezoneMapper
 import com.hoppers.duoclock.search.Place
-import com.hoppers.duoclock.utils.PreferenceHandler
+import com.hoppers.duoclock.utils.Constants.MAX_PINNED
+import com.hoppers.duoclock.utils.DataStorePreferenceHandler
+import com.hoppers.duoclock.utils.isFromWidgetAddFlow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
-import java.util.Collections
-import javax.inject.Inject
 
-class DashboardViewModel @Inject constructor(
+class DashboardViewModel(
     private val dispatchers: DispatcherProvider,
-    private var preferenceHandler: PreferenceHandler,
-    private val countries: List<Country>
-) : ViewModel() {
+    private val dataStore: DataStorePreferenceHandler,
+    private val countries: List<Country>,
+    application: Application
+) : AndroidViewModel(application) {
 
-    private val _dataList = mutableStateListOf<LocationItem>()
-    val dataList: List<LocationItem> get() = _dataList
     private val _uiState = MutableStateFlow<UiState>(UiState.Empty)
     val uiState = _uiState.asStateFlow()
 
-    fun addLocationFromPlace(searchResult: Place) =
+    private val _deleteDialogState =
+        MutableStateFlow<DeleteDialogState>(DeleteDialogState.Hidden)
+    val dialogState = _deleteDialogState.asStateFlow()
+
+    // 🔑 SINGLE SOURCE OF TRUTH
+    val citiesUiState: StateFlow<CitiesUiState> =
+        dataStore.citiesFlow
+            .map<List<LocationItem>, CitiesUiState> { cities ->
+                CitiesUiState.Ready(cities)
+            }
+            .onStart {
+                emit(CitiesUiState.Loading)
+             //   delay(2000)
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = CitiesUiState.Loading
+            )
+
+    /* ---------------- ADD CITY ---------------- */
+
+    fun addLocationFromPlace(searchResult: Place) {
         viewModelScope.launch(dispatchers.main) {
-            flow {
-                emit(UiState.Loading)
-                val country = run { searchResult.displayName.split(",").last().trim() }
-                try {
-                    val lat = searchResult.latitude
-                    val long = searchResult.longitude
-                    Log.d("Lat, Long", "$lat,$long")
-                    val resultTimeZone =
-                        TimezoneMapper.latLngToTimezoneString(lat.toDouble(), long.toDouble())
-                    val flag = countries.firstOrNull { it.equals(country) }
+            _uiState.value = UiState.Loading
 
-                    val calData = LocationItem(
-                        name = searchResult.name,
-                        abbreviation = "abbreviation.orEmpty()",
-                        address = country,
-                        currentCityTimeZoneId = resultTimeZone,
-                        flag = flag?.flag,
-                        isSelected = false
-                    )
-                    val result = addItems(listOf(calData))
-                    emit(UiState.Content(result))
+            try {
+                val country = searchResult.displayName.split(",").last().trim()
+                val timeZone = TimezoneMapper.latLngToTimezoneString(
+                    searchResult.latitude.toDouble(),
+                    searchResult.longitude.toDouble()
+                )
 
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    emit(UiState.Error("Error"))
+                val flag = countries.firstOrNull { it.equals(country) }
+
+                val newCity = LocationItem(
+                    name = searchResult.name,
+                    displayName = searchResult.displayName,
+                    country = country,
+                    remoteCityTimeZone = timeZone,
+                    flag = flag?.flag,
+                    isSelected = false
+                )
+
+                val current = dataStore.citiesFlow.first()
+                val wasEmpty = current.isEmpty()
+
+                val updated = buildList {
+                    add(if (wasEmpty) newCity.copy(isPinned = true) else newCity)
+                    addAll(current)
                 }
-            }.flowOn(dispatchers.main).collect {
-                _uiState.value = it
-            }
-        }
 
-    fun doOnStart() {
-        val jsonString = preferenceHandler.getDateData()
-        if (jsonString.isNullOrEmpty()) return
-        jsonString.let {
-            Json.decodeFromString<List<LocationItem>>(it).let { list ->
-                _dataList.clear()
-                _dataList.addAll(list)
+                persistAndUpdateWidget(updated)
+
+             //   if (wasEmpty) triggerWidgetPinIfNeeded()
+
+                _uiState.value = UiState.Content("Added new city")
+
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error(e.message ?: "Error")
             }
         }
     }
 
-    private fun addItems(newItem: List<LocationItem>): String {
-        return if (_dataList.containsAll(newItem)) {
-            "Already added location, Please try with different location"
-        } else {
-            _dataList.addAll(0, newItem)
-            "Added new City"
+    /* ---------------- DELETE ---------------- */
+
+    fun requestRemove(item: LocationItem) {
+        if (item.isPinned) {
+            _uiState.value = UiState.Error("Pinned clocks cannot be deleted")
+            return
+        }
+        _deleteDialogState.value = DeleteDialogState.Confirm(item)
+    }
+
+    fun confirmRemove() {
+        val state = _deleteDialogState.value
+        if (state !is DeleteDialogState.Confirm) return
+
+        viewModelScope.launch {
+            val cities = dataStore.citiesFlow.first()
+            val updated = cities.filterNot { it.id == state.item.id }
+
+            persistAndUpdateWidget(updated)
+            _deleteDialogState.value = DeleteDialogState.Hidden
         }
     }
 
-    fun removeItems() =
-        viewModelScope.launch(dispatchers.main) {
-            flow {
-                emit(UiState.Loading)
-                if (_dataList.size > 1 && !_dataList.first().isSelected) {
-                    val selected = dataList.filter { it.isSelected }
-                    val isSuccess = _dataList.removeAll(selected)
-                    if (isSuccess) {
-                        emit(UiState.Content("Deleted successfully"))
-                    } else {
-                        emit(UiState.Error("Fail to Delete"))
+    fun cancelRemove() {
+        _deleteDialogState.value = DeleteDialogState.Hidden
+    }
+
+    /* ---------------- PIN / UNPIN ---------------- */
+
+    fun onTogglePinned(item: LocationItem, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            val cities = dataStore.citiesFlow.first()
+            val pinnedCount = cities.count { it.isPinned }
+
+            val updated = cities.map {
+                if (it.id != item.id) return@map it
+
+                when {
+                    it.isPinned && pinnedCount == 1 -> {
+                        onError("At least one clock must stay pinned")
+                        return@launch
                     }
-                } else {
-                    emit(UiState.Error("Can't delete secondary clock"))
+
+                    !it.isPinned && pinnedCount >= MAX_PINNED -> {
+                        onError("You can pin up to $MAX_PINNED clocks only")
+                        return@launch
+                    }
+
+                    else -> it.copy(isPinned = !it.isPinned)
                 }
-                resetDataList()
-            }.flowOn(dispatchers.main).collect {
-                _uiState.value = it
             }
-        }
 
-    fun onSelect(locationItem: LocationItem) {
-        val index = _dataList.indexOf(locationItem)
-        if (index != -1) {
-            val item = _dataList[index]
-            _dataList[index] = item.copy(isSelected = !item.isSelected)
-        }
-    }
+            val safeList =
+                if (updated.none { it.isPinned } && updated.isNotEmpty()) {
+                    updated.toMutableList().apply {
+                        this[0] = this[0].copy(isPinned = true)
+                    }
+                } else updated
 
-    fun doOnStop() =
-        preferenceHandler.saveDateData(_dataList)
-
-    fun arrange(locationItem: LocationItem) = viewModelScope.launch(dispatchers.main) {
-        flow {
-            emit(UiState.Loading)
-            if (_dataList.isNotEmpty()) {
-                Collections.swap(_dataList, 0, _dataList.indexOf(locationItem))
-            }
-            emit(UiState.Content("Moved to top"))
-            resetDataList()
-        }.flowOn(dispatchers.main).collect {
-            _uiState.value = it
+            persistAndUpdateWidget(safeList)
         }
     }
 
-    fun onDone() = viewModelScope.launch {
-        flow {
-            emit(UiState.Loading)
-            resetDataList()
-            emit(UiState.Content("Done"))
-        }.flowOn(dispatchers.main).collect {
-            _uiState.value = it
-        }
+    /* ---------------- SHARED HELPERS ---------------- */
+
+    private suspend fun persistAndUpdateWidget(list: List<LocationItem>) {
+        dataStore.saveCities(list)
+        WidgetUpdater.updateNow(getApplication())
     }
 
-    private fun resetDataList() {
-        for (index in 0 until _dataList.size) {
-            _dataList[index] = _dataList[index].copy(isSelected = false)
-        }
-    }
+    private fun triggerWidgetPinIfNeeded() {
+        viewModelScope.launch {
+            if (!dataStore.shouldPromptForWidget()) return@launch
 
-    fun resetState() {
-        _uiState.value = UiState.Empty
+            // 🚫 DO NOT prompt if widget is already being added
+            if (application.isFromWidgetAddFlow()) return@launch
+
+            WidgetPinner.requestPin(application)
+            dataStore.markPromptShown()
+        }
     }
 }

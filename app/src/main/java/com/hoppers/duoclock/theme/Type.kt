@@ -1,12 +1,19 @@
 package com.hoppers.duoclock.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import com.jk.mr.duo.clock.R
 
 const val FONT_NAME: String = "Finlandica"
+
+val BebasNeue = FontFamily(
+    Font(R.font.finlandica, FontWeight.Normal),
+    Font(R.font.finlandica, FontWeight.Bold)
+)
 val provider =
     GoogleFont.Provider(
         providerAuthority = "com.google.android.gms.fonts",
@@ -14,22 +21,9 @@ val provider =
         certificates = R.array.com_google_android_gms_fonts_certs,
     )
 val bodyFontFamily =
-    FontFamily(
-        Font(
-            googleFont = GoogleFont(FONT_NAME),
-            fontProvider = provider,
-            // weight = FontWeight.W500
-        ),
-    )
+    BebasNeue
 
-val displayFontFamily =
-    FontFamily(
-        Font(
-            googleFont = GoogleFont(FONT_NAME),
-            fontProvider = provider,
-            //   weight = FontWeight.Normal
-        ),
-    )
+val displayFontFamily = BebasNeue
 val baseline = Typography()
 
 val AppTypography = Typography(

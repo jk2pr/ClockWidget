@@ -4,6 +4,7 @@ import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.DefaultRequest
+import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -19,7 +20,10 @@ private const val TIME_OUT = 60_000
 
 val ktorHttpClient = HttpClient(Android) {
     followRedirects = false
-
+    engine {
+        connectTimeout = TIME_OUT
+        socketTimeout = TIME_OUT
+    }
     install(ContentNegotiation) {
         json(
             Json {
@@ -28,10 +32,6 @@ val ktorHttpClient = HttpClient(Android) {
             }
         )
 
-        engine {
-            connectTimeout = TIME_OUT
-            socketTimeout = TIME_OUT
-        }
     }
     install(Logging) {
         logger = object : Logger {
@@ -50,5 +50,21 @@ val ktorHttpClient = HttpClient(Android) {
 
     install(DefaultRequest) {
         header(HttpHeaders.ContentType, ContentType.Application.Json)
+    }
+    // ⭐ THIS IS THE IMPORTANT PART
+    HttpResponseValidator {
+
+        handleResponseExceptionWithRequest { cause, request ->
+            Log.e(
+                "KtorError",
+                """
+                URL: ${request.url}
+                Method: ${request.method}
+                Exception: ${cause::class.java.simpleName}
+                Message: ${cause.message}
+                """.trimIndent(),
+                cause // ⭐ THIS prints full stacktrace
+            )
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.hoppers.duoclock.utils
 
 import com.hoppers.duoclock.dashboard.data.LocationItem
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 private val widgetJson = Json {
@@ -13,7 +12,7 @@ fun decodeCities(json: String?): List<LocationItem> {
 
     return try {
         widgetJson.decodeFromString(json)
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         emptyList()
     }
 }

@@ -1,11 +1,12 @@
-package com.hoppers.duoclock.component
+package com.hoppers.duoclock.common.component
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,7 +24,7 @@ import com.hoppers.duoclock.navigation.AppScreens
 
 @Composable
 fun Page(
-    title :@Composable () -> Unit = {},
+    title: @Composable () -> Unit = {},
     menuItems: List<DropdownMenuItemContent> = emptyList(),
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable () -> Unit
@@ -33,7 +34,9 @@ fun Page(
         floatingActionButton = floatingActionButton,
         content = { paddingValues ->
             Box(
-                modifier = Modifier.padding(top = paddingValues.calculateTopPadding()),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
                 content()
@@ -77,7 +80,7 @@ private fun NavigationIcon(navController: NavController) {
         onClick = { navController.popBackStack() }
     ) {
         Icon(
-            Icons.Default.ArrowBack,
+            Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = ""
         )
     }

@@ -3,9 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:configure="com.hoppers.duoclock.AppWidgetConfigureActivity"
     android:minWidth="180dp"
-    android:minHeight="40dp"
-    android:minResizeWidth="120dp"
-    android:minResizeHeight="40dp"
+    android:minHeight="90dp"
+    android:minResizeWidth="180dp"
+    android:minResizeHeight="90dp"
     android:previewLayout="@layout/app_widget"
     android:resizeMode="horizontal|vertical"
+    android:initialLayout="@layout/widget_initial"
     android:widgetCategory="home_screen" />

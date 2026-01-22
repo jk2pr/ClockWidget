@@ -1,0 +1,14 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="216dp"
+    android:layout_height="216dp"
+    android:background="?attr/colorPrimary">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loading time…"
+        android:textSize="14sp"
+        android:textColor="@android:color/white"
+        android:layout_gravity="center" />
+
+</FrameLayout>

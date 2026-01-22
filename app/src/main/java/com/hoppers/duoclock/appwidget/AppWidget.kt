@@ -1,17 +1,19 @@
 package com.hoppers.duoclock.appwidget
 
 import android.content.Context
-import android.util.Log
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.longPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
+import androidx.glance.LocalContext
 import androidx.glance.action.Action
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
@@ -20,6 +22,7 @@ import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
+import androidx.glance.color.colorProviders
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -31,22 +34,26 @@ import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
+import androidx.glance.material3.ColorProviders
 import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.hoppers.duoclock.AppWidgetConfigureActivity
+import com.hoppers.duoclock.appwidget.components.EmptyWidgetState
 import com.hoppers.duoclock.dashboard.data.LocationItem
+import com.hoppers.duoclock.theme.ClockGlanceColorScheme
+import com.hoppers.duoclock.theme.onPrimaryLight
+import com.hoppers.duoclock.theme.onSurfaceLight
+import com.hoppers.duoclock.theme.primaryLight
+import com.hoppers.duoclock.theme.secondaryLight
+import com.hoppers.duoclock.theme.surfaceLight
+import com.hoppers.duoclock.utils.CITIES_JSON
+import com.hoppers.duoclock.utils.Constants.MAX_PINNED
+import com.hoppers.duoclock.utils.PAGE_INDEX
 import com.hoppers.duoclock.utils.Utils.getFormattedTime
 import com.hoppers.duoclock.utils.decodeCities
 import java.util.TimeZone
-import kotlin.compareTo
-
-
-val PAGE_INDEX = intPreferencesKey("page_index")
-val CITIES_JSON = stringPreferencesKey("cities_json")
-
-val TICK_KEY = longPreferencesKey("tick")
 
 class AppWidget : GlanceAppWidget() {
 
@@ -56,27 +63,27 @@ class AppWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
-
             val prefs = currentState<Preferences>()
             val pageIndex = prefs[PAGE_INDEX] ?: 0
             val cities = decodeCities(prefs[CITIES_JSON])
-            val tick = prefs[TICK_KEY] ?: 0L
-            val isFresh = System.currentTimeMillis() - tick < 2_000
-            Log.d("AppWidget", "provideGlance: tick=$tick")
+            val pinnedCities = cities
+                .filter { it.isPinned }
+                .take(MAX_PINNED)
 
+            if (pinnedCities.isEmpty()) {
+                GlanceTheme { EmptyWidgetState() }
+                return@provideContent
+            }
 
-            if (cities.isEmpty()) return@provideContent
-
-            val fix5 = if (cities.size > 5) 5 else cities.size
-            val safeIndex = (pageIndex % fix5)
-            val remoteCity = cities[safeIndex]
+            val safeIndex = pageIndex % pinnedCities.size
+            val remoteCity = pinnedCities[safeIndex]
 
             GlanceTheme {
                 WidgetRoot(
                     localTimeZone = localTimeZone,
                     remoteCity = remoteCity,
                     pageIndex = safeIndex,
-                    pageCount = fix5
+                    pageCount = pinnedCities.size
                 )
             }
         }
@@ -92,7 +99,8 @@ private fun WidgetRoot(
     pageCount: Int
 ) {
     Column(
-        modifier = GlanceModifier.fillMaxWidth().padding(8.dp).cornerRadius(32.dp),
+        modifier = GlanceModifier.size(216.dp)
+            .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -107,25 +115,22 @@ private fun WidgetRoot(
         Spacer(GlanceModifier.height(8.dp))
         // 🔁 REMOTE CLOCK (PAGED)
         ClockBlock(
-            timeZoneId = remoteCity.currentCityTimeZoneId ?: localTimeZone,
+            timeZoneId = remoteCity.remoteCityTimeZone ?: localTimeZone,
             label = remoteCity.name,
             onClick = actionRunCallback<NextPageAction>()
         )
 
         Spacer(GlanceModifier.height(8.dp))
-
-        if (pageCount > 1) {
-            PageIndicator(
-                index = pageIndex, count = pageCount
-            )
+        Box(GlanceModifier.height(8.dp), contentAlignment = Alignment.Center) {
+            if (pageCount > 1)
+                PageIndicator(index = pageIndex, count = pageCount)
         }
-
     }
 }
 
 @Composable
-private fun ClockBlock(
-    timeZoneId: String, label: String, onClick: Action, isRefresh: Boolean = false
+fun ClockBlock(
+    timeZoneId: String, label: String, onClick: Action
 ) {
 
     Column(
@@ -139,7 +144,8 @@ private fun ClockBlock(
                 .split(",").size > 1
         ) label.split(",").first().trim() else label
         Text(
-            text = getFormattedTime(timeZoneId, is24Hour = false), style = TextStyle(
+            text = getFormattedTime(timeZoneId, context = LocalContext.current),
+            style = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = GlanceTheme.colors.primary
@@ -156,8 +162,6 @@ private fun ClockBlock(
 
     }
 }
-
-/* ---------- Page Indicator ---------- */
 
 @Composable
 private fun PageIndicator(
@@ -176,5 +180,4 @@ private fun PageIndicator(
         }
     }
 }
-
 /* ---------- Paging Tap Zones ---------- */

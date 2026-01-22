@@ -1,4 +1,4 @@
-package com.hoppers.duoclock.common
+package com.hoppers.duoclock.common.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

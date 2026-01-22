@@ -5,6 +5,7 @@ import androidx.glance.GlanceId
 import androidx.glance.action.ActionParameters
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.state.updateAppWidgetState
+import com.hoppers.duoclock.utils.PAGE_INDEX
 
 class NextPageAction : ActionCallback {
     override suspend fun onAction(

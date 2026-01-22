@@ -1,4 +1,4 @@
-package com.hoppers.duoclock.component
+package com.hoppers.duoclock.common.component
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
