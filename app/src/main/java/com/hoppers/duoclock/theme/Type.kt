@@ -4,26 +4,11 @@ import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.googlefonts.Font
-import androidx.compose.ui.text.googlefonts.GoogleFont
 import com.jk.mr.duo.clock.R
 
-const val FONT_NAME: String = "Finlandica"
+val bodyFontFamily = FontFamily(Font(R.font.finlandica, FontWeight.Normal))
 
-val BebasNeue = FontFamily(
-    Font(R.font.finlandica, FontWeight.Normal),
-    Font(R.font.finlandica, FontWeight.Bold)
-)
-val provider =
-    GoogleFont.Provider(
-        providerAuthority = "com.google.android.gms.fonts",
-        providerPackage = "com.google.android.gms",
-        certificates = R.array.com_google_android_gms_fonts_certs,
-    )
-val bodyFontFamily =
-    BebasNeue
-
-val displayFontFamily = BebasNeue
+val displayFontFamily = FontFamily(Font(R.font.finlandica, FontWeight.Bold))
 val baseline = Typography()
 
 val AppTypography = Typography(

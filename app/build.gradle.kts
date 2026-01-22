@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.services)
     alias(libs.plugins.kotlinx.serializtion)
-    alias(libs.plugins.ktlin)
+    alias(libs.plugins.ktlint)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.firebase.crashlytics)
 }
@@ -89,11 +89,9 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.crashlytics)
 
 
-    implementation(platform(libs.androidx.compose.bom.v20240200))
 
     //implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.material.icons.extended)
@@ -109,7 +107,7 @@ dependencies {
 
     // Ktor Client
     implementation(libs.ktor.clientloggging)
-    implementation(libs.ktor.content.negotioation)
+    implementation(libs.ktor.content.negotiation)
     implementation(libs.ktor.kotlinx.json)
     // implementation(libs.kotlinx.serialization)
     implementation(libs.ktor.client.android)
@@ -127,9 +125,6 @@ dependencies {
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.glance.material3)
 
-    implementation(libs.coil)
-    implementation(libs.coil.svg)
-    implementation(libs.androidx.ui.text.google.fonts)
 
     // implementation(libs.mapbox.search.android.ui)
 

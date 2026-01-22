@@ -1,12 +1,7 @@
 package com.hoppers.duoclock.appwidget
 
 import android.content.Context
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
@@ -22,7 +17,6 @@ import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
-import androidx.glance.color.colorProviders
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -34,7 +28,6 @@ import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
-import androidx.glance.material3.ColorProviders
 import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
@@ -42,12 +35,6 @@ import androidx.glance.text.TextStyle
 import com.hoppers.duoclock.AppWidgetConfigureActivity
 import com.hoppers.duoclock.appwidget.components.EmptyWidgetState
 import com.hoppers.duoclock.dashboard.data.LocationItem
-import com.hoppers.duoclock.theme.ClockGlanceColorScheme
-import com.hoppers.duoclock.theme.onPrimaryLight
-import com.hoppers.duoclock.theme.onSurfaceLight
-import com.hoppers.duoclock.theme.primaryLight
-import com.hoppers.duoclock.theme.secondaryLight
-import com.hoppers.duoclock.theme.surfaceLight
 import com.hoppers.duoclock.utils.CITIES_JSON
 import com.hoppers.duoclock.utils.Constants.MAX_PINNED
 import com.hoppers.duoclock.utils.PAGE_INDEX

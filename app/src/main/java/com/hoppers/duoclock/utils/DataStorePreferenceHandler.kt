@@ -4,7 +4,6 @@ package com.hoppers.duoclock.utils
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
-import kotlinx.coroutines.flow.first
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -12,6 +11,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.hoppers.duoclock.dashboard.data.LocationItem
 import dataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 

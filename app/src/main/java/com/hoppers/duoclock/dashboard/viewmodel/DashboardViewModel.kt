@@ -17,7 +17,6 @@ import com.hoppers.duoclock.search.Place
 import com.hoppers.duoclock.utils.Constants.MAX_PINNED
 import com.hoppers.duoclock.utils.DataStorePreferenceHandler
 import com.hoppers.duoclock.utils.isFromWidgetAddFlow
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
